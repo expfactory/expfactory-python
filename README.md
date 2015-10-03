@@ -1,6 +1,6 @@
 #Psi-turkey-py
 
-Python module for managing [psiturk javascript experiment files](http://github.com/psiturk/experiments), a [psiturk battery](http://github.com/psiturk/battery), and a psiturk [virtual machine](http://github.com/psiturk/vagrant-aws) to host the compilation of those two things.  
+Python module for managing [psiturk javascript experiment files](https://github.com/psiturk/psiturk-experiments), a [psiturk battery](https://github.com/psiturk/psiturk-battery), and a psiturk [virtual machine](https://github.com/psiturk/psiturk-vm) to host the compilation of those two things.  
 
 ### Functions Needed
 
