@@ -25,7 +25,7 @@ def find_directories(root,fullpath=True):
     directories = []
     for item in os.listdir(root):
         # Don't include hidden directories
-        if not re.match("^[.]*",item):
+        if not re.match("^[.]",item):
             if os.path.isdir(os.path.join(root, item)):
                 if fullpath:
                     directories.append(os.path.abspath(os.path.join(root, item)))
