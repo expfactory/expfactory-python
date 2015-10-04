@@ -43,7 +43,6 @@ takes an experiment folder, and looks for validation based on:
 All fields should be defined, but for now we just care about run scripts
 """
 
-
 def validate(experiment_folder):
     fullpath = os.path.abspath(experiment_folder)
     psiturkjson = "%s/psiturk.json" %(fullpath)
@@ -60,6 +59,12 @@ def validate(experiment_folder):
                     return notvalid("psiturk.json is missing field %s" %(field))
                 if meta[0][field] < value:
                     return notvalid("psiturk.json must have >= %s for field %s" %(value,field))
+            # For now just check for base scripts
+            if field == "run":
+                for script in meta[0][field]:
+                    if len(script.split("/")) == 1:
+                        if not os.path.exists("%s/%s" %(experiment_folder,script)):
+                            return notvalid("%s is missing in %s." %(script,experiment_folder))
         return True
     except ValueError as e:
         print "Problem reading psiturk.json, %s" %(e)
