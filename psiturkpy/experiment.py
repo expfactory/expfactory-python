@@ -34,7 +34,7 @@ def notvalid(reason):
     return False
 
 """
-valid:
+validate:
 takes an experiment folder, and looks for validation based on:
 
 - psiturk.json
@@ -44,28 +44,38 @@ All fields should be defined, but for now we just care about run scripts
 """
 
 def validate(experiment_folder):
+    meta = load_experiment(experiment_folder)
+    if len(meta)>1:
+        return notvalid("psiturk.json has length > 1, not valid.")
+    fields = get_validation_fields()
+    for field,value,ftype in fields:
+        if value != 0:
+            if field not in meta[0].keys():
+                return notvalid("psiturk.json is missing field %s" %(field))
+            if meta[0][field] < value:
+                return notvalid("psiturk.json must have >= %s for field %s" %(value,field))
+        # For now just check for base scripts
+        if field == "run":
+            for script in meta[0][field]:
+                if len(script.split("/")) == 1:
+                    if not os.path.exists("%s/%s" %(experiment_folder,script)):
+                        return notvalid("%s is missing in %s." %(script,experiment_folder))
+    return True   
+
+"""
+
+load_experiment:
+read in the psiturk.json for an experiment folder
+
+"""
+def load_experiment(experiment_folder):
     fullpath = os.path.abspath(experiment_folder)
     psiturkjson = "%s/psiturk.json" %(fullpath)
     if not os.path.exists(psiturkjson):
         return notvalid("psiturk.json could not be found in %s" %(experiment_folder))
     try: 
         meta = json.load(open(psiturkjson,"rb"))
-        if len(meta)>1:
-            return notvalid("psiturk.json has length > 1, not valid.")
-        fields = get_validation_fields()
-        for field,value,ftype in fields:
-            if value != 0:
-                if field not in meta[0].keys():
-                    return notvalid("psiturk.json is missing field %s" %(field))
-                if meta[0][field] < value:
-                    return notvalid("psiturk.json must have >= %s for field %s" %(value,field))
-            # For now just check for base scripts
-            if field == "run":
-                for script in meta[0][field]:
-                    if len(script.split("/")) == 1:
-                        if not os.path.exists("%s/%s" %(experiment_folder,script)):
-                            return notvalid("%s is missing in %s." %(script,experiment_folder))
-        return True
+        return meta
     except ValueError as e:
         print "Problem reading psiturk.json, %s" %(e)
-    
+        
