@@ -18,7 +18,7 @@ Fields required for a valid json
 """
 def get_validation_fields():
     return [("doi",0,str),
-            ("run",1,str),
+            ("run",1,list),
             ("name",0,str), 
             ("contributors",0,str),
             ("time",1,int), 
@@ -51,13 +51,26 @@ def validate(experiment_folder):
     fields = get_validation_fields()
     for field,value,ftype in fields:
         if value != 0:
+            # Field must exist in the keys
             if field not in meta[0].keys():
                 return notvalid("psiturk.json is missing field %s" %(field))
-            if meta[0][field] < value:
+            if meta[0][field] == "":
+                return notvalid("psiturk.json must be defined for field %s" %(field))
+            # Field value must have minimum of value entries
+            if not isinstance(meta[0][field],list):
+                tocheck = [meta[0][field]]
+            else:
+                tocheck = meta[0][field]
+            if len(tocheck) < value:
                 return notvalid("psiturk.json must have >= %s for field %s" %(value,field))
-        # For now just check for base scripts
+        # Run must be a list of strings
         if field == "run":
+            # Is it a list?
+            if not isinstance(meta[0][field],ftype):
+                return notvalid("field %s must be %s" %(field,ftype))
+            # Is each script in the list a string?
             for script in meta[0][field]:
+                # If we have a single file, is it in the experiment folder?
                 if len(script.split("/")) == 1:
                     if not os.path.exists("%s/%s" %(experiment_folder,script)):
                         return notvalid("%s is missing in %s." %(script,experiment_folder))
@@ -75,7 +88,7 @@ def load_experiment(experiment_folder):
     if not os.path.exists(psiturkjson):
         return notvalid("psiturk.json could not be found in %s" %(experiment_folder))
     try: 
-        meta = json.load(open(psiturkjson,"rb"))
+        meta = json.load(open(psiturkjson,"r"))
         return meta
     except ValueError as e:
         print "Problem reading psiturk.json, %s" %(e)
