@@ -2,6 +2,8 @@
 utils.py: part of psiturkpy package
 
 '''
+import errno
+import shutil
 import os
 import re
 
@@ -32,3 +34,34 @@ def find_directories(root,fullpath=True):
                 else:
                     directories.append(item)
     return directories
+
+"""
+Copy an entire directory recursively
+
+"""
+ 
+def copy_directory(src, dest):
+    try:
+        shutil.copytree(src, dest)
+    except OSError as e:
+        # If the error was caused because the source wasn't a directory
+        if e.errno == errno.ENOTDIR:
+            shutil.copy(src, dest)
+        else:
+            print('Directory not copied. Error: %s' % e)
+
+"""
+get_template: read in and return a template file
+
+"""
+def get_template(template_file):
+    filey = open(template_file,"rb")
+    template = "".join(filey.readlines())
+    filey.close()
+    return template
+
+"""
+make a substitution for a template_tag in a template
+"""
+def sub_template(template,template_tag,substitution):
+    return re.sub(template_tag,substitution,template)

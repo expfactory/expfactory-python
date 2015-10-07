@@ -1,5 +1,5 @@
-from psiturk.experiment import validate
-from psiturk.utils import find_directories
+from psiturkpy.experiment import validate
+from psiturkpy.utils import find_directories
 
 myexperiments = find_directories("../psiturk-experiments")
 
