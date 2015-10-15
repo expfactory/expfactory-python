@@ -89,22 +89,22 @@ function validateFirstStep(){
     
     $(".wizard-card form").validate({
 		rules: {
-			exptitle: "required",
-			expdescription: "required",
-			expkeywords: "required",
-			exporganization: "required",
-			expcontact: {
+			title: "required",
+			description: "required",
+			amt_keywords: "required",
+			organization_name: "required",
+			contact_email_on_error: {
 				required: true,
 				email: true
 			},
                 
 		},
 		messages: {
-			exptitle: "Please choose a title for your experiment.",
-			expdescription: "Please describe your experiment.",
-			expkeywords: "Please list kewords, separated by commas",
-			exporganization: "Please provide an organization.",
-			expcontact: "Please provide a contact email.",
+			title: "Please choose a title for your experiment.",
+			description: "Please describe your experiment.",
+			amt_keywords: "Please list kewords, separated by commas",
+			organization_name: "Please provide an organization.",
+			contact_email_on_error: "Please provide a contact email.",
 		}
 	}); 
 	

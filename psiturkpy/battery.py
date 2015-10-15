@@ -5,9 +5,9 @@ Functions to generate psiturk batteries
 '''
 import os
 import re
-from psiturkpy.utils import copy_directory, find_directories, \
-     get_template, sub_template
-from psiturkpy.experiment import validate, load_experiment
+from psiturkpy.utils import copy_directory, get_template, \
+     sub_template, get_installdir, save_template
+from psiturkpy.experiment import get_experiments, load_experiment
 
 #TODO: in future, location of battery repo should be envionment variable
 
@@ -16,28 +16,29 @@ generate will create a battery from a template
 and list of experiments
 
 """
-def generate(battery_repo,battery_dest,experiment_repo):
-    #TODO: Config file should be generated here as well
-    #TODO: battery and experiment repo should not be required (auto download to tmp folders)
+def generate(battery_repo,battery_dest,experiment_repo=None,
+             experiments=None,config=None):
+    #TODO: battery and experiment repo should download to tmp folders
     if not os.path.exists(battery_dest):
         copy_directory(battery_repo,battery_dest)
-        # Get valid experiments
-        #TODO: give user choice in experiments
-        experiments = find_directories(experiment_repo)
-        valid_experiments = [e for e in experiments if validate(e)]
-        print "Found %s valid experiments" %(len(valid_experiments))
-        load_experiments(battery_dest,valid_experiments)
+        if experiments!=None:
+            template_experiments(battery_dest,experiments)
+        elif experiment_repo != None:
+            valid_experiments = get_experiments(experiment_repo)
+            template_experiments(battery_dest,valid_experiments)
+        if config != None:
+            generate_config(battery_dest,config)
     else:
         print "Folder exists at %s, cannot generate." %(battery_repo)
 
         
 """
-load_experiments:
+template_experiments:
 For each valid experiment, copies the entire folder into the battery destination
 directory, and generates templates with appropriate paths to run them
 
 """
-def load_experiments(battery_dest,valid_experiments):
+def template_experiments(battery_dest,valid_experiments):
 
     # Generate run template, make substitutions
     template_file = "%s/static/js/load_experiments.js" %(battery_dest)
@@ -67,6 +68,44 @@ def move_experiments(valid_experiments,battery_dest):
            print "Cannot move %s, will not be added." %(valid_experiment)
     return moved_experiments
 
+
+"""
+generate_config
+takes a dictionary, and for matching fields, substitues and prints
+to "config.txt" in a specified battery directory
+
+  battery_dest: should be the copied, skeleton battery folder in generation
+  fields: should be a dictionary with fields that match those in the config
+          non matching fields will be ignored.
+
+"""
+def generate_config(battery_dest,fields):
+    config = get_config()
+    for line in config:
+        if isinstance(line,dict):
+            lookup = line.keys()[0]
+            if lookup in fields:
+                line[lookup] = fields[lookup]
+    # Convert dictionaries back to string
+    for l in range(len(config)):
+        line = config[l]
+        if isinstance(line,dict):
+            config[l] = "%s = %s" %(line.keys()[0],line.values()[0])
+    config = "\n".join(config)    
+    save_template("%s/config.txt" %battery_dest,config)
+
+def get_config():
+    module_path = get_installdir()
+    template = "%s/templates/config.txt" %(module_path)
+    config = get_template(template)
+    config = config.split("\n")
+    for l in range(len(config)):
+        line = config[l]
+        if len(line)>0:
+            if line[0]!="[":
+                fields = [x.strip(" ") for x in line.split("=")]
+                config[l] = {fields[0]:fields[1]} 
+    return config
 
 """
 Return javascript to load list of valid experiments, based on psiturk.json

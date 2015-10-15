@@ -4,6 +4,7 @@ Functions to work with javascript experiments
 
 '''
 
+from psiturkpy.utils import find_directories, remove_unicode_dict
 from glob import glob
 import json
 import os
@@ -76,6 +77,34 @@ def validate(experiment_folder):
                         return notvalid("%s is missing in %s." %(script,experiment_folder))
     return True   
 
+
+"""
+get_experiments
+return loaded json for all valid experiments from an 
+experiment folder
+
+"""
+def get_experiments(experiment_repo,load=False):
+    experiments = find_directories(experiment_repo)
+    valid_experiments = [e for e in experiments if validate(e)]
+    print "Found %s valid experiments" %(len(valid_experiments))
+    if load == True:
+        valid_experiments = load_experiments(valid_experiments)
+    return valid_experiments
+
+"""
+load_experiments
+a wrapper for load_experiment to read multiple experiments
+"""
+def load_experiments(experiment_folders):
+    experiments = []
+    if isinstance(experiment_folders,str):
+        experiment_folders = [experiment_folders]
+    for experiment_folder in experiment_folders:
+        exp = load_experiment(experiment_folder)
+        experiments.append(exp)
+    return experiments
+
 """
 
 load_experiment:
@@ -89,7 +118,8 @@ def load_experiment(experiment_folder):
         return notvalid("psiturk.json could not be found in %s" %(experiment_folder))
     try: 
         meta = json.load(open(psiturkjson,"r"))
-        return meta
+        meta = remove_unicode_dict(meta[0])
+        return [meta]
     except ValueError as e:
         print "Problem reading psiturk.json, %s" %(e)
         

@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />    
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <title>Psiturk Experiment Generator</title>
+    <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' name='viewport' />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" type="image/png" href="{{ url_for('static',filename='img/favicon.ico') }}">
+    <link href="{{ url_for('static',filename='css/bootstrap.min.css') }}" rel="stylesheet" />
+    <link href="{{ url_for('static',filename='css/style.css') }}" rel="stylesheet" />
+    <link href="http://netdna.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.css" rel="stylesheet">
+</head>
+
+<body>
+<div class="image-container set-full-height" style="background-color:brown">
+    <a href="https://github.com/psiturk" target="_blank">
+        <div class="logo-container">
+            <div class="logo">
+                <img src="{{ url_for('static',filename='img/psiturkpy_circle.png') }}" width="150px">
+            </div>
+        </div>
+    </a>
+    
+    <!--   Big container   -->
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-8 col-sm-offset-2">
+           
+            <div class="wizard-container"> 
+                <div class="card wizard-card ct-wizard-orange" id="wizardProfile">
+                    <form action="{{ url_for('select') }}" method="post" enctype="multipart/form-data">
+                        <div class="wizard-header">
+                            <h3>
+                                <b>BATTERY</b> COMPLETE<br>
+                                <small>thank you for using psiturkpy!</small>
+                            </h3>
+                        </div>
+                        <ul>
+                            <li><a href="#config" data-toggle="tab"></a></li>
+                        </ul>
+                        
+                        <div class="tab-content">
+                            <div class="tab-pane" id="config">
+                                <div class="row">
+                                    <h4 class="info-text"> You can find your experiment:</h4>
+                                        <div class="col-sm-6 col-sm-offset-1">
+
+                                            <div class="picture-container">
+                                                <div class="picture">
+
+                                                    <div class="icon">
+                                                        <i class="fa fa-5x fa-optin-monster" style="padding-top:35px"></i>
+                                                    </div>             
+                                                </div>
+                                                <div>
+                                              </div>
+                                          </div>
+                                       </div>
+                             
+                                        <div class="col-sm-10 col-sm-offset-1" id="experiments">
+                                             <h3>{{ battery_dest }}</h3>
+                                        </div>
+
+                                  <div class="col-sm-10 col-sm-offset-1">
+                                  </div>
+                          </div>
+                     </div>
+                     <div class="wizard-footer">
+                         <div class="pull-right">
+                         </div>
+                            
+                         <div class="pull-left">
+                         </div>
+                         <div class="clearfix"></div>
+                    </div>    
+                </form>
+            </div>
+        </div>
+    </div>
+</div><!-- end row -->
+</div> <!--  big container -->
+    
+<!-- Iterate through fields, fill in values that are defined -->
+    
+<div class="footer">
+    <div class="container">
+    </div>
+</div>
+
+</div>
+
+</body>
+
+    <script src="{{ url_for('static',filename='js/jquery-1.10.2.js') }}" type="text/javascript"></script>
+    <script src="{{ url_for('static',filename='js/bootstrap.min.js') }}" type="text/javascript"></script>        
+    <script src="{{ url_for('static',filename='js/jquery.bootstrap.psiturkpy.js') }}" type="text/javascript"></script>    
+    <script src="{{ url_for('static',filename='js/jquery.validate.min.js') }}"></script>    
+    <script src="{{ url_for('static',filename='js/psiturkpy.js') }}"></script>
+
+
+</html>

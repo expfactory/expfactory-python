@@ -6,6 +6,11 @@ import errno
 import shutil
 import os
 import re
+import vm
+
+
+def get_installdir():
+    return os.path.dirname(os.path.abspath(vm.__file__))
 
 '''
 Return directories (and sub) starting from a base
@@ -34,6 +39,24 @@ def find_directories(root,fullpath=True):
                 else:
                     directories.append(item)
     return directories
+
+"""
+remove unicode keys and values from dict, encoding in utf8
+
+"""
+def remove_unicode_dict(input_dict,encoding="utf-8"):
+    output_dict = dict()
+    for key,value in input_dict.iteritems():
+        if isinstance(input_dict[key],list):
+            output_new = [x.encode(encoding) for x in input_dict[key]]
+        elif isinstance(input_dict[key],int):
+            output_new = input_dict[key]
+        elif isinstance(input_dict[key],float):
+            output_new = input_dict[key]
+        else:
+            output_new = input_dict[key].encode(encoding)
+        output_dict[key.encode(encoding)] = output_new
+    return output_dict
 
 """
 Copy an entire directory recursively
@@ -67,3 +90,7 @@ def sub_template(template,template_tag,substitution):
     template = template.replace(template_tag,substitution)
     return template
 
+def save_template(output_file,html_snippet):
+    filey = open(output_file,"w")
+    filey.writelines(html_snippet)
+    filey.close()

@@ -29,7 +29,7 @@
            
             <div class="wizard-container"> 
                 <div class="card wizard-card ct-wizard-orange" id="wizardProfile">
-                    <form action="{{ url_for('validate') }}" method="POST" enctype="multipart/form-data">
+                    <form action="{{ url_for('validate') }}" method="post" enctype="multipart/form-data">
                         <div class="wizard-header">
                             <h3>
                                 <b>PSITURKPY</b><br>
@@ -48,16 +48,13 @@
                                     <h4 class="info-text"> Experiment Details</h4>
                                         <div class="col-sm-4 col-sm-offset-1">
 
-                                            <!-- Only ask for logo if not yet submit-->
-                                            {% if not logo %}                             
                                             <div class="picture-container">
                                                 <div class="picture">
                        <img src="{{ url_for('static',filename='img/psiturkpygray.png') }}" class="picture-src" id="wizardPicturePreview" title=""/>
-                                            <input type="file" id="wizard-picture">
+                                            <input name="file" type="file" id="wizard-picture"></input>
                                                 </div>
                                                 <h6>Choose Logo</h6>
                                             </div>                                            
-                                            {% endif %}
                                             
                                         </div>
 
@@ -65,23 +62,24 @@
 
                                             <div class="form-group">
                                                 <label>Title <small>(required)</small></label>
-                                                <input name="exptitle" type="text" class="form-control" id="exptitle" placeholder="Cognitive Control Battery">
+                                                <input name="title" type="text" class="form-control" id="title" placeholder="Cognitive Control Battery">
                                             </div>
                                             <div class="form-group">
                                                 <label>Description <small>(required)</small></label>
-                                                <input name="expdescription" type="text" class="form-control" id="expdescription" placeholder="Complete a series of experiments to help us learn about decision making and self control">
+                                                <input name="description" type="text" class="form-control" id="description" placeholder="Complete a series of experiments to help us learn about decision making and self control">
                                             </div>
                                             <div class="form-group">
                                                 <label>Keywords <small>(required)</small></label>
-                                                <input name="expkeywords" type="text" class="form-control" id="expkeywords" placeholder="Decision Making, Psychology">
+                                                <input name="amt_keywords" type="text" class="form-control" id="amt_keywords" placeholder="Decision Making, Psychology">
                                             </div>
                                             <div class="form-group">
                                                 <label>Contact <small>(required)</small></label>
-                                                <input name="expcontact" type="text" class="form-control" id="expcontact" placeholder="psiturkey@gmail.com">
+                                                <input name="contact_email_on_error" type="text" class="form-control" id="contact_email_on_error" placeholder="psiturkey@gmail.com">
                                             </div>
                                             <div class="form-group">
                                                 <label>Organization Name <small>(required)</small></label>
-                                                <input name="exporganization" id="exporganization" type="text" class="form-control" placeholder="Stanford University">
+                                                <input name="organization_name" id="organization_name" type="text" class="form-control" placeholder="Stanford University">
+                                                <input name="tmpdir" id="tmpdir" type="hidden" class="form-control">
                                             </div>
                                       </div>
                                   <div class="col-sm-10 col-sm-offset-1">
@@ -163,7 +161,7 @@
                                   <div class="col-sm-5 col-sm-offset-1">
                                       <div class="form-group">
                                           <label>Database Type</label><br>
-                                          <select name="database-type" class="form-control">
+                                          <select name="dbtype" class="form-control">
                                               <option value="mysql"> MySQL </option>
                                           </select>
                                       </div>
@@ -209,9 +207,38 @@
 <script>
 {% if fields is defined %}
     {% for field,value in fields.iteritems() %}
-        $("#{{ field }}").val("{{ value }}")
+       $("#{{ field }}").val("{{ value }}");
     {% endfor %}
 {% endif %}
+$("#tmpdir").val("{{ tmpdir }}");
+
+        $("#dbusername").val("username")
+    
+        $("#dbname").val("databasename")
+    
+        $("#dbhost").val("host.host.edu")
+    
+        $("#Submit").val("Submit")
+    
+        $("#organization_name").val("Stanford")
+    
+        $("#dbpasswordconfirm").val("pwpwpw")
+    
+        $("#jobb").val("Folder")
+    
+        $("#dbpassword").val("pwpwpw")
+    
+        $("#contact_email_on_error").val("vsochat@gmail.com")
+    
+        $("#dbtype").val("mysql")
+    
+        $("#description").val("Description")
+    
+        $("#dbtable").val("tablename")
+    
+        $("#amt_keywords").val("Keywords")
+    
+        $("#title").val("Cognitive Paradigm")
 </script>
 
 

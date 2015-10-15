@@ -34,7 +34,7 @@ setup(
     long_description=long_description,
     keywords='psiturk behavior neuroscience',
 
-    install_requires = ['numpy','Flask'],
+    install_requires = ['numpy','Flask','gitpython'],
 
     entry_points = {
         'console_scripts': [

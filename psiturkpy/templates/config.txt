@@ -1,0 +1,35 @@
+[HIT Configuration]
+title = Cognitive Control Battery
+description = Complete a series of experiments to help us learn about decision making and self control
+amt_keywords = Decision Making, Psychology
+lifetime = 24
+us_only = true
+approve_requirement = 95
+contact_email_on_error = psiturkey@email.com
+ad_group = Cognitive Control Ontology
+psiturk_keywords = Decision Making, Cognitive Control, Inhibition
+organization_name = Stanford University
+browser_exclude_rule = MSIE, mobile, tablet
+
+[Database Parameters]
+database_url = mysql://dbusername:dbpassword@dbhost/dbname
+table_name = turkdemo
+
+[Server Parameters]
+host = 0.0.0.0
+port = 22362
+cutoff_time = 30
+logfile = server.log
+loglevel = 2
+debug = true
+login_username = examplename
+login_pw = examplepassword
+threads = auto
+
+[Task Parameters]
+experiment_code_version = 1.0
+num_conds = 1
+num_counters = 1
+
+[Shell Parameters]
+launch_in_sandbox_mode = true
