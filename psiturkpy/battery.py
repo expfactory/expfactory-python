@@ -89,7 +89,7 @@ def get_load_js(valid_experiments):
     for valid_experiment in valid_experiments:
         experiment = load_experiment(valid_experiment)[0]
         tag = str(experiment["tag"])
-        loadstring = '%scase: "%s":\n' %(loadstring,tag)
+        loadstring = '%scase "%s":\n' %(loadstring,tag)
         for script in experiment["run"]:
             fname,ext = os.path.splitext(script)
             ext = ext.replace(".","").lower()
@@ -119,7 +119,7 @@ def get_concat_js(valid_experiments):
     for valid_experiment in valid_experiments:
         experiment = load_experiment(valid_experiment)[0]
         tag = str(experiment["tag"])
-        concatjs = '%scase: "%s":\n' %(concatjs,tag)
+        concatjs = '%scase "%s":\n' %(concatjs,tag)
         concatjs = '%s      experiments = experiments.concat(%s_experiment)\n' %(concatjs,tag)
         concatjs = '%s      break;\n' %(concatjs)
     return concatjs
