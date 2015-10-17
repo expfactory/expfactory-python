@@ -98,7 +98,7 @@ def save_template(output_file,html_snippet):
 """
 Check type
 """
-is_type(var,types=[int,float,list]):
+def is_type(var,types=[int,float,list]):
     for x in range(len(types)):
         if isinstance(var,types[x]):
             return True
