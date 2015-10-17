@@ -116,6 +116,12 @@ def clean_fields(mydict):
         if isinstance(value,int):
             newdict[cleanfield] = value
         if isinstance(value,list):
-            newdict[cleanfield] = [x.encode("utf-8") for x in value if not is_type(x) else x]
+            newlist = []
+            for x in value:
+                if not is_type(x):
+                    newlist.append(x.encode("utf-8"))
+                else:
+                    newlist.append(x)
+            newdict[cleanfield] = newlist
         else:
             newdict[cleanfield] = value.encode("utf-8")
