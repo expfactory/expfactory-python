@@ -707,6 +707,14 @@ label{
     font-weight: 400;
 }
 
+#deploy {
+    min-height:250px
+}
+
+#database{
+    min-height:250px
+}
+
 .image-container{
     height: 100%;
     background-position: center center;
