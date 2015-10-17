@@ -714,6 +714,14 @@ label{
 }
 
 
+.psiturk-radio {
+   margin-left:10px;
+}
+
+.psiturk-radio-label {
+   margin-top:20px
+}
+
 .wizard-container{
    
     padding-top: 100px;

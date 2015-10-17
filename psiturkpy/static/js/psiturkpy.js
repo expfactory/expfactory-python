@@ -27,7 +27,7 @@ $(document).ready(function(){
         },
         onNext: function(tab, navigation, index){
             if(index == 1){
-                return validateFirstStep();
+              return validateFirstStep();
             } else if(index == 2){
                 return validateSecondStep();
             } else if(index == 3){
@@ -36,15 +36,14 @@ $(document).ready(function(){
               
         },
         onTabClick : function(tab, navigation, index){
-            // Disable the posibility to click on tabs
+            // Disable the possibility to click on tabs
             return false;
         }, 
         onTabShow: function(tab, navigation, index) {
             var $total = navigation.find('li').length;
-            var $current = index+1;
-            
+            var $current = index+1;            
             var wizard = navigation.closest('.wizard-card');
-            
+            console.log(wizard)
             // If it's the last tab then hide the last button and show the finish instead
             if($current >= $total) {
                 $(wizard).find('.btn-next').hide();
@@ -97,6 +96,20 @@ function validateFirstStep(){
 				required: true,
 				email: true
 			},
+                        dbhost: "required",
+                        dbname: "required",
+                        dbusername: "required",
+                        dbtable: "required",
+			dbpassword: {
+				required: true,
+				minlength: 5
+			},
+			dbpasswordconfirm: {
+				required: true,
+				minlength: 5,
+				equalTo: "#dbpassword"
+			}
+
                 
 		},
 		messages: {
@@ -109,10 +122,8 @@ function validateFirstStep(){
 	}); 
 	
 	if(!$(".wizard-card form").valid()){
-    	//form is invalid
-    	return false;
+    	    return false;
 	}
-	
 	return true;
 }
 
@@ -126,20 +137,23 @@ function validateSecondStep(){
                         dbname: "required",
                         dbusername: "required",
                         dbtable: "required",
-
 			dbpassword: {
 				required: true,
 				minlength: 5
 			},
-			dfpasswordconfirm: {
+			dbpasswordconfirm: {
 				required: true,
 				minlength: 5,
-				equalTo: "#password"
-			}
+				equalTo: "#dbpassword"
+			},
 		
 		},
 		messages: {
 			
+                        dbhost: "Please provide a database host",
+                        dbname: "Please specify a database name",
+                        dbusername: "Please specify a username",
+                        dbtable: "Please specify a table."
 		}
 	}); 
 	
@@ -152,12 +166,30 @@ function validateSecondStep(){
 }
 
 function validateThirdStep(){
-    //code here for third step
+ 
+    //code here for second step
+    $(".wizard-card form").validate({
+		rules: {
+		
+                        deploychoice: "required",
+		
+		},
+		messages: {
+			
+                        deploychoice: "Please select your deployment",
+		}
+	}); 
+	
+	if(!$(".wizard-card form").valid()){
+    	console.log('invalid');
+    	return false;
+	}
+	return true;
     
     
 }
 
- //Function to show image before upload
+//Function to show image before upload
 
 function readURL(input) {
     if (input.files && input.files[0]) {

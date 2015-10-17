@@ -26,8 +26,9 @@ def generate(battery_repo,battery_dest,experiment_repo=None,
         elif experiment_repo != None:
             valid_experiments = get_experiments(experiment_repo)
             template_experiments(battery_dest,valid_experiments)
-        if config != None:
-            generate_config(battery_dest,config)
+        if config == None:
+            config = dict()
+        generate_config(battery_dest,config)
     else:
         print "Folder exists at %s, cannot generate." %(battery_repo)
 
@@ -80,12 +81,7 @@ to "config.txt" in a specified battery directory
 
 """
 def generate_config(battery_dest,fields):
-    config = get_config()
-    for line in config:
-        if isinstance(line,dict):
-            lookup = line.keys()[0]
-            if lookup in fields:
-                line[lookup] = fields[lookup]
+    config = generate_config_dict(battery_dest)
     # Convert dictionaries back to string
     for l in range(len(config)):
         line = config[l]
@@ -93,6 +89,27 @@ def generate_config(battery_dest,fields):
             config[l] = "%s = %s" %(line.keys()[0],line.values()[0])
     config = "\n".join(config)    
     save_template("%s/config.txt" %battery_dest,config)
+
+"""
+generate_config_dict
+return a list, with each entry being a line from the config.
+In the case of an argument (indicated by not starting with "["
+this is parsed to a dictionary, and filled with values specified
+in "fields" dictionary
+
+"""
+def generate_config_dict(fields):
+    config = get_config()
+    for line in config:
+        if isinstance(line,dict):
+            lookup = line.keys()[0]
+            if lookup in fields:
+                line[lookup] = fields[lookup]
+    return config
+
+"""
+get_config: load in a dummy config file from psiturkpy
+"""
 
 def get_config():
     module_path = get_installdir()

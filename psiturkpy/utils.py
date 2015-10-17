@@ -94,3 +94,28 @@ def save_template(output_file,html_snippet):
     filey = open(output_file,"w")
     filey.writelines(html_snippet)
     filey.close()
+
+"""
+Check type
+"""
+is_type(var,types=[int,float,list]):
+    for x in range(len(types)):
+        if isinstance(var,types[x]):
+            return True
+    return False
+
+"""
+Ensure utf-8
+"""
+def clean_fields(mydict):
+    newdict = dict()
+    for field,value in mydict.iteritems():
+        cleanfield = field.encode("utf-8")
+        if isinstance(value,float):
+            newdict[cleanfield] = value
+        if isinstance(value,int):
+            newdict[cleanfield] = value
+        if isinstance(value,list):
+            newdict[cleanfield] = [x.encode("utf-8") for x in value if not is_type(x) else x]
+        else:
+            newdict[cleanfield] = value.encode("utf-8")

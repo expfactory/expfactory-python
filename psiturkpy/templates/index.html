@@ -29,7 +29,7 @@
            
             <div class="wizard-container"> 
                 <div class="card wizard-card ct-wizard-orange" id="wizardProfile">
-                    <form action="{{ url_for('validate') }}" method="post" enctype="multipart/form-data">
+                    <form action="{{ url_for('validate') }}" method="post" enctype="multipart/form-data" id="psiturkpyform">
                         <div class="wizard-header">
                             <h3>
                                 <b>PSITURKPY</b><br>
@@ -42,6 +42,7 @@
                             <li><a href="#deploy" data-toggle="tab">Deploy</a></li>
                         </ul>
                         
+                        <!-- Config Tab -->
                         <div class="tab-content">
                             <div class="tab-pane" id="config">
                                 <div class="row">
@@ -79,6 +80,7 @@
                                             <div class="form-group">
                                                 <label>Organization Name <small>(required)</small></label>
                                                 <input name="organization_name" id="organization_name" type="text" class="form-control" placeholder="Stanford University">
+                                                <!-- Hidden fields to pass to next page-->
                                                 <input name="tmpdir" id="tmpdir" type="hidden" class="form-control">
                                             </div>
                                       </div>
@@ -86,93 +88,111 @@
                                   </div>
                               </div>
                           </div>
+                          <!-- Database Tab -->
+ 
+
+                          <div class="tab-pane" id="database">
+                              <div class="row">
+                                  <div class="col-sm-12">
+                                      <h4 class="info-text"> How would you like to set up your database? </h4>
+                                  </div>
+
+                                  <!-- Database user choice-->
+                                  <div class="col-sm-7 col-sm-offset-1">
+                                      <div class="form-group radio">
+                                          <label><input type="radio" id="automatic" value="automatic" name="dbsetupchoice">Please set it up for me.</label>
+                                      </div>
+                                      <div class="form-group radio">
+                                          <label><input type="radio" id="manual" value="manual" name="dbsetupchoice">I want to specify the connection parameters.</label>
+                                      </div>
+                                  </div>
+                                  <div id="manual_setup" style="display:none">
+		                          <div class="col-sm-7 col-sm-offset-1">
+		                              <div class="form-group">
+		                                  <label>host</label>
+		                                  <input type="text" id="dbhost" name="dbhost" class="form-control" placeholder="mysql-university.edu">
+		                              </div>
+		                          </div>
+		                          <div class="col-sm-3">
+		                              <div class="form-group">
+		                                  <label>username</label>
+		                                  <input type="text" id="dbusername" name="dbusername" class="form-control" placeholder="psiturkpy">
+		                              </div>
+		                          </div>
+		                          <div class="col-sm-7 col-sm-offset-1">
+		                              <div class="form-group">
+		                                  <label>table name</label>
+		                                  <input type="text" id="dbtable" name="dbtable" class="form-control" placeholder="dining-room-table">
+		              
+		                              </div>
+		                          </div>
+		                          <div class="col-sm-3">
+		                              <div class="form-group">
+		                                  <label>database name</label>
+		                                  <input type="text" id="dbname" name="dbname" class="form-control" placeholder="psiturkpy-database">
+		                              </div>
+		                          </div>
+		                          <div class="col-sm-5 col-sm-offset-1">
+		                              <div class="form-group">
+		                                  <label>password</label>
+		                                  <input type="text" id="dbpassword" name="dbpassword" class="form-control" placeholder="nomnomnomturkey!">
+		                              </div>
+		                          </div>
+		                          <div class="col-sm-5">
+		                              <div class="form-group">
+		                                  <label>confirm password</label><br>
+		                                  <input type="text" id="dbpasswordconfirm" name="dbpasswordconfirm" class="form-control" placeholder="nomnomnomturkey!">
+		                              </div>
+		                         </div>
+		                         <div class="col-sm-5 col-sm-offset-1">
+		                              <div class="form-group">
+		                                  <label>Database Type</label><br>
+		                                  <select name="dbtype" class="form-control">
+		                                      <option value="mysql"> MySQL </option>
+                                                      <option value="postgresql"> PostgreSQL </option>
+		                                  </select>
+		                              </div>
+		                         </div>
+                                   </div>
+                                </div>
+                          </div>
+
+                          <!-- Deploy Tab -->
                           <div class="tab-pane" id="deploy">
                               <h4 class="info-text"> How would you like to deploy your experiment? </h4>
                               <div class="row">
                                   <div class="col-sm-10 col-sm-offset-1">
                                       <div class="col-sm-4">
-                                          <div class="choice" data-toggle="wizard-checkbox">
-                                              <input type="checkbox" name="jobb" value="Folder"></input>
-                                                  <div class="icon"><i class="fa fa-folder"></i></div>
-                                                  <h6>Folder </h6>
+                                          <div class="radio">
+                                              <input class="psiturk-radio" type="radio" class="form-control" name="deploychoice" value="folder" type="text" checked="checked"></input>
+                                                  <div class="icon"><i class="fa fa-5x fa-folder"></i></div>
+                                                  <h6 class="psiturk-radio-label">Folder </h6>
                                           </div>
                                       </div>
                                       <div class="col-sm-4">
-                                          <div class="choice" data-toggle="wizard-checkbox">
-                                              <input type="checkbox" name="jobb" value="Vagrant">
-                                              <div class="icon"><i class="fa fa-desktop"></i></div>
-                                              <h6>Virtual Machine </h6>
+                                          <div class="radio">
+                                              <input class="psiturk-radio" type="radio" class="form-control" name="deploychoice" value="vagrant">
+                                              <div class="icon"><i class="fa fa-5x fa-desktop"></i></div>
+                                              <h6 class="psiturk-radio-label">Virtual Machine </h6>
                                           </div>  
                                       </div>
                                       <div class="col-sm-4">
-                                          <div class="choice" data-toggle="wizard-checkbox">
-                                              <input type="checkbox" name="jobb" value="Cloud">
+                                          <div class="radio">
+                                              <input class="psiturk-radio" type="radio" class="form-control" name="deploychoice" value="aws">
                                               <div class="icon">
-                                                  <i class="fa fa-cloud"></i>
+                                                  <i class="fa fa-5x fa-cloud"></i>
                                               </div>
-                                              <h6>AWS </h6>
+                                              <h6 class="psiturk-radio-label">AWS </h6>
                                           </div>  
                                       </div>
                                   </div>  
                               </div>
                           </div>
-                          <div class="tab-pane" id="database">
-                              <div class="row">
-                                  <div class="col-sm-12">
-                                      <h4 class="info-text"> Please provide parameters to test your MySQL database connection </h4>
-                                  </div>
-                                  <div class="col-sm-7 col-sm-offset-1">
-                                      <div class="form-group">
-                                          <label>host</label>
-                                          <input type="text" id="dbhost" name="dbhost" class="form-control" placeholder="mysql-university.edu">
-                                      </div>
-                                  </div>
-                                  <div class="col-sm-3">
-                                      <div class="form-group">
-                                          <label>username</label>
-                                          <input type="text" id="dbusername" name="dbusername" class="form-control" placeholder="psiturkpy">
-                                      </div>
-                                  </div>
-                                  <div class="col-sm-7 col-sm-offset-1">
-                                      <div class="form-group">
-                                          <label>table name</label>
-                                          <input type="text" id="dbtable" name="dbtable" class="form-control" placeholder="dining-room-table">
-                      
-                                      </div>
-                                  </div>
-                                  <div class="col-sm-3">
-                                      <div class="form-group">
-                                          <label>database name</label>
-                                          <input type="text" id="dbname" name="dbname" class="form-control" placeholder="psiturkpy-database">
-                                      </div>
-                                  </div>
-                                  <div class="col-sm-5 col-sm-offset-1">
-                                      <div class="form-group">
-                                          <label>password</label>
-                                          <input type="text" id="dbpassword" name="dbpassword" class="form-control" placeholder="nomnomnomturkey!">
-                                      </div>
-                                  </div>
-                                  <div class="col-sm-5">
-                                      <div class="form-group">
-                                          <label>confirm password</label><br>
-                                          <input type="text" id="dbpasswordconfirm" name="dbpasswordconfirm" class="form-control" placeholder="nomnomnomturkey!">
-                                      </div>
-                                 </div>
-                                  <div class="col-sm-5 col-sm-offset-1">
-                                      <div class="form-group">
-                                          <label>Database Type</label><br>
-                                          <select name="dbtype" class="form-control">
-                                              <option value="mysql"> MySQL </option>
-                                          </select>
-                                      </div>
-                                 </div>
-                             </div>
-                         </div>
-                     </div>
+
                      <div class="wizard-footer">
                          <div class="pull-right">
                              <input type='button' class='btn btn-next btn-fill btn-warning btn-wd btn-sm' name='next' value='Next' />
-                             <input type='submit' class='btn btn-finish btn-fill btn-warning btn-wd btn-sm' name='Submit' value='Submit' />
+                             <input id="dosubmit" type='submit' class='btn btn-finish btn-fill btn-warning btn-wd btn-sm' name='Submit' value='Submit' />
                          </div>
                             
                          <div class="pull-left">
@@ -205,14 +225,28 @@
     <script src="{{ url_for('static',filename='js/psiturkpy.js') }}"></script>
 
 <script>
-{% if fields is defined %}
-    {% for field,value in fields.iteritems() %}
-       $("#{{ field }}").val("{{ value }}");
-    {% endfor %}
-{% endif %}
-$("#tmpdir").val("{{ tmpdir }}");
+$(document).ready(function() {
+    {% if fields is defined %}
+        {% for field,value in fields.iteritems() %}
+            $("#{{ field }}").val("{{ value }}");
+        {% endfor %}
+    {% endif %}
 
-        $("#dbusername").val("username")
+    $("#tmpdir").val("{{ tmpdir }}");
+    $( "#automatic" ).prop( "checked", true );
+
+    // Show or hide database setup based on user preference
+    $('input[type=radio][name=dbsetupchoice]').change(function() {
+        if (this.value == 'manual') {
+            $("#manual_setup").show()
+        }
+        else if (this.value == 'automatic') {
+            $("#manual_setup").hide()
+        }
+    });
+});
+
+      $("#dbusername").val("username")
     
         $("#dbname").val("databasename")
     
@@ -239,6 +273,7 @@ $("#tmpdir").val("{{ tmpdir }}");
         $("#amt_keywords").val("Keywords")
     
         $("#title").val("Cognitive Paradigm")
+
 </script>
 
 

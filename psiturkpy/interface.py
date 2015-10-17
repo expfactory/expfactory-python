@@ -1,9 +1,10 @@
+from psiturkpy.vm import custom_battery_download, add_custom_logo, generate_database_url, \
+     prepare_vm, specify_experiments, download_repo
 from psiturkpy.experiment import validate, load_experiment, get_experiments
 from psiturkpy.battery import generate, generate_config
-from psiturkpy.utils import copy_directory
 from flask import Flask, render_template, request
+from psiturkpy.utils import copy_directory
 from werkzeug import secure_filename
-from git import Repo
 import tempfile
 import shutil
 import random
@@ -29,61 +30,84 @@ def get_field(request,fields,value):
 """
 Main function for starting interface to generate a battery
 """
+# Step 0: User is presented with base interface
 @app.route('/')
 def start():
     tmpdir = tempfile.mkdtemp()
     return render_template('index.html',tmpdir=tmpdir)
 
+
+# STEP 1: Validation of user input for battery
 @app.route('/validate',methods=['POST'])
 def validate():
     logo = None
     if request.method == 'POST':
         fields = dict()
         for field,value in request.form.iteritems():
-            if field!="tmpdir":
-                fields[field] = value
-            else:
+            if field == "tmpdir":
                 tmpdir = value
+            elif field == "dbsetupchoice":
+                dbsetupchoice = value
+            else:
+                fields[field] = value
 
-        # Parse the database url for the config
-        fields["database_url"] = "%s://%s:%s@%s/%s"  %(fields["dbtype"],
-                                                     fields["dbusername"],
-                                                     fields["dbpassword"],
-                                                     fields["dbhost"],
-                                                     fields["dbtable"])
+        # DATABASE SETUP ###################################################
+        # If the user wants to generate a custom database:
+        if dbsetupchoice == "manual":
+            # Generate a database url from the inputs
+            fields["database_url"] =  generate_database_url(dbtype=fields["dbtype"],
+                                                 username=fields["dbusername"],
+                                                 password=fields["dbpassword"],
+                                                 host=fields["dbhost"],
+                                                 table=fields["dbtable"]) 
+        else:
+            # If generating a folder, use sqlite3
+            if fields["deploychoice"] == "folder":
+                fields["database_url"] = generate_database_url(template="sqlite3")       
+            # Otherwise, use postgres
+            else: 
+                fields["database_url"] = generate_database_url(template="postgresql")       
+        
+        # LOCAL FOLDER #####################################################
+        if fields["deploychoice"] == "folder":
+            # Prepare temp folder with battery and experiments
+            custom_battery_download(tmpdir=tmpdir)
 
-        # Download battery and experiment repos
-        erepo = download_repo("experiments","%s/experiments/" %tmpdir)
-        brepo = download_repo("battery","%s/battery/" %tmpdir)
-
-        # Copy the custom logo
-        if "file" in request.files and allowed_file(request.files["file"]):
-            logo = secure_filename(request.files["file"])
-            shutil.copy(logo,"%s/battery/img/logo.png" %(tmpdir))
-            #logo = allowed_files(request.files['file'])
+            # Copy the custom logo
+            if "file" in request.files and allowed_file(request.files["file"]):
+                logo = secure_filename(request.files["file"])
+                add_custom_logo(battery_repo="%s/battery" %(tmpdir),logo=logo)
     
-        # Generate battery folder with config file with parameters
-        generate_config("%s/battery" %(tmpdir),fields)
+            # Generate battery folder with config file with parameters
+            generate_config("%s/battery" %(tmpdir),fields)
 
-        # Get valid experiments
-        #TODO: in future should let user select based on cognitive atlas
+        else: 
+            prepare_vm(battery_dest=tmpdir,fields=fields,vm_type=fields["deploychoice"])
+            download_repo("experiments","%s/experiments/" %(tmpdir))
+
+        # Get valid experiments to present to user
         valid_experiments = get_experiments("%s/experiments/" %(tmpdir),load=True)
 
         return render_template('experiments.html',
                                 experiments=str(valid_experiments),
                                 this_many=len(valid_experiments),
-                                tmpdir=tmpdir)
+                                tmpdir=tmpdir,
+                                deploychoice=fields["deploychoice"])
+
     return render_template('index.html')
 
+# STEP 2: User must select experiments
 @app.route('/select',methods=['POST'])
 def select():
     if request.method == 'POST':
         fields = dict()
         for field,value in request.form.iteritems():
-            if field!="tmpdir":
-                fields[field] = value
-            else:
+            if field == "tmpdir":
                 tmpdir = value
+            elif field == "deploychoice":
+                deploychoice = value
+            else:
+                fields[field] = value
 
         # Retrieve experiment folders 
         valid_experiments = get_experiments("%s/experiments" %(tmpdir),load=True)
@@ -91,21 +115,25 @@ def select():
         selected_experiments = [x for x in fields.values() if x in experiments]
         experiment_folders = ["%s/experiments/%s" %(tmpdir,x) for x in selected_experiments]
 
-        # Add to the battery, clean up old folder
-        generate("%s/battery"%(tmpdir),"%s/psiturk-battery" %tmpdir,experiments=experiment_folders)
+        # Option 1: A folder on the local machine
+        if deploychoice == "folder":
+            # Add to the battery, clean up old folder
+            generate("%s/battery"%(tmpdir),"%s/psiturk-battery" %tmpdir,experiments=experiment_folders)
+            shutil.rmtree("%s/battery"%(tmpdir))
+            battery_dest = "%s/psiturk-battery" %(tmpdir)
+
+        # Option 2 or 3: Virtual machine (vagrant) or cloud (aws)
+        else:
+            specify_experiments(battery_dest=tmpdir,experiments=selected_experiments)
+            battery_dest = tmpdir 
+
+        # All options should remove vm and experiments folders
         shutil.rmtree("%s/experiments"%(tmpdir))
-        shutil.rmtree("%s/battery"%(tmpdir))
-        battery_dest = "%s/psiturk-battery" %(tmpdir)
+        shutil.rmtree("%s/vm"%(tmpdir))        
 
         return render_template('complete.html',battery_dest=battery_dest)
     return render_template('index.html')
 
-
-def download_repo(repo_type,destination):
-    if repo_type == "experiments":
-        return Repo.clone_from("https://github.com/psiturk/psiturk-experiments", destination)
-    elif repo_type == "battery":
-        return Repo.clone_from("https://github.com/psiturk/psiturk-battery", destination)
 
 # This is how the command line version will run
 def main():

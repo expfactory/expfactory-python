@@ -48,8 +48,10 @@
 
                                         </div>
                                         <input name="tmpdir" id="tmpdir" type="hidden" class="form-control">
+                                        <input name="deploychoice" id="deploychoice" type="hidden" class="form-control">
 
-                                        <!-- experiments will be appended here-->                             
+                                        <!-- experiments will be appended here-->               
+                                        <input type="checkbox" name="select-all" id="select-all" /> select all
                                         <div class="col-sm-10 col-sm-offset-1" id="experiments">
 
                                         </div>
@@ -97,8 +99,20 @@ experiments = {{ experiments | safe }}
 for (i=0;i<experiments.length;i++){
     $("#experiments").append('<div class="checkbox"><label><input type="checkbox" value="' + experiments[i][0].tag +'" name="' + experiments[i][0].tag +'">' + experiments[i][0].tag +'</label></div>')
 }
-$("#tmpdir").val("{{ tmpdir }}");
-</script>
 
+// Variables passed from earlier steps
+$("#tmpdir").val("{{ tmpdir }}");
+$("#deploychoice").val("{{ deploychoice }}");
+
+// Toggle all experiments
+$('#select-all').click(function(event) {   
+    if(this.checked) {
+        // Iterate each checkbox
+        $(':checkbox').each(function() {
+            this.checked = true;                        
+        });
+    }
+});
+</script>
 
 </html>
