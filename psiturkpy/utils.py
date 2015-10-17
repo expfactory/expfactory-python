@@ -125,3 +125,4 @@ def clean_fields(mydict):
             newdict[cleanfield] = newlist
         else:
             newdict[cleanfield] = value.encode("utf-8")
+    return newdict

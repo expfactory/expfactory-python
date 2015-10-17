@@ -68,7 +68,7 @@ def generate_database_url(dbtype=None,username=None,password=None,host=None,tabl
     elif template == "sqlite3":
         return "sqlite:///participants.db" 
     elif template == "postgresql":
-        return "postgresql://postgres:psiturkpy@localhost:5432/psiturkpy"
+        return "postgresql://psiturkpy:psiturkpy@localhost:5432/psiturkpy"
 
 """
 Prepare virtual machine to run local with vagrant, or with vagrant-aws
