@@ -63,7 +63,8 @@ def template_experiments(battery_dest,battery_repo,valid_experiments):
     load_template = sub_template(load_template,"[SUB_EXPERIMENTCONCAT_SUB]",concatjs)
     load_template = sub_template(load_template,"[SUB_EXPERIMENTLOAD_SUB]",loadjs)
     load_template = sub_template(load_template,"[SUB_EXPERIMENTTIMES_SUB]",str(timingjs)) 
-    filey = open(template_file,'w')
+    template_output = "%s/static/js/load_experiments.js" %(battery_dest)
+    filey = open(template_output,'w')
     filey.writelines(load_template)
     filey.close()    
 
