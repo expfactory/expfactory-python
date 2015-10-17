@@ -3,34 +3,47 @@ battery.py: part of psiturkpy package
 Functions to generate psiturk batteries
 
 '''
-import os
-import re
+from psiturkpy.experiment import get_experiments, load_experiment
 from psiturkpy.utils import copy_directory, get_template, \
      sub_template, get_installdir, save_template
-from psiturkpy.experiment import get_experiments, load_experiment
+from psiturkpy.vm import custom_battery_download
+import os
+import re
 
-#TODO: in future, location of battery repo should be envionment variable
 
 """
 generate will create a battery from a template
 and list of experiments
 
 """
-def generate(battery_repo,battery_dest,experiment_repo=None,
-             experiments=None,config=None):
-    #TODO: battery and experiment repo should download to tmp folders
+
+def generate(battery_dest,battery_repo=None,experiment_repo=None,experiments=None,config=None):
+
+    # We can only generate a battery to a folder that does not exist, to be safe
     if not os.path.exists(battery_dest):
+        if experiment_repo == None or battery_repo == None:
+            tmpdir = custom_battery_download()
+            if experiment_repo == None:
+                experiment_repo = "%s/experiments" %(tmpdir)     
+            if battery_repo == None:
+                battery_repo = "%s/battery" %(tmpdir)     
+
+        # Copy battery skeleton to destination
         copy_directory(battery_repo,battery_dest)
-        if experiments!=None:
-            template_experiments(battery_dest,experiments)
-        elif experiment_repo != None:
-            valid_experiments = get_experiments(experiment_repo)
-            template_experiments(battery_dest,valid_experiments)
+        valid_experiments = get_experiments(experiment_repo)
+
+        # If the user wants to select a subset
+        if experiments != None:
+            subset_experiments = [x for x in valid_experiments if os.path.basename(x) in experiments]
+            valid_experiments = subset_experiments      
+
+        # Fill in templates with the experiments, generate config
+        template_experiments(battery_dest,battery_repo,valid_experiments)
         if config == None:
             config = dict()
         generate_config(battery_dest,config)
     else:
-        print "Folder exists at %s, cannot generate." %(battery_repo)
+        print "Folder exists at %s, cannot generate." %(battery_dest)
 
         
 """
@@ -39,10 +52,9 @@ For each valid experiment, copies the entire folder into the battery destination
 directory, and generates templates with appropriate paths to run them
 
 """
-def template_experiments(battery_dest,valid_experiments):
-
+def template_experiments(battery_dest,battery_repo,valid_experiments):
     # Generate run template, make substitutions
-    template_file = "%s/static/js/load_experiments.js" %(battery_dest)
+    template_file = "%s/static/js/load_experiments.js" %(battery_repo)
     load_template = get_template(template_file)
     valid_experiments = move_experiments(valid_experiments,battery_dest)
     loadjs = get_load_js(valid_experiments) 
@@ -54,6 +66,7 @@ def template_experiments(battery_dest,valid_experiments):
     filey = open(template_file,'w')
     filey.writelines(load_template)
     filey.close()    
+
 
 """
 For each valid experiment, move into experiments folder in battery repo
@@ -86,9 +99,14 @@ def generate_config(battery_dest,fields):
     for l in range(len(config)):
         line = config[l]
         if isinstance(line,dict):
-            config[l] = "%s = %s" %(line.keys()[0],line.values()[0])
+            linekey = line.keys()[0]
+            if linekey in fields.keys():
+                config[l][linekey] = fields[linekey]
+            config[l] = "%s = %s" %(linekey,config[l][linekey])
     config = "\n".join(config)    
     save_template("%s/config.txt" %battery_dest,config)
+    return config
+
 
 """
 generate_config_dict
@@ -124,6 +142,7 @@ def get_config():
                 config[l] = {fields[0]:fields[1]} 
     return config
 
+
 """
 Return javascript to load list of valid experiments, based on psiturk.json
 Format is:
@@ -156,6 +175,7 @@ def get_load_js(valid_experiments):
                 loadstring = '%s         loadjscssfile("%s","%s")\n' %(loadstring,script,ext)
         loadstring = "%s         break;\n" %(loadstring)
     return loadstring
+
 
 """
 Return javascript concat section for valid experiments, based on psiturk.json

@@ -92,6 +92,9 @@ def prepare_vm(battery_dest,fields=None,vm_repo=None,vm_type="vagrant"):
         template = sub_template(template,"[SUB_CONFIG_SUB]",str(fields))
     else:
         template = sub_template(template,"[SUB_CONFIG_SUB]","None")
+
+    # Change file to be a custom install
+    template = sub_template(template,'CUSTOM_INSTALL="False"','CUSTOM_INSTALL="True"')
         
     output_file = "%s/Vagrantfile" %(battery_dest)
     save_template(output_file,template)

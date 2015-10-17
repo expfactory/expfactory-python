@@ -6,11 +6,11 @@ import errno
 import shutil
 import os
 import re
-import vm
+import __init__
 
 
 def get_installdir():
-    return os.path.dirname(os.path.abspath(vm.__file__))
+    return os.path.dirname(os.path.abspath(__init__.__file__))
 
 '''
 Return directories (and sub) starting from a base
