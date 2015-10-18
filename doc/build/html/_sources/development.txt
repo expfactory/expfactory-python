@@ -49,5 +49,4 @@ This will start a local web server using python at localhost:9999.
  3. Open your browser to localhost:9999 to preview
 
 
-Typically, static github pages content is served separate from the code on the gh-pages branch, but it's easy enough to keep the content of master and gh-pages the same. Thus, you should do all changes to master, submit a PR for approval, and then push the merged version to gh-pages.
- 4. Commit changes to the repo, and submit a PR.
+The documentation is served on readthedocs, and will be built automatically when changes are pushed (this is not tested yet). So you should commit changes to the repo, and submit a PR.
