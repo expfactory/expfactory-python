@@ -10,14 +10,16 @@ import json
 import os
 
 
-"""
-Fields required for a valid json
-  (field,value,type)
-  value indicates minimum required entires
-  type indicates the variable type
-
-"""
 def get_validation_fields():
+    """
+    Returns a list of tuples (each a field)
+      required for a valid json
+      (field,value,type)
+          field: the field name
+          value: indicates minimum required entires
+          type: indicates the variable type
+
+    """
     return [("doi",0,str),
             ("run",1,list),
             ("name",0,str), 
@@ -35,17 +37,18 @@ def notvalid(reason):
     print reason
     return False
 
-"""
-validate:
-takes an experiment folder, and looks for validation based on:
-
-- psiturk.json
-- files existing specified in psiturk.json
-
-All fields should be defined, but for now we just care about run scripts
-"""
 
 def validate(experiment_folder):
+    """
+    validate:
+    takes an experiment folder, and looks for validation based on:
+
+    - psiturk.json
+    - files existing specified in psiturk.json
+
+    All fields should be defined, but for now we just care about run scripts
+    """
+
     meta = load_experiment(experiment_folder)
     if len(meta)>1:
         return notvalid("psiturk.json has length > 1, not valid.")
@@ -78,13 +81,17 @@ def validate(experiment_folder):
     return True   
 
 
-"""
-get_experiments
-return loaded json for all valid experiments from an 
-experiment folder
-
-"""
 def get_experiments(experiment_repo,load=False):
+    """
+    get_experiments
+    return loaded json for all valid experiments from an 
+    experiment folder
+        experiment_repo: full path to the experiments repo
+        load: if True, returns a list of loaded psiturk.json objects
+              if False (default) returns the paths to the experiments
+
+    """
+
     experiments = find_directories(experiment_repo)
     valid_experiments = [e for e in experiments if validate(e)]
     print "Found %s valid experiments" %(len(valid_experiments))
@@ -92,11 +99,13 @@ def get_experiments(experiment_repo,load=False):
         valid_experiments = load_experiments(valid_experiments)
     return valid_experiments
 
-"""
-load_experiments
-a wrapper for load_experiment to read multiple experiments
-"""
 def load_experiments(experiment_folders):
+    """
+    load_experiments
+       a wrapper for load_experiment to read multiple experiments
+       experiment_folders: a list of experiment folders to load,
+                           full paths
+    """
     experiments = []
     if isinstance(experiment_folders,str):
         experiment_folders = [experiment_folders]
@@ -105,13 +114,15 @@ def load_experiments(experiment_folders):
         experiments.append(exp)
     return experiments
 
-"""
-
-load_experiment:
-read in the psiturk.json for an experiment folder
-
-"""
 def load_experiment(experiment_folder):
+    """
+
+    load_experiment:
+    reads in the psiturk.json for an:
+         
+        experiment folder: full path to experiment folder
+
+    """
     fullpath = os.path.abspath(experiment_folder)
     psiturkjson = "%s/psiturk.json" %(fullpath)
     if not os.path.exists(psiturkjson):
@@ -122,4 +133,3 @@ def load_experiment(experiment_folder):
         return [meta]
     except ValueError as e:
         print "Problem reading psiturk.json, %s" %(e)
-        

@@ -2,6 +2,8 @@
 
 Python module for managing [psiturk javascript experiment files](https://github.com/psiturk/psiturk-experiments), a [psiturk battery](https://github.com/psiturk/psiturk-battery), and a psiturk [virtual machine](https://github.com/psiturk/psiturk-vm) to host the compilation of those two things.  You can use the functions to control these psiturk components, or just install the module and run to create an entire experiment using a web interface.
 
+Please see our [documentation](http://psiturk.github.io/psiturk-python) for more compplete details.
+
 ### Installation
 
       pip install git+git://github.com/psiturk/psiturk-python.git

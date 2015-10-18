@@ -11,14 +11,24 @@ import os
 import re
 
 
-"""
-generate will create a battery from a template
-and list of experiments
-
-"""
-
 def generate(battery_dest,battery_repo=None,experiment_repo=None,experiments=None,config=None,make_config=True):
+    '''
+    generate will create a battery from a template
+    and list of experiments
 
+        battery_dest [required] is the output folder for your battery. This folder MUST NOT EXIST.
+        battery_repo: location of psiturk-battery repo to use as a template. If not specified, will be
+                      downloaded to a temporary directory
+        experiment_repo: location of a psiturk-experiments repo to check for valid experiments. If not specified, will be
+                      downloaded to a temporary directory
+        experiments: a list of experiments, meaning the "tag" variable in the psiturk.json, to include. This variable also
+                     conincides with the experiment folder name.
+        config: A dictionary with keys that coincide with parameters in the config.txt file for a psiturk experiment. If not provided,
+                     a dummy config will be generated.
+        make_config: A boolean (default True) to control generation of the config. If there is a config generated before calling this
+                     function, this should be set to False.
+
+    '''
     # We can only generate a battery to a folder that does not exist, to be safe
     if not os.path.exists(battery_dest):
         if experiment_repo == None or battery_repo == None:
@@ -47,13 +57,17 @@ def generate(battery_dest,battery_repo=None,experiment_repo=None,experiments=Non
         print "Folder exists at %s, cannot generate." %(battery_dest)
 
         
-"""
-template_experiments:
-For each valid experiment, copies the entire folder into the battery destination
-directory, and generates templates with appropriate paths to run them
-
-"""
 def template_experiments(battery_dest,battery_repo,valid_experiments):
+    '''
+    template_experiments:
+    For each valid experiment, copies the entire folder into the battery destination
+    directory, and generates templates with appropriate paths to run them
+
+        battery_dest: full path to destination folder of battery
+        battery_repo: full path to psiturk-battery repo template
+        valid_experiments: a list of full paths to experiment folders to include
+
+    '''
     # Generate run template, make substitutions
     template_file = "%s/static/js/load_experiments.js" %(battery_repo)
     load_template = get_template(template_file)
@@ -70,10 +84,14 @@ def template_experiments(battery_dest,battery_repo,valid_experiments):
     filey.close()    
 
 
-"""
-For each valid experiment, move into experiments folder in battery repo
-"""
 def move_experiments(valid_experiments,battery_dest):
+    '''
+    Moves valid experiments into the experiments folder in battery repo
+    
+        valid_experiments: a list of full paths to valid experiments
+        battery_dest: full path to battery destination folder
+    '''
+
     moved_experiments = []
     for valid_experiment in valid_experiments:
         try:
@@ -85,17 +103,17 @@ def move_experiments(valid_experiments,battery_dest):
     return moved_experiments
 
 
-"""
-generate_config
-takes a dictionary, and for matching fields, substitues and prints
-to "config.txt" in a specified battery directory
-
-  battery_dest: should be the copied, skeleton battery folder in generation
-  fields: should be a dictionary with fields that match those in the config
-          non matching fields will be ignored.
-
-"""
 def generate_config(battery_dest,fields):
+    '''
+    generate_config
+    takes a dictionary, and for matching fields, substitues and prints
+    to "config.txt" in a specified battery directory
+
+      battery_dest: should be the copied, skeleton battery folder in generation
+      fields: should be a dictionary with fields that match those in the config
+              non matching fields will be ignored.
+
+    '''
     config = get_config()
     # Convert dictionaries back to string
     for l in range(len(config)):
@@ -111,11 +129,11 @@ def generate_config(battery_dest,fields):
 
 
 
-"""
-get_config: load in a dummy config file from psiturkpy
-"""
-
 def get_config():
+    '''
+    get_config: load in a dummy config file from psiturkpy
+    '''
+
     module_path = get_installdir()
     template = "%s/templates/config.txt" %(module_path)
     config = get_template(template)
@@ -129,10 +147,14 @@ def get_config():
     return config
 
 
-"""
-Return javascript to load list of valid experiments, based on psiturk.json
-Format is:
-{
+def get_load_js(valid_experiments):
+    '''
+    Return javascript to load list of valid experiments, based on psiturk.json
+    
+        valid_experiments: a list of full paths to valid experiments to include
+
+    Format is:
+    {
 		case "simple_rt":
 			loadjscssfile("static/css/experiments/simple_rt.css","css")
 			loadjscssfile("static/js/experiments/simple_rt.js","js")
@@ -142,10 +164,9 @@ Format is:
 			loadjscssfile("static/js/experiments/choice_rt.js","js")
 			break;
 
-...
-}
-"""
-def get_load_js(valid_experiments):
+    ...
+    }
+    '''
     loadstring = "\n"
     for valid_experiment in valid_experiments:
         experiment = load_experiment(valid_experiment)[0]
@@ -163,8 +184,11 @@ def get_load_js(valid_experiments):
     return loadstring
 
 
-"""
-Return javascript concat section for valid experiments, based on psiturk.json
+def get_concat_js(valid_experiments):
+    '''
+    Return javascript concat section for valid experiments, based on psiturk.json
+
+        valid_experiments: full paths to valid experiments to include
 
 			case "simple-rt":
 				experiments = experiments.concat(simple-rt_experiment)
@@ -173,10 +197,9 @@ Return javascript concat section for valid experiments, based on psiturk.json
 				experiments = experiments.concat(choice-rt_experiment)
 				break;
 
-Format for experiment variables is [tag]_experiment
+    Format for experiment variables is [tag]_experiment
 
-"""
-def get_concat_js(valid_experiments):
+    '''
     concatjs = "\n"
     for valid_experiment in valid_experiments:
         experiment = load_experiment(valid_experiment)[0]
@@ -186,12 +209,14 @@ def get_concat_js(valid_experiments):
         concatjs = '%s      break;\n' %(concatjs)
     return concatjs
 
-"""
-String (json / dictionary) of experiment timings in the format:
- {name:"simple_rt", time: 3.5}, {name:"choice_rt", time: 4}, ...
-
-"""
 def get_timing_js(valid_experiments):
+    '''
+    Produce string (json / dictionary) of experiment timings in the format:
+     {name:"simple_rt", time: 3.5}, {name:"choice_rt", time: 4}, ...
+    
+        valid_experiments: a list of full paths to valid experiments to include
+
+    '''
     timingjs = []
     for valid_experiment in valid_experiments:
         experiment = load_experiment(valid_experiment)[0]
