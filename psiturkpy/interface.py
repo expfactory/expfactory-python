@@ -123,7 +123,8 @@ def select():
             # Add to the battery
             generate(battery_dest="%s/psiturk-battery"%tmpdir,
                      battery_repo="%s/battery"%tmpdir,
-                     experiments=experiment_folders)
+                     experiments=experiment_folders,
+                     make_config=False)
 
             battery_dest = "%s/psiturk-battery" %(tmpdir)
 

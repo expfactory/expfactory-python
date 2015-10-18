@@ -17,7 +17,7 @@ and list of experiments
 
 """
 
-def generate(battery_dest,battery_repo=None,experiment_repo=None,experiments=None,config=None):
+def generate(battery_dest,battery_repo=None,experiment_repo=None,experiments=None,config=None,make_config=True):
 
     # We can only generate a battery to a folder that does not exist, to be safe
     if not os.path.exists(battery_dest):
@@ -39,9 +39,10 @@ def generate(battery_dest,battery_repo=None,experiment_repo=None,experiments=Non
 
         # Fill in templates with the experiments, generate config
         template_experiments(battery_dest,battery_repo,valid_experiments)
-        if config == None:
-            config = dict()
-        generate_config(battery_dest,config)
+        if make_config:
+            if config == None:
+                config = dict()
+            generate_config(battery_dest,config)
     else:
         print "Folder exists at %s, cannot generate." %(battery_dest)
 
