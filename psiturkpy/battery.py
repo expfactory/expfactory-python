@@ -57,7 +57,7 @@ def generate(battery_dest,battery_repo=None,experiment_repo=None,experiments=Non
         print "Folder exists at %s, cannot generate." %(battery_dest)
 
         
-def template_experiments(battery_dest,battery_repo,valid_experiments):
+def template_experiments(battery_dest,battery_repo,valid_experiments,template_file=None):
     '''
     template_experiments:
     For each valid experiment, copies the entire folder into the battery destination
@@ -66,10 +66,13 @@ def template_experiments(battery_dest,battery_repo,valid_experiments):
         battery_dest: full path to destination folder of battery
         battery_repo: full path to psiturk-battery repo template
         valid_experiments: a list of full paths to experiment folders to include
+        template_file: the load_experiments.js template file. If not specified,
+                       the file from the battery repo is used.
 
     '''
     # Generate run template, make substitutions
-    template_file = "%s/static/js/load_experiments.js" %(battery_repo)
+    if template_file == None:
+        template_file = "%s/static/js/load_experiments.js" %(battery_repo)
     load_template = get_template(template_file)
     valid_experiments = move_experiments(valid_experiments,battery_dest)
     loadjs = get_load_js(valid_experiments) 
