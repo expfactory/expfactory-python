@@ -67,10 +67,11 @@ def validate():
                 fields["database_url"] = generate_database_url(template="sqlite3")       
             # Otherwise, use postgres
             else: 
-                fields["database_url"] = generate_database_url(template="postgresql")       
+                fields["database_url"] = generate_database_url(template="mysql")       
         
         # LOCAL FOLDER #####################################################
         if fields["deploychoice"] == "folder":
+
             # Prepare temp folder with battery and experiments
             custom_battery_download(tmpdir=tmpdir)
 

@@ -95,7 +95,7 @@ to "config.txt" in a specified battery directory
 
 """
 def generate_config(battery_dest,fields):
-    config = generate_config_dict(battery_dest)
+    config = get_config()
     # Convert dictionaries back to string
     for l in range(len(config)):
         line = config[l]
@@ -109,22 +109,6 @@ def generate_config(battery_dest,fields):
     return config
 
 
-"""
-generate_config_dict
-return a list, with each entry being a line from the config.
-In the case of an argument (indicated by not starting with "["
-this is parsed to a dictionary, and filled with values specified
-in "fields" dictionary
-
-"""
-def generate_config_dict(fields):
-    config = get_config()
-    for line in config:
-        if isinstance(line,dict):
-            lookup = line.keys()[0]
-            if lookup in fields:
-                line[lookup] = fields[lookup]
-    return config
 
 """
 get_config: load in a dummy config file from psiturkpy
