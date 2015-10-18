@@ -1,0 +1,318 @@
+
+
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>psiturkpy.vm &mdash; psiturk-python 0.0.1 documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+
+  
+    <link rel="top" title="psiturk-python 0.0.1 documentation" href="../../index.html"/>
+        <link rel="up" title="Module code" href="../index.html"/> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> psiturk-python
+          
+
+          
+            
+            <img src="../../_static/psiturkpy_small.png" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">Tools Available</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting-started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../integrations.html">Integrations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../development.html">Development</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/psiturk">GitHub repository</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../../index.html">psiturk-python</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+      
+    <li>psiturkpy.vm</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for psiturkpy.vm</h1><div class="highlight"><pre>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">vm.py: part of psiturkpy package</span>
+<span class="sd">Functions to generate virtual machines to run psiturk batteries</span>
+
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="kn">from</span> <span class="nn">psiturkpy.utils</span> <span class="kn">import</span> <span class="n">get_template</span><span class="p">,</span> <span class="n">sub_template</span><span class="p">,</span> <span class="n">save_template</span><span class="p">,</span> <span class="n">clean_fields</span>
+<span class="kn">from</span> <span class="nn">git</span> <span class="kn">import</span> <span class="n">Repo</span>
+<span class="kn">import</span> <span class="nn">tempfile</span>
+<span class="kn">import</span> <span class="nn">shutil</span>
+<span class="kn">import</span> <span class="nn">os</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">Download a psiturk infrastructure repo &quot;repo_type&quot; to a &quot;destination&quot;</span>
+<span class="sd">repo_type: can be one of &quot;experiments&quot; &quot;battery&quot; &quot;vm&quot; or &quot;doc&quot;</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="download_repo"><a class="viewcode-back" href="../../psiturkpy.html#psiturkpy.vm.download_repo">[docs]</a><span class="k">def</span> <span class="nf">download_repo</span><span class="p">(</span><span class="n">repo_type</span><span class="p">,</span><span class="n">destination</span><span class="p">):</span>
+    <span class="n">acceptable_types</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;experiments&quot;</span><span class="p">,</span><span class="s">&quot;battery&quot;</span><span class="p">,</span><span class="s">&quot;vm&quot;</span><span class="p">,</span><span class="s">&quot;doc&quot;</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">repo_type</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">acceptable_types</span><span class="p">:</span>
+        <span class="k">print</span> <span class="s">&quot;repo_type must be in </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span><span class="p">(</span><span class="s">&quot;,&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">acceptable_types</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">Repo</span><span class="o">.</span><span class="n">clone_from</span><span class="p">(</span><span class="s">&quot;https://github.com/psiturk/psiturk-</span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span><span class="p">(</span><span class="n">repo_type</span><span class="p">),</span> <span class="n">destination</span><span class="p">)</span>
+
+</div>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">custom_battery_download</span>
+
+<span class="sd">Download battery and experiment repos to a temporary folder to build a custom</span>
+<span class="sd">battery, return the path to the tmp folders</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="custom_battery_download"><a class="viewcode-back" href="../../psiturkpy.html#psiturkpy.vm.custom_battery_download">[docs]</a><span class="k">def</span> <span class="nf">custom_battery_download</span><span class="p">(</span><span class="n">tmpdir</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">repos</span><span class="o">=</span><span class="p">[</span><span class="s">&quot;experiments&quot;</span><span class="p">,</span><span class="s">&quot;battery&quot;</span><span class="p">]):</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">tmpdir</span><span class="p">:</span>
+        <span class="n">tmpdir</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">mkdtemp</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">repo</span> <span class="ow">in</span> <span class="n">repos</span><span class="p">:</span>
+        <span class="n">download_repo</span><span class="p">(</span><span class="n">repo</span><span class="p">,</span><span class="s">&quot;</span><span class="si">%s</span><span class="s">/</span><span class="si">%s</span><span class="s">/&quot;</span> <span class="o">%</span><span class="p">(</span><span class="n">tmpdir</span><span class="p">,</span><span class="n">repo</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">tmpdir</span>
+
+</div>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">Add a custom logo to the vm battery</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="add_custom_logo"><a class="viewcode-back" href="../../psiturkpy.html#psiturkpy.vm.add_custom_logo">[docs]</a><span class="k">def</span> <span class="nf">add_custom_logo</span><span class="p">(</span><span class="n">battery_repo</span><span class="p">,</span><span class="n">logo</span><span class="p">):</span>
+    <span class="n">shutil</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">logo</span><span class="p">,</span><span class="s">&quot;</span><span class="si">%s</span><span class="s">/img/logo.png&quot;</span> <span class="o">%</span><span class="p">(</span><span class="n">battery_repo</span><span class="p">))</span>
+    
+</div>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Generate a database url from input parameters, or get a template</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="generate_database_url"><a class="viewcode-back" href="../../psiturkpy.html#psiturkpy.vm.generate_database_url">[docs]</a><span class="k">def</span> <span class="nf">generate_database_url</span><span class="p">(</span><span class="n">dbtype</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">username</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">password</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">host</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">table</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">template</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">template</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">dbtype</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">username</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">password</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">host</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">table</span><span class="p">:</span>
+            <span class="k">print</span> <span class="s">&quot;Please provide all inputs: dbtype,username,password,host,table.&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s">&quot;</span><span class="si">%s</span><span class="s">://</span><span class="si">%s</span><span class="s">:</span><span class="si">%s</span><span class="s">@</span><span class="si">%s</span><span class="s">/</span><span class="si">%s</span><span class="s">&quot;</span>  <span class="o">%</span><span class="p">(</span><span class="n">dbtype</span><span class="p">,</span>
+                                         <span class="n">username</span><span class="p">,</span>
+                                         <span class="n">password</span><span class="p">,</span>
+                                         <span class="n">host</span><span class="p">,</span>
+                                         <span class="n">table</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">template</span> <span class="o">==</span> <span class="s">&quot;mysql&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s">&quot;mysql://psiturkpy:psiturkpy@localhost:3306/psiturkpy&quot;</span>
+    <span class="k">elif</span> <span class="n">template</span> <span class="o">==</span> <span class="s">&quot;sqlite3&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s">&quot;sqlite:///participants.db&quot;</span> 
+    <span class="k">elif</span> <span class="n">template</span> <span class="o">==</span> <span class="s">&quot;postgresql&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s">&quot;postgresql://psiturkpy:psiturkpy@localhost:5432/psiturkpy&quot;</span>
+</div>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Prepare virtual machine to run local with vagrant, or with vagrant-aws</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="prepare_vm"><a class="viewcode-back" href="../../psiturkpy.html#psiturkpy.vm.prepare_vm">[docs]</a><span class="k">def</span> <span class="nf">prepare_vm</span><span class="p">(</span><span class="n">battery_dest</span><span class="p">,</span><span class="n">fields</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">vm_repo</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">vm_type</span><span class="o">=</span><span class="s">&quot;vagrant&quot;</span><span class="p">):</span>
+
+    <span class="c"># Download vm_repo if it hasn&#39;t been specified</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">vm_repo</span><span class="p">:</span>
+        <span class="n">download_repo</span><span class="p">(</span><span class="s">&quot;vm&quot;</span><span class="p">,</span><span class="s">&quot;</span><span class="si">%s</span><span class="s">/vm&quot;</span> <span class="o">%</span><span class="n">battery_dest</span><span class="p">)</span>
+
+    <span class="c"># Grab the appropriate vagrantfile template</span>
+    <span class="k">if</span> <span class="n">vm_type</span> <span class="o">==</span> <span class="s">&quot;aws&quot;</span><span class="p">:</span>
+        <span class="n">template</span> <span class="o">=</span> <span class="n">get_template</span><span class="p">(</span><span class="s">&quot;</span><span class="si">%s</span><span class="s">/vm/VagrantfileAWS&quot;</span> <span class="o">%</span><span class="p">(</span><span class="n">battery_dest</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">template</span> <span class="o">=</span> <span class="n">get_template</span><span class="p">(</span><span class="s">&quot;</span><span class="si">%s</span><span class="s">/vm/VagrantfileLocal&quot;</span> <span class="o">%</span><span class="p">(</span><span class="n">battery_dest</span><span class="p">))</span>
+
+    <span class="c"># If the user has custom config fields, write to file</span>
+    <span class="k">if</span> <span class="n">fields</span> <span class="o">!=</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">fields</span> <span class="o">=</span> <span class="n">clean_fields</span><span class="p">(</span><span class="n">fields</span><span class="p">)</span>
+        <span class="n">template</span> <span class="o">=</span> <span class="n">sub_template</span><span class="p">(</span><span class="n">template</span><span class="p">,</span><span class="s">&quot;[SUB_CONFIG_SUB]&quot;</span><span class="p">,</span><span class="nb">str</span><span class="p">(</span><span class="n">fields</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">template</span> <span class="o">=</span> <span class="n">sub_template</span><span class="p">(</span><span class="n">template</span><span class="p">,</span><span class="s">&quot;[SUB_CONFIG_SUB]&quot;</span><span class="p">,</span><span class="s">&quot;None&quot;</span><span class="p">)</span>
+
+    <span class="c"># Change file to be a custom install</span>
+    <span class="n">template</span> <span class="o">=</span> <span class="n">sub_template</span><span class="p">(</span><span class="n">template</span><span class="p">,</span><span class="s">&#39;CUSTOM_INSTALL=&quot;False&quot;&#39;</span><span class="p">,</span><span class="s">&#39;CUSTOM_INSTALL=&quot;True&quot;&#39;</span><span class="p">)</span>
+        
+    <span class="n">output_file</span> <span class="o">=</span> <span class="s">&quot;</span><span class="si">%s</span><span class="s">/Vagrantfile&quot;</span> <span class="o">%</span><span class="p">(</span><span class="n">battery_dest</span><span class="p">)</span>
+    <span class="n">save_template</span><span class="p">(</span><span class="n">output_file</span><span class="p">,</span><span class="n">template</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">template</span>
+</div>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Specify experiments for a Vagrantfile in an output folder</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="specify_experiments"><a class="viewcode-back" href="../../psiturkpy.html#psiturkpy.vm.specify_experiments">[docs]</a><span class="k">def</span> <span class="nf">specify_experiments</span><span class="p">(</span><span class="n">battery_dest</span><span class="p">,</span><span class="n">experiments</span><span class="p">):</span>
+    <span class="n">experiments</span> <span class="o">=</span> <span class="p">[</span><span class="n">e</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">experiments</span><span class="p">]</span>
+    <span class="n">vagrantfile</span> <span class="o">=</span> <span class="s">&quot;</span><span class="si">%s</span><span class="s">/Vagrantfile&quot;</span> <span class="o">%</span><span class="p">(</span><span class="n">battery_dest</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">vagrantfile</span><span class="p">):</span>
+        <span class="n">prepare_vm</span><span class="p">(</span><span class="n">battery_dest</span><span class="p">)</span>
+    <span class="n">template</span> <span class="o">=</span> <span class="n">get_template</span><span class="p">(</span><span class="n">vagrantfile</span><span class="p">)</span>
+    <span class="n">template</span> <span class="o">=</span> <span class="n">sub_template</span><span class="p">(</span><span class="n">template</span><span class="p">,</span><span class="s">&quot;[SUB_EXPERIMENTS_SUB]&quot;</span><span class="p">,</span><span class="nb">str</span><span class="p">(</span><span class="n">experiments</span><span class="p">))</span>
+    <span class="n">save_template</span><span class="p">(</span><span class="n">vagrantfile</span><span class="p">,</span><span class="n">template</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">template</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015, Poldracklab, Stanford University.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'0.0.1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

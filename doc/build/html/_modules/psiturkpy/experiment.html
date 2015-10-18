@@ -1,0 +1,328 @@
+
+
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>psiturkpy.experiment &mdash; psiturk-python 0.0.1 documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+
+  
+    <link rel="top" title="psiturk-python 0.0.1 documentation" href="../../index.html"/>
+        <link rel="up" title="Module code" href="../index.html"/> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> psiturk-python
+          
+
+          
+            
+            <img src="../../_static/psiturkpy_small.png" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">Tools Available</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting-started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../integrations.html">Integrations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../development.html">Development</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/psiturk">GitHub repository</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../../index.html">psiturk-python</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+      
+    <li>psiturkpy.experiment</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for psiturkpy.experiment</h1><div class="highlight"><pre>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">experiment.py: part of psiturkpy package</span>
+<span class="sd">Functions to work with javascript experiments</span>
+
+<span class="sd">&#39;&#39;&#39;</span>
+
+<span class="kn">from</span> <span class="nn">psiturkpy.utils</span> <span class="kn">import</span> <span class="n">find_directories</span><span class="p">,</span> <span class="n">remove_unicode_dict</span>
+<span class="kn">from</span> <span class="nn">glob</span> <span class="kn">import</span> <span class="n">glob</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">os</span>
+
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Fields required for a valid json</span>
+<span class="sd">  (field,value,type)</span>
+<span class="sd">  value indicates minimum required entires</span>
+<span class="sd">  type indicates the variable type</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="get_validation_fields"><a class="viewcode-back" href="../../psiturkpy.html#psiturkpy.experiment.get_validation_fields">[docs]</a><span class="k">def</span> <span class="nf">get_validation_fields</span><span class="p">():</span>
+    <span class="k">return</span> <span class="p">[(</span><span class="s">&quot;doi&quot;</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="nb">str</span><span class="p">),</span>
+            <span class="p">(</span><span class="s">&quot;run&quot;</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="nb">list</span><span class="p">),</span>
+            <span class="p">(</span><span class="s">&quot;name&quot;</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="nb">str</span><span class="p">),</span> 
+            <span class="p">(</span><span class="s">&quot;contributors&quot;</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="nb">str</span><span class="p">),</span>
+            <span class="p">(</span><span class="s">&quot;time&quot;</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="nb">int</span><span class="p">),</span> 
+            <span class="p">(</span><span class="s">&quot;notes&quot;</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="nb">str</span><span class="p">),</span>
+            <span class="p">(</span><span class="s">&quot;reference&quot;</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="nb">str</span><span class="p">),</span> 
+            <span class="p">(</span><span class="s">&quot;lab&quot;</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="nb">str</span><span class="p">),</span> 
+            <span class="p">(</span><span class="s">&quot;cognitive_atlas_concept_id&quot;</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="nb">str</span><span class="p">),</span> 
+            <span class="p">(</span><span class="s">&quot;cognitive_atlas_concept&quot;</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="nb">str</span><span class="p">),</span>
+            <span class="p">(</span><span class="s">&quot;tag&quot;</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="nb">str</span><span class="p">),</span>
+            <span class="p">(</span><span class="s">&quot;cognitive_atlas_task_id&quot;</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="nb">str</span><span class="p">)]</span>
+</div>
+<div class="viewcode-block" id="notvalid"><a class="viewcode-back" href="../../psiturkpy.html#psiturkpy.experiment.notvalid">[docs]</a><span class="k">def</span> <span class="nf">notvalid</span><span class="p">(</span><span class="n">reason</span><span class="p">):</span>
+    <span class="k">print</span> <span class="n">reason</span>
+    <span class="k">return</span> <span class="bp">False</span>
+</div>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">validate:</span>
+<span class="sd">takes an experiment folder, and looks for validation based on:</span>
+
+<span class="sd">- psiturk.json</span>
+<span class="sd">- files existing specified in psiturk.json</span>
+
+<span class="sd">All fields should be defined, but for now we just care about run scripts</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="validate"><a class="viewcode-back" href="../../psiturkpy.html#psiturkpy.experiment.validate">[docs]</a><span class="k">def</span> <span class="nf">validate</span><span class="p">(</span><span class="n">experiment_folder</span><span class="p">):</span>
+    <span class="n">meta</span> <span class="o">=</span> <span class="n">load_experiment</span><span class="p">(</span><span class="n">experiment_folder</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">meta</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">1</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">notvalid</span><span class="p">(</span><span class="s">&quot;psiturk.json has length &gt; 1, not valid.&quot;</span><span class="p">)</span>
+    <span class="n">fields</span> <span class="o">=</span> <span class="n">get_validation_fields</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">field</span><span class="p">,</span><span class="n">value</span><span class="p">,</span><span class="n">ftype</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">value</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="c"># Field must exist in the keys</span>
+            <span class="k">if</span> <span class="n">field</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">meta</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="k">return</span> <span class="n">notvalid</span><span class="p">(</span><span class="s">&quot;psiturk.json is missing field </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span><span class="p">(</span><span class="n">field</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">meta</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">field</span><span class="p">]</span> <span class="o">==</span> <span class="s">&quot;&quot;</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">notvalid</span><span class="p">(</span><span class="s">&quot;psiturk.json must be defined for field </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span><span class="p">(</span><span class="n">field</span><span class="p">))</span>
+            <span class="c"># Field value must have minimum of value entries</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">meta</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">field</span><span class="p">],</span><span class="nb">list</span><span class="p">):</span>
+                <span class="n">tocheck</span> <span class="o">=</span> <span class="p">[</span><span class="n">meta</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">field</span><span class="p">]]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">tocheck</span> <span class="o">=</span> <span class="n">meta</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">field</span><span class="p">]</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">tocheck</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">value</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">notvalid</span><span class="p">(</span><span class="s">&quot;psiturk.json must have &gt;= </span><span class="si">%s</span><span class="s"> for field </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span><span class="p">(</span><span class="n">value</span><span class="p">,</span><span class="n">field</span><span class="p">))</span>
+        <span class="c"># Run must be a list of strings</span>
+        <span class="k">if</span> <span class="n">field</span> <span class="o">==</span> <span class="s">&quot;run&quot;</span><span class="p">:</span>
+            <span class="c"># Is it a list?</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">meta</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">field</span><span class="p">],</span><span class="n">ftype</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">notvalid</span><span class="p">(</span><span class="s">&quot;field </span><span class="si">%s</span><span class="s"> must be </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span><span class="p">(</span><span class="n">field</span><span class="p">,</span><span class="n">ftype</span><span class="p">))</span>
+            <span class="c"># Is each script in the list a string?</span>
+            <span class="k">for</span> <span class="n">script</span> <span class="ow">in</span> <span class="n">meta</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">field</span><span class="p">]:</span>
+                <span class="c"># If we have a single file, is it in the experiment folder?</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">script</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&quot;/&quot;</span><span class="p">))</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="s">&quot;</span><span class="si">%s</span><span class="s">/</span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span><span class="p">(</span><span class="n">experiment_folder</span><span class="p">,</span><span class="n">script</span><span class="p">)):</span>
+                        <span class="k">return</span> <span class="n">notvalid</span><span class="p">(</span><span class="s">&quot;</span><span class="si">%s</span><span class="s"> is missing in </span><span class="si">%s</span><span class="s">.&quot;</span> <span class="o">%</span><span class="p">(</span><span class="n">script</span><span class="p">,</span><span class="n">experiment_folder</span><span class="p">))</span>
+    <span class="k">return</span> <span class="bp">True</span>   
+
+</div>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">get_experiments</span>
+<span class="sd">return loaded json for all valid experiments from an </span>
+<span class="sd">experiment folder</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="get_experiments"><a class="viewcode-back" href="../../psiturkpy.html#psiturkpy.experiment.get_experiments">[docs]</a><span class="k">def</span> <span class="nf">get_experiments</span><span class="p">(</span><span class="n">experiment_repo</span><span class="p">,</span><span class="n">load</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+    <span class="n">experiments</span> <span class="o">=</span> <span class="n">find_directories</span><span class="p">(</span><span class="n">experiment_repo</span><span class="p">)</span>
+    <span class="n">valid_experiments</span> <span class="o">=</span> <span class="p">[</span><span class="n">e</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">experiments</span> <span class="k">if</span> <span class="n">validate</span><span class="p">(</span><span class="n">e</span><span class="p">)]</span>
+    <span class="k">print</span> <span class="s">&quot;Found </span><span class="si">%s</span><span class="s"> valid experiments&quot;</span> <span class="o">%</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">valid_experiments</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">load</span> <span class="o">==</span> <span class="bp">True</span><span class="p">:</span>
+        <span class="n">valid_experiments</span> <span class="o">=</span> <span class="n">load_experiments</span><span class="p">(</span><span class="n">valid_experiments</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">valid_experiments</span>
+</div>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">load_experiments</span>
+<span class="sd">a wrapper for load_experiment to read multiple experiments</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="load_experiments"><a class="viewcode-back" href="../../psiturkpy.html#psiturkpy.experiment.load_experiments">[docs]</a><span class="k">def</span> <span class="nf">load_experiments</span><span class="p">(</span><span class="n">experiment_folders</span><span class="p">):</span>
+    <span class="n">experiments</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">experiment_folders</span><span class="p">,</span><span class="nb">str</span><span class="p">):</span>
+        <span class="n">experiment_folders</span> <span class="o">=</span> <span class="p">[</span><span class="n">experiment_folders</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">experiment_folder</span> <span class="ow">in</span> <span class="n">experiment_folders</span><span class="p">:</span>
+        <span class="n">exp</span> <span class="o">=</span> <span class="n">load_experiment</span><span class="p">(</span><span class="n">experiment_folder</span><span class="p">)</span>
+        <span class="n">experiments</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">exp</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">experiments</span>
+</div>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">load_experiment:</span>
+<span class="sd">read in the psiturk.json for an experiment folder</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="load_experiment"><a class="viewcode-back" href="../../psiturkpy.html#psiturkpy.experiment.load_experiment">[docs]</a><span class="k">def</span> <span class="nf">load_experiment</span><span class="p">(</span><span class="n">experiment_folder</span><span class="p">):</span>
+    <span class="n">fullpath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">experiment_folder</span><span class="p">)</span>
+    <span class="n">psiturkjson</span> <span class="o">=</span> <span class="s">&quot;</span><span class="si">%s</span><span class="s">/psiturk.json&quot;</span> <span class="o">%</span><span class="p">(</span><span class="n">fullpath</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">psiturkjson</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">notvalid</span><span class="p">(</span><span class="s">&quot;psiturk.json could not be found in </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span><span class="p">(</span><span class="n">experiment_folder</span><span class="p">))</span>
+    <span class="k">try</span><span class="p">:</span> 
+        <span class="n">meta</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">psiturkjson</span><span class="p">,</span><span class="s">&quot;r&quot;</span><span class="p">))</span>
+        <span class="n">meta</span> <span class="o">=</span> <span class="n">remove_unicode_dict</span><span class="p">(</span><span class="n">meta</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">meta</span><span class="p">]</span>
+    <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="k">print</span> <span class="s">&quot;Problem reading psiturk.json, </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+        </div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015, Poldracklab, Stanford University.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'0.0.1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

@@ -1,0 +1,450 @@
+
+
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>psiturkpy package &mdash; psiturk-python 0.0.1 documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+
+  
+    <link rel="top" title="psiturk-python 0.0.1 documentation" href="index.html"/>
+        <link rel="up" title="Tools Available" href="modules.html"/>
+        <link rel="next" title="Getting Started" href="getting-started.html"/>
+        <link rel="prev" title="Tools Available" href="modules.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> psiturk-python
+          
+
+          
+            
+            <img src="_static/psiturkpy_small.png" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">Tools Available</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="modules.html#psiturk-python">psiturk-python</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules.html#id1">psiturk-battery</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="modules.html#id2">psiturk-experiments</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="modules.html#modules">Modules</a><ul class="current">
+<li class="toctree-l4 current"><a class="current reference internal" href="">psiturkpy package</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="getting-started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="integrations.html">Integrations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="development.html">Development</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/psiturk">GitHub repository</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="index.html">psiturk-python</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="modules.html">Tools Available</a> &raquo;</li>
+      
+    <li>psiturkpy package</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/psiturkpy.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="psiturkpy-package">
+<h1>psiturkpy package<a class="headerlink" href="#psiturkpy-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="psiturkpy-analysis-module">
+<h2>psiturkpy.analysis module<a class="headerlink" href="#psiturkpy-analysis-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-psiturkpy.battery">
+<span id="psiturkpy-battery-module"></span><h2>psiturkpy.battery module<a class="headerlink" href="#module-psiturkpy.battery" title="Permalink to this headline">¶</a></h2>
+<p>battery.py: part of psiturkpy package
+Functions to generate psiturk batteries</p>
+<dl class="function">
+<dt id="psiturkpy.battery.generate">
+<code class="descclassname">psiturkpy.battery.</code><code class="descname">generate</code><span class="sig-paren">(</span><em>battery_dest</em>, <em>battery_repo=None</em>, <em>experiment_repo=None</em>, <em>experiments=None</em>, <em>config=None</em>, <em>make_config=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/psiturkpy/battery.html#generate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#psiturkpy.battery.generate" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="psiturkpy.battery.generate_config">
+<code class="descclassname">psiturkpy.battery.</code><code class="descname">generate_config</code><span class="sig-paren">(</span><em>battery_dest</em>, <em>fields</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/psiturkpy/battery.html#generate_config"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#psiturkpy.battery.generate_config" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="psiturkpy.battery.get_concat_js">
+<code class="descclassname">psiturkpy.battery.</code><code class="descname">get_concat_js</code><span class="sig-paren">(</span><em>valid_experiments</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/psiturkpy/battery.html#get_concat_js"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#psiturkpy.battery.get_concat_js" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="psiturkpy.battery.get_config">
+<code class="descclassname">psiturkpy.battery.</code><code class="descname">get_config</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/psiturkpy/battery.html#get_config"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#psiturkpy.battery.get_config" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="psiturkpy.battery.get_load_js">
+<code class="descclassname">psiturkpy.battery.</code><code class="descname">get_load_js</code><span class="sig-paren">(</span><em>valid_experiments</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/psiturkpy/battery.html#get_load_js"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#psiturkpy.battery.get_load_js" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="psiturkpy.battery.get_timing_js">
+<code class="descclassname">psiturkpy.battery.</code><code class="descname">get_timing_js</code><span class="sig-paren">(</span><em>valid_experiments</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/psiturkpy/battery.html#get_timing_js"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#psiturkpy.battery.get_timing_js" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="psiturkpy.battery.move_experiments">
+<code class="descclassname">psiturkpy.battery.</code><code class="descname">move_experiments</code><span class="sig-paren">(</span><em>valid_experiments</em>, <em>battery_dest</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/psiturkpy/battery.html#move_experiments"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#psiturkpy.battery.move_experiments" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="psiturkpy.battery.template_experiments">
+<code class="descclassname">psiturkpy.battery.</code><code class="descname">template_experiments</code><span class="sig-paren">(</span><em>battery_dest</em>, <em>battery_repo</em>, <em>valid_experiments</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/psiturkpy/battery.html#template_experiments"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#psiturkpy.battery.template_experiments" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-psiturkpy.db">
+<span id="psiturkpy-db-module"></span><h2>psiturkpy.db module<a class="headerlink" href="#module-psiturkpy.db" title="Permalink to this headline">¶</a></h2>
+<p>db.py: part of psiturkpy package
+Functions to work with a psiturk experiment database</p>
+</div>
+<div class="section" id="module-psiturkpy.experiment">
+<span id="psiturkpy-experiment-module"></span><h2>psiturkpy.experiment module<a class="headerlink" href="#module-psiturkpy.experiment" title="Permalink to this headline">¶</a></h2>
+<p>experiment.py: part of psiturkpy package
+Functions to work with javascript experiments</p>
+<dl class="function">
+<dt id="psiturkpy.experiment.get_experiments">
+<code class="descclassname">psiturkpy.experiment.</code><code class="descname">get_experiments</code><span class="sig-paren">(</span><em>experiment_repo</em>, <em>load=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/psiturkpy/experiment.html#get_experiments"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#psiturkpy.experiment.get_experiments" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="psiturkpy.experiment.get_validation_fields">
+<code class="descclassname">psiturkpy.experiment.</code><code class="descname">get_validation_fields</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/psiturkpy/experiment.html#get_validation_fields"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#psiturkpy.experiment.get_validation_fields" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="psiturkpy.experiment.load_experiment">
+<code class="descclassname">psiturkpy.experiment.</code><code class="descname">load_experiment</code><span class="sig-paren">(</span><em>experiment_folder</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/psiturkpy/experiment.html#load_experiment"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#psiturkpy.experiment.load_experiment" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="psiturkpy.experiment.load_experiments">
+<code class="descclassname">psiturkpy.experiment.</code><code class="descname">load_experiments</code><span class="sig-paren">(</span><em>experiment_folders</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/psiturkpy/experiment.html#load_experiments"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#psiturkpy.experiment.load_experiments" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="psiturkpy.experiment.notvalid">
+<code class="descclassname">psiturkpy.experiment.</code><code class="descname">notvalid</code><span class="sig-paren">(</span><em>reason</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/psiturkpy/experiment.html#notvalid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#psiturkpy.experiment.notvalid" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="psiturkpy.experiment.validate">
+<code class="descclassname">psiturkpy.experiment.</code><code class="descname">validate</code><span class="sig-paren">(</span><em>experiment_folder</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/psiturkpy/experiment.html#validate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#psiturkpy.experiment.validate" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-psiturkpy.interface">
+<span id="psiturkpy-interface-module"></span><h2>psiturkpy.interface module<a class="headerlink" href="#module-psiturkpy.interface" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="psiturkpy.interface.allowed_file">
+<code class="descclassname">psiturkpy.interface.</code><code class="descname">allowed_file</code><span class="sig-paren">(</span><em>filename</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/psiturkpy/interface.html#allowed_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#psiturkpy.interface.allowed_file" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="psiturkpy.interface.clean_up">
+<code class="descclassname">psiturkpy.interface.</code><code class="descname">clean_up</code><span class="sig-paren">(</span><em>dirpath</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/psiturkpy/interface.html#clean_up"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#psiturkpy.interface.clean_up" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="psiturkpy.interface.get_field">
+<code class="descclassname">psiturkpy.interface.</code><code class="descname">get_field</code><span class="sig-paren">(</span><em>request</em>, <em>fields</em>, <em>value</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/psiturkpy/interface.html#get_field"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#psiturkpy.interface.get_field" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="psiturkpy.interface.main">
+<code class="descclassname">psiturkpy.interface.</code><code class="descname">main</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/psiturkpy/interface.html#main"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#psiturkpy.interface.main" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="psiturkpy.interface.select">
+<code class="descclassname">psiturkpy.interface.</code><code class="descname">select</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/psiturkpy/interface.html#select"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#psiturkpy.interface.select" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="psiturkpy.interface.start">
+<code class="descclassname">psiturkpy.interface.</code><code class="descname">start</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/psiturkpy/interface.html#start"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#psiturkpy.interface.start" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="psiturkpy.interface.validate">
+<code class="descclassname">psiturkpy.interface.</code><code class="descname">validate</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/psiturkpy/interface.html#validate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#psiturkpy.interface.validate" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-psiturkpy.utils">
+<span id="psiturkpy-utils-module"></span><h2>psiturkpy.utils module<a class="headerlink" href="#module-psiturkpy.utils" title="Permalink to this headline">¶</a></h2>
+<p>utils.py: part of psiturkpy package</p>
+<dl class="function">
+<dt id="psiturkpy.utils.clean_fields">
+<code class="descclassname">psiturkpy.utils.</code><code class="descname">clean_fields</code><span class="sig-paren">(</span><em>mydict</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/psiturkpy/utils.html#clean_fields"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#psiturkpy.utils.clean_fields" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="psiturkpy.utils.copy_directory">
+<code class="descclassname">psiturkpy.utils.</code><code class="descname">copy_directory</code><span class="sig-paren">(</span><em>src</em>, <em>dest</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/psiturkpy/utils.html#copy_directory"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#psiturkpy.utils.copy_directory" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="psiturkpy.utils.find_directories">
+<code class="descclassname">psiturkpy.utils.</code><code class="descname">find_directories</code><span class="sig-paren">(</span><em>root</em>, <em>fullpath=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/psiturkpy/utils.html#find_directories"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#psiturkpy.utils.find_directories" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="psiturkpy.utils.find_subdirectories">
+<code class="descclassname">psiturkpy.utils.</code><code class="descname">find_subdirectories</code><span class="sig-paren">(</span><em>basepath</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/psiturkpy/utils.html#find_subdirectories"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#psiturkpy.utils.find_subdirectories" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="psiturkpy.utils.get_installdir">
+<code class="descclassname">psiturkpy.utils.</code><code class="descname">get_installdir</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/psiturkpy/utils.html#get_installdir"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#psiturkpy.utils.get_installdir" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="psiturkpy.utils.get_template">
+<code class="descclassname">psiturkpy.utils.</code><code class="descname">get_template</code><span class="sig-paren">(</span><em>template_file</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/psiturkpy/utils.html#get_template"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#psiturkpy.utils.get_template" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="psiturkpy.utils.is_type">
+<code class="descclassname">psiturkpy.utils.</code><code class="descname">is_type</code><span class="sig-paren">(</span><em>var, types=[&lt;type 'int'&gt;, &lt;type 'float'&gt;, &lt;type 'list'&gt;]</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/psiturkpy/utils.html#is_type"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#psiturkpy.utils.is_type" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="psiturkpy.utils.remove_unicode_dict">
+<code class="descclassname">psiturkpy.utils.</code><code class="descname">remove_unicode_dict</code><span class="sig-paren">(</span><em>input_dict</em>, <em>encoding='utf-8'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/psiturkpy/utils.html#remove_unicode_dict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#psiturkpy.utils.remove_unicode_dict" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="psiturkpy.utils.save_template">
+<code class="descclassname">psiturkpy.utils.</code><code class="descname">save_template</code><span class="sig-paren">(</span><em>output_file</em>, <em>html_snippet</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/psiturkpy/utils.html#save_template"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#psiturkpy.utils.save_template" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="psiturkpy.utils.sub_template">
+<code class="descclassname">psiturkpy.utils.</code><code class="descname">sub_template</code><span class="sig-paren">(</span><em>template</em>, <em>template_tag</em>, <em>substitution</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/psiturkpy/utils.html#sub_template"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#psiturkpy.utils.sub_template" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-psiturkpy.vm">
+<span id="psiturkpy-vm-module"></span><h2>psiturkpy.vm module<a class="headerlink" href="#module-psiturkpy.vm" title="Permalink to this headline">¶</a></h2>
+<p>vm.py: part of psiturkpy package
+Functions to generate virtual machines to run psiturk batteries</p>
+<dl class="function">
+<dt id="psiturkpy.vm.add_custom_logo">
+<code class="descclassname">psiturkpy.vm.</code><code class="descname">add_custom_logo</code><span class="sig-paren">(</span><em>battery_repo</em>, <em>logo</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/psiturkpy/vm.html#add_custom_logo"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#psiturkpy.vm.add_custom_logo" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="psiturkpy.vm.custom_battery_download">
+<code class="descclassname">psiturkpy.vm.</code><code class="descname">custom_battery_download</code><span class="sig-paren">(</span><em>tmpdir=None, repos=['experiments', 'battery']</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/psiturkpy/vm.html#custom_battery_download"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#psiturkpy.vm.custom_battery_download" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="psiturkpy.vm.download_repo">
+<code class="descclassname">psiturkpy.vm.</code><code class="descname">download_repo</code><span class="sig-paren">(</span><em>repo_type</em>, <em>destination</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/psiturkpy/vm.html#download_repo"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#psiturkpy.vm.download_repo" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="psiturkpy.vm.generate_database_url">
+<code class="descclassname">psiturkpy.vm.</code><code class="descname">generate_database_url</code><span class="sig-paren">(</span><em>dbtype=None</em>, <em>username=None</em>, <em>password=None</em>, <em>host=None</em>, <em>table=None</em>, <em>template=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/psiturkpy/vm.html#generate_database_url"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#psiturkpy.vm.generate_database_url" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="psiturkpy.vm.prepare_vm">
+<code class="descclassname">psiturkpy.vm.</code><code class="descname">prepare_vm</code><span class="sig-paren">(</span><em>battery_dest</em>, <em>fields=None</em>, <em>vm_repo=None</em>, <em>vm_type='vagrant'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/psiturkpy/vm.html#prepare_vm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#psiturkpy.vm.prepare_vm" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="psiturkpy.vm.specify_experiments">
+<code class="descclassname">psiturkpy.vm.</code><code class="descname">specify_experiments</code><span class="sig-paren">(</span><em>battery_dest</em>, <em>experiments</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/psiturkpy/vm.html#specify_experiments"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#psiturkpy.vm.specify_experiments" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-psiturkpy">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-psiturkpy" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="getting-started.html" class="btn btn-neutral float-right" title="Getting Started" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="modules.html" class="btn btn-neutral" title="Tools Available" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015, Poldracklab, Stanford University.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'0.0.1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>
