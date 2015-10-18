@@ -54,6 +54,7 @@ def validate():
         # DATABASE SETUP ###################################################
         # If the user wants to generate a custom database:
         if dbsetupchoice == "manual":
+
             # Generate a database url from the inputs
             fields["database_url"] =  generate_database_url(dbtype=fields["dbtype"],
                                                  username=fields["dbusername"],
@@ -117,9 +118,12 @@ def select():
 
         # Option 1: A folder on the local machine
         if deploychoice == "folder":
-            # Add to the battery, clean up old folder
-            generate("%s/battery"%(tmpdir),"%s/psiturk-battery" %tmpdir,experiments=experiment_folders)
-            shutil.rmtree("%s/battery"%(tmpdir))
+
+            # Add to the battery
+            generate(battery_dest="%s/psiturk-battery"%tmpdir,
+                     battery_repo="%s/battery"%tmpdir,
+                     experiments=experiment_folders)
+
             battery_dest = "%s/psiturk-battery" %(tmpdir)
 
         # Option 2 or 3: Virtual machine (vagrant) or cloud (aws)
@@ -127,12 +131,18 @@ def select():
             specify_experiments(battery_dest=tmpdir,experiments=selected_experiments)
             battery_dest = tmpdir 
 
-        # All options should remove vm and experiments folders
-        shutil.rmtree("%s/experiments"%(tmpdir))
-        shutil.rmtree("%s/vm"%(tmpdir))        
+        # Clean up
+        clean_up("%s/experiments"%(tmpdir))
+        clean_up("%s/battery"%(tmpdir))
+        clean_up("%s/vm"%(tmpdir))        
 
         return render_template('complete.html',battery_dest=battery_dest)
     return render_template('index.html')
+
+
+def clean_up(dirpath):
+    if os.path.exists(dirpath):
+        shutil.rmtree(dirpath)
 
 
 # This is how the command line version will run
