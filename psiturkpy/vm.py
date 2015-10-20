@@ -14,11 +14,11 @@ def download_repo(repo_type,destination):
 
     Download a psiturk infrastructure repo "repo_type" to a "destination"
   
-       repo_type: can be one of "experiments" "battery" "vm" or "doc"
+       repo_type: can be one of "experiments" "battery" "vm"
        destination: the full path to the destination for the repo
 
     '''
-    acceptable_types = ["experiments","battery","vm","doc"]
+    acceptable_types = ["experiments","battery","vm"]
     if repo_type not in acceptable_types:
         print "repo_type must be in %s" %(",".join(acceptable_types))
     else:

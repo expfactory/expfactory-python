@@ -9,4 +9,4 @@ import sys
 
 battery_dest = sys.argv[1]
 
-custom_battery_download(tmpdir=battery_dest,repos=["experiments","battery","vm","doc"])
+custom_battery_download(tmpdir=battery_dest,repos=["experiments","battery","vm"])
