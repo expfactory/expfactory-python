@@ -1,10 +1,10 @@
 '''
-experiment.py: part of psiturkpy package
+experiment.py: part of efactory package
 Functions to work with javascript experiments
 
 '''
 
-from psiturkpy.utils import find_directories, remove_unicode_dict
+from efactory.utils import find_directories, remove_unicode_dict
 from glob import glob
 import json
 import os
@@ -31,7 +31,8 @@ def get_validation_fields():
             ("cognitive_atlas_concept_id",1,str), 
             ("cognitive_atlas_concept",0,str),
             ("tag",1,str),
-            ("cognitive_atlas_task_id",0,str)]
+            ("cognitive_atlas_task_id",0,str),
+            ("publish",1,str)]
 
 def notvalid(reason):
     print reason
@@ -43,30 +44,34 @@ def validate(experiment_folder):
     validate:
     takes an experiment folder, and looks for validation based on:
 
-    - psiturk.json
-    - files existing specified in psiturk.json
+    - config.json
+    - files existing specified in config.json
 
     All fields should be defined, but for now we just care about run scripts
     """
 
+    #TODO:
+    # check publish variable
+    # issue warnings for empty fields
+    # check that tag corresponds with folder name
     meta = load_experiment(experiment_folder)
     if len(meta)>1:
-        return notvalid("psiturk.json has length > 1, not valid.")
+        return notvalid("config.json has length > 1, not valid.")
     fields = get_validation_fields()
     for field,value,ftype in fields:
         if value != 0:
             # Field must exist in the keys
             if field not in meta[0].keys():
-                return notvalid("psiturk.json is missing field %s" %(field))
+                return notvalid("config.json is missing field %s" %(field))
             if meta[0][field] == "":
-                return notvalid("psiturk.json must be defined for field %s" %(field))
+                return notvalid("config.json must be defined for field %s" %(field))
             # Field value must have minimum of value entries
             if not isinstance(meta[0][field],list):
                 tocheck = [meta[0][field]]
             else:
                 tocheck = meta[0][field]
             if len(tocheck) < value:
-                return notvalid("psiturk.json must have >= %s for field %s" %(value,field))
+                return notvalid("config.json must have >= %s for field %s" %(value,field))
         # Run must be a list of strings
         if field == "run":
             # Is it a list?
@@ -87,7 +92,7 @@ def get_experiments(experiment_repo,load=False):
     return loaded json for all valid experiments from an 
     experiment folder
         experiment_repo: full path to the experiments repo
-        load: if True, returns a list of loaded psiturk.json objects
+        load: if True, returns a list of loaded config.json objects
               if False (default) returns the paths to the experiments
 
     """
@@ -118,18 +123,18 @@ def load_experiment(experiment_folder):
     """
 
     load_experiment:
-    reads in the psiturk.json for an:
+    reads in the config.json for an:
          
         experiment folder: full path to experiment folder
 
     """
     fullpath = os.path.abspath(experiment_folder)
-    psiturkjson = "%s/psiturk.json" %(fullpath)
-    if not os.path.exists(psiturkjson):
-        return notvalid("psiturk.json could not be found in %s" %(experiment_folder))
+    configjson = "%s/config.json" %(fullpath)
+    if not os.path.exists(configjson):
+        return notvalid("config.json could not be found in %s" %(experiment_folder))
     try: 
-        meta = json.load(open(psiturkjson,"r"))
+        meta = json.load(open(configjson,"r"))
         meta = remove_unicode_dict(meta[0])
         return [meta]
     except ValueError as e:
-        print "Problem reading psiturk.json, %s" %(e)
+        print "Problem reading config.json, %s" %(e)

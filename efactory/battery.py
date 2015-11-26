@@ -1,12 +1,12 @@
 '''
-battery.py: part of psiturkpy package
-Functions to generate psiturk batteries
+battery.py: part of efactory package
+Functions to generate batteries
 
 '''
-from psiturkpy.experiment import get_experiments, load_experiment
-from psiturkpy.utils import copy_directory, get_template, \
+from efactory.experiment import get_experiments, load_experiment
+from efactory.utils import copy_directory, get_template, \
      sub_template, get_installdir, save_template
-from psiturkpy.vm import custom_battery_download
+from efactory.vm import custom_battery_download
 import os
 import re
 
@@ -19,11 +19,11 @@ def generate(battery_dest,battery_repo=None,experiment_repo=None,experiments=Non
         battery_dest [required] is the output folder for your battery. This folder MUST NOT EXIST.
         battery_repo: location of psiturk-battery repo to use as a template. If not specified, will be
                       downloaded to a temporary directory
-        experiment_repo: location of a psiturk-experiments repo to check for valid experiments. If not specified, will be
+        experiment_repo: location of a efactory-experiments repo to check for valid experiments. If not specified, will be
                       downloaded to a temporary directory
-        experiments: a list of experiments, meaning the "tag" variable in the psiturk.json, to include. This variable also
+        experiments: a list of experiments, meaning the "tag" variable in the config.json, to include. This variable also
                      conincides with the experiment folder name.
-        config: A dictionary with keys that coincide with parameters in the config.txt file for a psiturk experiment. If not provided,
+        config: A dictionary with keys that coincide with parameters in the config.txt file for a efactory experiment. If not provided,
                      a dummy config will be generated.
         make_config: A boolean (default True) to control generation of the config. If there is a config generated before calling this
                      function, this should be set to False.
@@ -134,7 +134,7 @@ def generate_config(battery_dest,fields):
 
 def get_config():
     '''
-    get_config: load in a dummy config file from psiturkpy
+    get_config: load in a dummy config file from efactory
     '''
 
     module_path = get_installdir()

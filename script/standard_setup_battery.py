@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-from psiturkpy.battery import generate
+from efactory.battery import generate
 import sys
 
 # Standard battery setup script

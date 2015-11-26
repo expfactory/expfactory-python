@@ -1,18 +1,18 @@
-#Psi-turkey-py
+# The Experiment Factory Python
 
-Python module for managing [psiturk javascript experiment files](https://github.com/psiturk/psiturk-experiments), a [psiturk battery](https://github.com/psiturk/psiturk-battery), and a psiturk [virtual machine](https://github.com/psiturk/psiturk-vm) to host the compilation of those two things.  You can use the functions to control these psiturk components, or just install the module and run to create an entire experiment using a web interface.
+Python module for managing [experiment factory javascript experiment files](https://github.com/expfactory/efactory-experiments), a [psiturk battery](https://github.com/expfactory/efactory-battery), and a [virtual machine](https://github.com/expfactory/efactory-vm) to host the compilation of these things.  We currently have support for just psiturk batteries, and other integrations will come shortly. You can use the functions to control these components, or just install the module and run to create an entire experiment using a web interface.
 
-Please see our [documentation](http://psiturk.github.io/psiturk-python) for more complete details.
+Please see our [documentation](http://expfactory.github.io/efactory-python) for more complete details.
 
 ### Installation
 
-      pip install git+git://github.com/psiturk/psiturk-python.git
+      pip install git+git://github.com/expfactory/efactory-python.git
 
 
 ### Running to Generate a Battery
-Installation will place an executable, `psyturkpy` in your bin folder. To run the executable to open up a web interface to design your experiment:
+Installation will place an executable, `efactory` in your bin folder. To run the executable to open up a web interface to design your experiment:
 
-      psiturkpy
+      efactory
 
 The web interface will take you through the following steps:
 
