@@ -45,7 +45,7 @@ def notvalid(reason):
     print reason
     return False
 
-def warning(reason):
+def dowarning(reason):
     print reason
 
 def validate(experiment_folder,warning=True):
@@ -107,7 +107,7 @@ def validate(experiment_folder,warning=True):
         elif value == 2:
             if meta[0][field] == "":
                 if warning == True:
-                    warning("WARNING: config.json is missing value for field %s: %s" %(field,experiment_name))
+                    dowarning("WARNING: config.json is missing value for field %s: %s" %(field,experiment_name))
 
         # Run must be a list of strings
         if field == "run":
