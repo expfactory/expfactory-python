@@ -1,0 +1,259 @@
+
+
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Development &mdash; expfactory 0.0.1 documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="_static/favicon.ico"/>
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+
+  
+    <link rel="top" title="expfactory 0.0.1 documentation" href="index.html"/>
+        <link rel="prev" title="Integrations" href="integrations.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> expfactory
+          
+
+          
+            
+            <img src="_static/psiturkpy_blue.png" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">Tools Available</a></li>
+<li class="toctree-l1"><a class="reference internal" href="getting-started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="integrations.html">Integrations</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">Development</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#contributing-to-this-documentation">Contributing to this documentation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#basic-workflow">Basic workflow</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/expfactory">GitHub repository</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="index.html">expfactory</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="index.html">Docs</a> &raquo;</li>
+      
+    <li>Development</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/development.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="development">
+<h1>Development<a class="headerlink" href="#development" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="contributing-to-this-documentation">
+<h2>Contributing to this documentation<a class="headerlink" href="#contributing-to-this-documentation" title="Permalink to this headline">¶</a></h2>
+<p>First you should clone the expfactory-python repo</p>
+<div class="highlight-python"><div class="highlight"><pre>git clone https://github.com/expfactory/expfactory-python
+</pre></div>
+</div>
+<p>The documentation lives in the &#8220;doc&#8221; folder. Specifically, this is sphinx documentation that gets built automatically. The &#8220;build&#8221; folder contains the output that we serve on github pages, and this works by linking the index.html in the repo base to doc/build/html. The &#8220;source&#8221; folder contains files that you will want to edit.</p>
+<p>You will need to install sphinx to work with these files</p>
+<div class="highlight-python"><div class="highlight"><pre>sudo pip install sphinx
+</pre></div>
+</div>
+<p>And familiarize yourself with the <a class="reference external" href="http://docutils.sourceforge.net/docs/ref/rst/restructuredtext.htm">restructured text (rst) documentation syntax</a>.</p>
+<p>The basic infrastructure is set up, so you should be able to edit the places that you need, and if you need help with something more advanced (and you can&#8217;t figure it out) contact someone else in the <a class="reference external" href="http://poldracklab.stanford.edu">Poldracklab</a> or just submit <cite>an issue &lt;https://github.com/expfactory/expfactory-python/issues&gt;_</cite>.</p>
+<div class="section" id="basic-workflow">
+<h3>Basic workflow<a class="headerlink" href="#basic-workflow" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><ol class="arabic simple">
+<li>Edit a file</li>
+<li>Enter the documentation base folder</li>
+</ol>
+</div></blockquote>
+<div class="highlight-python"><div class="highlight"><pre>cd doc
+make html
+</pre></div>
+</div>
+<p>Note that you should READ the error messages in the console when you build - it will tell you if you forgot to include files, or have any other syntax errors. Then:</p>
+<div class="highlight-python"><div class="highlight"><pre>cd build/html
+python -m SimpleHTTPServer -9999
+</pre></div>
+</div>
+<p>This will start a local web server using python at localhost:9999.</p>
+<blockquote>
+<div><ol class="arabic simple" start="3">
+<li>Open your browser to localhost:9999 to preview</li>
+</ol>
+</div></blockquote>
+<p>The documentation is served on readthedocs, and will be built automatically when changes are pushed (this is not tested yet). So you should commit changes to the repo, and submit a PR.</p>
+</div>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="integrations.html" class="btn btn-neutral" title="Integrations" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015, Poldracklab, Stanford University.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'0.0.1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>
