@@ -106,7 +106,7 @@ def prepare_vm(battery_dest,fields=None,vm_repo=None,vm_type="vagrant"):
     return template
 
 def specify_experiments(battery_dest,experiments):
-    '''specify_eperiments
+    '''specify_experiments
     Specify experiments for a Vagrantfile in an output folder
     :param battery_dest: destination folder for battery
     :param experiments: a list of experiment tags to include
