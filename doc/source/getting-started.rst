@@ -3,7 +3,7 @@ Getting Started
 
 I want to generate a custom battery
 ------------
-You can generate a battery, meaning a psiturk folder that may include a selection of experiments, on your local machine, a virtual (vagrant) machine, or a cloud (Amazon Web Services) machine. 
+You can generate a battery, meaning a psiturk experiment folder that may include a selection of experiments, on your local machine, a virtual (vagrant) machine, or a cloud (Amazon Web Services) machine. 
 
 How do I choose a deployment?
 '''''''''''''''''''''''''''''
@@ -16,27 +16,27 @@ If you want a deployment that, for example, your lab could use to run many parti
 
 Battery Generation
 ''''''''''''''''''
-A battery of experiments is a selection of experimental paradigms that are presented in sequence. In the psiturk experiment infrastructure, a battery would coincide with a single folder that contains a custom setup to run many different tasks for a single HIT. We have made it easy to select one or more experiments from http://www.github.com/psiturk/psiturk-experiments, merge them into a `psiturk battery <http://www.github.com/psiturk/psiturk-battery>`_, and deploy in a `virtual machine <http://www.github.com/psiturk/psiturk-vm>`_. 
+A battery of experiments is a selection of experimental paradigms that are presented in sequence. In the psiturk experiment infrastructure, a battery would coincide with a single folder that contains a custom setup to run many different tasks for a single HIT. We have made it easy to select one or more experiments from http://www.github.com/expfactory/efactory-experiments, merge them into a `efactory battery <http://www.github.com/expfactory/efactory-battery>`_, and deploy in a `virtual machine <http://www.github.com/expfactory/efactory-vm>`_. 
 
 0. Install psiturk
 ..................
 Before getting started, you should familiarize yourself with [psiturk](https://psiturk.org/quick_start/). Likely you will be interested in setting up an experiment on your local machine, and so you should follow the installation instructions and go through the entire demo to make sure things are working properly.
 
 
-1. Install psiturk-python
+1. Install efactory-python
 .........................
-Psiturk-python is the controller of all pieces of this infrastructure. You can install it with pip:
+efactory-python is the controller of all pieces of this infrastructure. You can install it with pip:
 
 ::
 
-      pip install git+git://github.com/psiturk/psiturk-python.git
+      pip install git+git://github.com/expfactory/efactory-python.git
 
 
 This will install the module so that you can use its functions in your own scripts, for example:
 
 ::
 
-     from psiturkpy.battery import generate
+     from efactory.battery import generate
 
 and also place an executable, `psyturkpy` in your bin folder. 
 
@@ -48,7 +48,7 @@ To run the executable to open up a web interface to design your experiment:
 
 ::
 
-      psiturkpy
+      efactory
 
 
 
@@ -56,8 +56,8 @@ You will see that it tells you that it is running at port 5000:
 
 .. image:: _static/img/getting-started/0running.png
 
-The Psiturkpy Web Interface
-'''''''''''''''''''''''''''
+The Experiment Factory Web Interface
+''''''''''''''''''''''''''''''''''''
 
 This means that you should open your browser to `localhost:5000`. The web interface will take you through the following steps:
 
@@ -68,7 +68,7 @@ This means that you should open your browser to `localhost:5000`. The web interf
 
 A. Collection of experiment details
 ...................................
-A psiturk experiment is controlled via a config.txt file, in which you specify details of your experiment. Here we will collect those fields:
+A psiturk experiment is controlled via a config.json file, in which you specify details of your experiment. Here we will collect those fields:
 
 .. image:: _static/img/getting-started/1config.png
 
@@ -84,11 +84,11 @@ All fields are required. Specifically:
 
 B. Database connection parameters
 .................................
-If you don't know anything about databases, you should let psiturkpy set up the database for you. In the case of a local folder, this will mean an sqlite3 file. In the case of a virtual machine or cloud (AWS) deployment, psiturkpy will configure a mysql database on the same server.
+If you don't know anything about databases, you should let efactory set up the database for you. In the case of a local folder, this will mean an sqlite3 file. In the case of a virtual machine or cloud (AWS) deployment, efactory will configure a mysql database on the same server.
 
 .. image:: _static/img/getting-started/2database.png
 
-If you are testing, we recommend that you let psiturkpy set it up for you. For an actual deployment, and especially a cloud deployment, it is essential that you specify custom MySQL or Postgresql database parameters. Letting psiturkpy set up a cloud deployment means that the connection parameters are available for all to see, and this is a risk to your data and to the privacy of your participants. 
+If you are testing, we recommend that you let efactory set it up for you. For an actual deployment, and especially a cloud deployment, it is essential that you specify custom MySQL or Postgresql database parameters. Letting efactory set up a cloud deployment means that the connection parameters are available for all to see, and this is a risk to your data and to the privacy of your participants. 
 
 Finally, we do not allow for the option of an sqlite3 database beyond a local folder, because sqlite3 can only handle one read/write at a time, and thus is only appropriate for single-user, local testing. When setting up a database, example parameters are shown below:
 
@@ -103,11 +103,11 @@ You have several deployment options, including a local folder, a virtual machine
 
 .. image:: _static/img/getting-started/3deployment.png
 
-Choosing "folder" will generate a local experiment, and either of the virtual machine options will produce a Vagrantfile that can be run to deploy the Virtual Machine. Specific instructions for a local vagrant or vagrant-aws are provided. Note that you can use the VagrantfileLocal or VagrantfileAWS file (renamed to Vagrantfile) as is from the `virtual machine <http://www.github.com/psiturk/psiturk-vm>`_ repo to generate a battery with all available, valid experiments.
+Choosing "folder" will generate a local experiment, and either of the virtual machine options will produce a Vagrantfile that can be run to deploy the Virtual Machine. Specific instructions for a local vagrant or vagrant-aws are provided. Note that you can use the VagrantfileLocal or VagrantfileAWS file (renamed to Vagrantfile) as is from the `virtual machine <http://www.github.com/expfactory/efactory-vm>`_ repo to generate a battery with all available, valid experiments.
 
 D. Experiment selection
 .......................
-When you click "Next" on part C above, behind the scenes the battery and experiment folders are downloading, and the most updated set of experiments are run through a validator. In this experiment selection screen, you are presented with experiment folders from http://www.github.com/psiturk/aY-experiments repo that pass validation:
+When you click "Next" on part C above, behind the scenes the battery and experiment folders are downloading, and the most updated set of experiments are run through a validator. In this experiment selection screen, you are presented with experiment folders from http://www.github.com/expfactory/efactory-experiments repo that pass validation:
 
 .. image:: _static/img/getting-started/4experiments.png
 
@@ -137,13 +137,13 @@ Setting up a local VM
  1. Install VirtualBox from https://www.virtualbox.org/wiki/Downloads
  2. Install Vagrant from http://www.vagrantup.com/downloads. Vagrant is a provisioning system that sets up the virtual machine.
  3. If you don't already have it, install git https://git-scm.com/downloads
- 4.  You have two options to produce your Vagrantfile. If you want a custom battery, then you should run the executable psiturkpy, generate the file, and copy it to a folder outside of a the temporary directory. If you want to generate a vagrant machine with all valid tasks available, then you can clone the psiturk-vm repo and use the file "VagrantfileLocal" renamed to "Vagrantfile." Note that this is also the case for the AWS version (instructions below). 
+ 4.  You have two options to produce your Vagrantfile. If you want a custom battery, then you should run the executable efactory, generate the file, and copy it to a folder outside of a the temporary directory. If you want to generate a vagrant machine with all valid tasks available, then you can clone the efactory-vm repo and use the file "VagrantfileLocal" renamed to "Vagrantfile." Note that this is also the case for the AWS version (instructions below). 
 
 ::
 
     cd myvagrantdirectory
-    git clone https://github.com/psiturk/psiturk-vm.git`
-    cd psiturk-vm
+    git clone https://github.com/expfactory/efactory-vm.git`
+    cd efactory-vm
 
 We are now in a directory with the Vagrantfile. You can set up the virtual machine:
 
@@ -152,7 +152,7 @@ We are now in a directory with the Vagrantfile. You can set up the virtual machi
     vagrant up
 
 
-Note that this can take some time. Keep the lookout for red statements that may indicate an error. If you find an error please report it as an `issue <https://github.com/psiturk/psiturk-vm/issues>`_.
+Note that this can take some time. Keep the lookout for red statements that may indicate an error. If you find an error please report it as an `issue <https://github.com/expfactory/efactory-vm/issues>`_.
 
 
 .. image:: _static/img/vagrant/0vagrantup.png
@@ -165,11 +165,11 @@ The above shows a successful build.
 
       vagrant ssh
 
-  7. Your experiment is located in $HOME/psiturk-battery. The build files are in psiturk-build. Note that when you turn the server on and debug, you will need the -p option to make sure the machine does not attempt to open the link with a browser in the terminal.
+  7. Your experiment is located in $HOME/efactory-battery. The build files are in efactory-build. Note that when you turn the server on and debug, you will need the -p option to make sure the machine does not attempt to open the link with a browser in the terminal.
 
 ::
 
-    cd $HOME/psiturk-battery
+    cd $HOME/efactory-battery
     psiturk
     server on
     debug -p
@@ -177,7 +177,7 @@ The above shows a successful build.
 
 Deployment to AWS
 .................
-You can equivalently produce a Vagrantfile with the psiturkpy module that can be deployed to AWS. Some expertise is assumed, namely that you are familiar with the EC2 section of the `AWS console <http://console.aws.amazon.com>`_. You will need to log in and create a security group, download a key, and fill in all variables required in the SCRIPT section of the Vagrantfile. 
+You can equivalently produce a Vagrantfile with the efactory module that can be deployed to AWS. Some expertise is assumed, namely that you are familiar with the EC2 section of the `AWS console <http://console.aws.amazon.com>`_. You will need to log in and create a security group, download a key, and fill in all variables required in the SCRIPT section of the Vagrantfile. 
 
  1. Make sure you have the most up-to-date version of vagrant from https://www.vagrantup.com/downloads, and install vagrant-aws. If you do not, you will see this error (version 1.6.5)
 
@@ -229,18 +229,18 @@ A few important notes:
 
 I want to view or test available experiments
 --------------------------------------------
-We provide static versions of all experiments, along with meta-data, in our `psiturk-experiments <http://psiturk.github.io/psiturk-experiments>`_ github pages.
+We provide static versions of all experiments, along with meta-data, in our `efactory-experiments <http://expfactory.github.io/efactory-experiments>`_ github pages.
 
 I want to contribute an experiment
 ----------------------------------
-All of the experiments that can be selected from http://www.github.com/psiturk/psiturk-experiments can be selected to include in a battery, and you can contribute an experiment.
+All of the experiments that can be selected from http://www.github.com/expfactory/efactory-experiments can be selected to include in a battery, and you can contribute an experiment.
 
 Contributing an experiment
 ++++++++++++++++++++++++++
-All of the experiments that can be selected from http://www.github.com/psiturk/psiturk-experiments can be selected to include in a battery, and you can contribute an experiment by submitting a PR to the repo to add a folder with your experiment. More complete details about the format of the psiturk.json file that is required to describe the experiment will come soon.
+All of the experiments that can be selected from http://www.github.com/expfactory/efactory-experiments can be selected to include in a battery, and you can contribute an experiment by submitting a PR to the repo to add a folder with your experiment. More complete details about the format of the config.json file that is required to describe the experiment will come soon.
 For now, use the other experiments as example.
 
 
-I want to learn about the psiturk-python functions
+I want to learn about the efactory-python functions
 --------------------------------------------------
-The generation of the batteries, along with experiment validation, and virtual machine deployment, are controlled by the psiturk-python functions. You can see complete function documentation under :ref:`modindex`, and we welcome any contributions to the code base via Github pull requests (PRs) or `isses <http://www.github.com/psiturk/psiturk-python/issues>`_.
+The generation of the batteries, along with experiment validation, and virtual machine deployment, are controlled by the efactory-python functions. You can see complete function documentation under :ref:`modindex`, and we welcome any contributions to the code base via Github pull requests (PRs) or `isses <http://www.github.com/expfactory/efactory-python/issues>`_.

@@ -4,11 +4,11 @@ Development
 Contributing to this documentation
 ----------------------------------
 
-First you should clone the psiturk-python repo
+First you should clone the efactory-python repo
 
 ::
 
-     git clone https://github.com/psiturk/psiturk-python
+     git clone https://github.com/expfactory/efactory-python
 
 The documentation lives in the "doc" folder. Specifically, this is sphinx documentation that gets built automatically. The "build" folder contains the output that we serve on github pages, and this works by linking the index.html in the repo base to doc/build/html. The "source" folder contains files that you will want to edit.
 
@@ -21,7 +21,7 @@ You will need to install sphinx to work with these files
 
 And familiarize yourself with the `restructured text (rst) documentation syntax <http://docutils.sourceforge.net/docs/ref/rst/restructuredtext.htm>`_. 
 
-The basic infrastructure is set up, so you should be able to edit the places that you need, and if you need help with something more advanced (and you can't figure it out) contact someone else in the `Poldracklab <http://poldracklab.stanford.edu>`_ or just submit `an issue <https://github.com/psiturk/psiturk-python/issues>_`. 
+The basic infrastructure is set up, so you should be able to edit the places that you need, and if you need help with something more advanced (and you can't figure it out) contact someone else in the `Poldracklab <http://poldracklab.stanford.edu>`_ or just submit `an issue <https://github.com/expfactory/efactory-python/issues>_`. 
 
 
 Basic workflow
