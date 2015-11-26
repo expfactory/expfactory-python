@@ -1,5 +1,5 @@
 '''
-utils.py: part of efactory package
+utils.py: part of expfactory package
 
 '''
 import errno
@@ -12,23 +12,25 @@ import __init__
 def get_installdir():
     return os.path.dirname(os.path.abspath(__init__.__file__))
 
-'''
-Return directories (and sub) starting from a base
-
-'''
 def find_subdirectories(basepath):
+    '''
+    Return directories (and sub) starting from a base
+
+    '''
+
     directories = []
     for root, dirnames, filenames in os.walk(basepath):
         new_directories = [d for d in dirnames if d not in directories]
         directories = directories + new_directories
     return directories
     
-'''
-Return directories at one level specified by user
-(not recursive)
-
-'''
 def find_directories(root,fullpath=True):
+    '''
+    Return directories at one level specified by user
+    (not recursive)
+
+    '''
+
     directories = []
     for item in os.listdir(root):
         # Don't include hidden directories
@@ -40,11 +42,12 @@ def find_directories(root,fullpath=True):
                     directories.append(item)
     return directories
 
-"""
-remove unicode keys and values from dict, encoding in utf8
-
-"""
 def remove_unicode_dict(input_dict,encoding="utf-8"):
+    """
+    remove unicode keys and values from dict, encoding in utf8
+
+    """
+
     output_dict = dict()
     for key,value in input_dict.iteritems():
         if isinstance(input_dict[key],list):
@@ -58,12 +61,13 @@ def remove_unicode_dict(input_dict,encoding="utf-8"):
         output_dict[key.encode(encoding)] = output_new
     return output_dict
 
-"""
-Copy an entire directory recursively
-
-"""
  
 def copy_directory(src, dest):
+    """
+    Copy an entire directory recursively
+
+    """
+
     try:
         shutil.copytree(src, dest)
     except OSError as e:
@@ -73,20 +77,22 @@ def copy_directory(src, dest):
         else:
             print('Directory not copied. Error: %s' % e)
 
-"""
-get_template: read in and return a template file
-
-"""
 def get_template(template_file):
+    """
+    get_template: read in and return a template file
+
+    """
+
     filey = open(template_file,"rb")
     template = "".join(filey.readlines())
     filey.close()
     return template
 
-"""
-make a substitution for a template_tag in a template
-"""
 def sub_template(template,template_tag,substitution):
+    """
+    make a substitution for a template_tag in a template
+    """
+
     template = template.replace(template_tag,substitution)
     return template
 
@@ -95,19 +101,21 @@ def save_template(output_file,html_snippet):
     filey.writelines(html_snippet)
     filey.close()
 
-"""
-Check type
-"""
 def is_type(var,types=[int,float,list]):
+    """
+    Check type
+    """
+
     for x in range(len(types)):
         if isinstance(var,types[x]):
             return True
     return False
 
-"""
-Ensure utf-8
-"""
 def clean_fields(mydict):
+    """
+    Ensure utf-8
+    """
+
     newdict = dict()
     for field,value in mydict.iteritems():
         cleanfield = field.encode("utf-8")

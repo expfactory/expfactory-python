@@ -3,7 +3,7 @@ Integrations
 
 Psiturk
 -------
-These experiments are intended to run via the [psiturk infrastructure](https://github.com/NYUCCL/psiTurk), and the [psiturk battery](http://www.github.com/psiturk/psiturk-battery) is the main experiment code that, when fit with [psiturk battery](http://www.github.com/psiturk/psiturk-experiments), can run on Amazon Mechanical Turk.
+These experiments are intended to run via the [psiturk infrastructure](https://github.com/NYUCCL/psiTurk), and the [experiment factory battery](http://www.github.com/expfactory/expfactory-battery) is the main experiment code that, when fit with [experiments](http://www.github.com/expfactory/expfactory-experiments), can run on Amazon Mechanical Turk.
 
 Cognitive Atlas
 ---------------

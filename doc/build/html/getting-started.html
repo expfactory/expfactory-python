@@ -10,7 +10,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Getting Started &mdash; psiturk-python 0.0.1 documentation</title>
+  <title>Getting Started &mdash; expfactory 0.0.1 documentation</title>
   
 
   
@@ -36,9 +36,9 @@
   
 
   
-    <link rel="top" title="psiturk-python 0.0.1 documentation" href="index.html"/>
+    <link rel="top" title="expfactory 0.0.1 documentation" href="index.html"/>
         <link rel="next" title="Integrations" href="integrations.html"/>
-        <link rel="prev" title="psiturkpy package" href="psiturkpy.html"/> 
+        <link rel="prev" title="expfactory package" href="expfactory.html"/> 
 
   
   <script src="_static/js/modernizr.min.js"></script>
@@ -56,7 +56,7 @@
           
 
           
-            <a href="index.html" class="icon icon-home"> psiturk-python
+            <a href="index.html" class="icon icon-home"> expfactory
           
 
           
@@ -98,11 +98,11 @@
 <li class="toctree-l3"><a class="reference internal" href="#how-do-i-choose-a-deployment">How do I choose a deployment?</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#battery-generation">Battery Generation</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#install-psiturk">0. Install psiturk</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#install-psiturk-python">1. Install psiturk-python</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#install-expfactory-python">1. Install expfactory-python</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#web-interface-to-design-experiment">2. Web interface to design experiment</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#the-psiturkpy-web-interface">The Psiturkpy Web Interface</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#the-experiment-factory-web-interface">The Experiment Factory Web Interface</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#a-collection-of-experiment-details">A. Collection of experiment details</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#b-database-connection-parameters">B. Database connection parameters</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#c-deployment">C. Deployment</a></li>
@@ -118,12 +118,12 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#i-want-to-view-or-test-available-experiments">I want to view or test available experiments</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#i-want-to-contribute-an-experiment">I want to contribute an experiment</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#i-want-to-learn-about-the-psiturk-python-functions">I want to learn about the psiturk-python functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#i-want-to-learn-about-the-expfactory-python-functions">I want to learn about the expfactory-python functions</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="integrations.html">Integrations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="development.html">Development</a></li>
-<li class="toctree-l1"><a class="reference external" href="https://github.com/psiturk">GitHub repository</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/expfactory">GitHub repository</a></li>
 </ul>
 
             
@@ -137,7 +137,7 @@
       
       <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
         <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-        <a href="index.html">psiturk-python</a>
+        <a href="index.html">expfactory</a>
       </nav>
 
 
@@ -172,7 +172,7 @@
 <h1>Getting Started<a class="headerlink" href="#getting-started" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="i-want-to-generate-a-custom-battery">
 <h2>I want to generate a custom battery<a class="headerlink" href="#i-want-to-generate-a-custom-battery" title="Permalink to this headline">¶</a></h2>
-<p>You can generate a battery, meaning a psiturk folder that may include a selection of experiments, on your local machine, a virtual (vagrant) machine, or a cloud (Amazon Web Services) machine.</p>
+<p>You can generate a battery, meaning a psiturk experiment folder that may include a selection of experiments, on your local machine, a virtual (vagrant) machine, or a cloud (Amazon Web Services) machine.</p>
 <div class="section" id="how-do-i-choose-a-deployment">
 <h3>How do I choose a deployment?<a class="headerlink" href="#how-do-i-choose-a-deployment" title="Permalink to this headline">¶</a></h3>
 <p>If you already have psiturk configured on your local machine and basically want to produce a folder to run, then you should choose the &#8220;Folder&#8221; option for deployment. If you do not specify database parameters, the default is to generate a sqlite3 file (a static database file in the same folder as your experiment).</p>
@@ -181,19 +181,19 @@
 </div>
 <div class="section" id="battery-generation">
 <h3>Battery Generation<a class="headerlink" href="#battery-generation" title="Permalink to this headline">¶</a></h3>
-<p>A battery of experiments is a selection of experimental paradigms that are presented in sequence. In the psiturk experiment infrastructure, a battery would coincide with a single folder that contains a custom setup to run many different tasks for a single HIT. We have made it easy to select one or more experiments from <a class="reference external" href="http://www.github.com/psiturk/psiturk-experiments">http://www.github.com/psiturk/psiturk-experiments</a>, merge them into a <a class="reference external" href="http://www.github.com/psiturk/psiturk-battery">psiturk battery</a>, and deploy in a <a class="reference external" href="http://www.github.com/psiturk/psiturk-vm">virtual machine</a>.</p>
+<p>A battery of experiments is a selection of experimental paradigms that are presented in sequence. In the psiturk experiment infrastructure, a battery would coincide with a single folder that contains a custom setup to run many different tasks for a single HIT. We have made it easy to select one or more experiments from <a class="reference external" href="http://www.github.com/expfactory/expfactory-experiments">http://www.github.com/expfactory/expfactory-experiments</a>, merge them into a <a class="reference external" href="http://www.github.com/expfactory/expfactory-battery">expfactory battery</a>, and deploy in a <a class="reference external" href="http://www.github.com/expfactory/expfactory-vm">virtual machine</a>.</p>
 <div class="section" id="install-psiturk">
 <h4>0. Install psiturk<a class="headerlink" href="#install-psiturk" title="Permalink to this headline">¶</a></h4>
 <p>Before getting started, you should familiarize yourself with [psiturk](<a class="reference external" href="https://psiturk.org/quick_start/">https://psiturk.org/quick_start/</a>). Likely you will be interested in setting up an experiment on your local machine, and so you should follow the installation instructions and go through the entire demo to make sure things are working properly.</p>
 </div>
-<div class="section" id="install-psiturk-python">
-<h4>1. Install psiturk-python<a class="headerlink" href="#install-psiturk-python" title="Permalink to this headline">¶</a></h4>
-<p>Psiturk-python is the controller of all pieces of this infrastructure. You can install it with pip:</p>
-<div class="highlight-python"><div class="highlight"><pre>pip install git+git://github.com/psiturk/psiturk-python.git
+<div class="section" id="install-expfactory-python">
+<h4>1. Install expfactory-python<a class="headerlink" href="#install-expfactory-python" title="Permalink to this headline">¶</a></h4>
+<p>expfactory-python is the controller of all pieces of this infrastructure. You can install it with pip:</p>
+<div class="highlight-python"><div class="highlight"><pre>pip install git+git://github.com/expfactory/expfactory-python.git
 </pre></div>
 </div>
 <p>This will install the module so that you can use its functions in your own scripts, for example:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">psiturkpy.battery</span> <span class="kn">import</span> <span class="n">generate</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">expfactory.battery</span> <span class="kn">import</span> <span class="n">generate</span>
 </pre></div>
 </div>
 <p>and also place an executable, <cite>psyturkpy</cite> in your bin folder.</p>
@@ -201,15 +201,15 @@
 <div class="section" id="web-interface-to-design-experiment">
 <h4>2. Web interface to design experiment<a class="headerlink" href="#web-interface-to-design-experiment" title="Permalink to this headline">¶</a></h4>
 <p>To run the executable to open up a web interface to design your experiment:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">psiturkpy</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">expfactory</span>
 </pre></div>
 </div>
 <p>You will see that it tells you that it is running at port 5000:</p>
 <img alt="_images/0running.png" src="_images/0running.png" />
 </div>
 </div>
-<div class="section" id="the-psiturkpy-web-interface">
-<h3>The Psiturkpy Web Interface<a class="headerlink" href="#the-psiturkpy-web-interface" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="the-experiment-factory-web-interface">
+<h3>The Experiment Factory Web Interface<a class="headerlink" href="#the-experiment-factory-web-interface" title="Permalink to this headline">¶</a></h3>
 <p>This means that you should open your browser to <cite>localhost:5000</cite>. The web interface will take you through the following steps:</p>
 <ul class="simple">
 <li><ol class="first upperalpha">
@@ -231,7 +231,7 @@
 </ul>
 <div class="section" id="a-collection-of-experiment-details">
 <h4>A. Collection of experiment details<a class="headerlink" href="#a-collection-of-experiment-details" title="Permalink to this headline">¶</a></h4>
-<p>A psiturk experiment is controlled via a config.txt file, in which you specify details of your experiment. Here we will collect those fields:</p>
+<p>A psiturk experiment is controlled via a config.json file, in which you specify details of your experiment. Here we will collect those fields:</p>
 <img alt="_images/1config.png" src="_images/1config.png" />
 <p>All fields are required. Specifically:</p>
 <ul class="simple">
@@ -244,9 +244,9 @@
 </div>
 <div class="section" id="b-database-connection-parameters">
 <h4>B. Database connection parameters<a class="headerlink" href="#b-database-connection-parameters" title="Permalink to this headline">¶</a></h4>
-<p>If you don&#8217;t know anything about databases, you should let psiturkpy set up the database for you. In the case of a local folder, this will mean an sqlite3 file. In the case of a virtual machine or cloud (AWS) deployment, psiturkpy will configure a mysql database on the same server.</p>
+<p>If you don&#8217;t know anything about databases, you should let expfactory set up the database for you. In the case of a local folder, this will mean an sqlite3 file. In the case of a virtual machine or cloud (AWS) deployment, expfactory will configure a mysql database on the same server.</p>
 <img alt="_images/2database.png" src="_images/2database.png" />
-<p>If you are testing, we recommend that you let psiturkpy set it up for you. For an actual deployment, and especially a cloud deployment, it is essential that you specify custom MySQL or Postgresql database parameters. Letting psiturkpy set up a cloud deployment means that the connection parameters are available for all to see, and this is a risk to your data and to the privacy of your participants.</p>
+<p>If you are testing, we recommend that you let expfactory set it up for you. For an actual deployment, and especially a cloud deployment, it is essential that you specify custom MySQL or Postgresql database parameters. Letting expfactory set up a cloud deployment means that the connection parameters are available for all to see, and this is a risk to your data and to the privacy of your participants.</p>
 <p>Finally, we do not allow for the option of an sqlite3 database beyond a local folder, because sqlite3 can only handle one read/write at a time, and thus is only appropriate for single-user, local testing. When setting up a database, example parameters are shown below:</p>
 <img alt="_images/2database2.png" src="_images/2database2.png" />
 <p>Psiturkpy does not test these parameters for you.</p>
@@ -255,11 +255,11 @@
 <h4>C. Deployment<a class="headerlink" href="#c-deployment" title="Permalink to this headline">¶</a></h4>
 <p>You have several deployment options, including a local folder, a virtual machine (vagrant), or a cloud deployment (Amazon Web Services, or AWS).</p>
 <img alt="_images/3deployment.png" src="_images/3deployment.png" />
-<p>Choosing &#8220;folder&#8221; will generate a local experiment, and either of the virtual machine options will produce a Vagrantfile that can be run to deploy the Virtual Machine. Specific instructions for a local vagrant or vagrant-aws are provided. Note that you can use the VagrantfileLocal or VagrantfileAWS file (renamed to Vagrantfile) as is from the <a class="reference external" href="http://www.github.com/psiturk/psiturk-vm">virtual machine</a> repo to generate a battery with all available, valid experiments.</p>
+<p>Choosing &#8220;folder&#8221; will generate a local experiment, and either of the virtual machine options will produce a Vagrantfile that can be run to deploy the Virtual Machine. Specific instructions for a local vagrant or vagrant-aws are provided. Note that you can use the VagrantfileLocal or VagrantfileAWS file (renamed to Vagrantfile) as is from the <a class="reference external" href="http://www.github.com/expfactory/expfactory-vm">virtual machine</a> repo to generate a battery with all available, valid experiments.</p>
 </div>
 <div class="section" id="d-experiment-selection">
 <h4>D. Experiment selection<a class="headerlink" href="#d-experiment-selection" title="Permalink to this headline">¶</a></h4>
-<p>When you click &#8220;Next&#8221; on part C above, behind the scenes the battery and experiment folders are downloading, and the most updated set of experiments are run through a validator. In this experiment selection screen, you are presented with experiment folders from <a class="reference external" href="http://www.github.com/psiturk/aY-experiments">http://www.github.com/psiturk/aY-experiments</a> repo that pass validation:</p>
+<p>When you click &#8220;Next&#8221; on part C above, behind the scenes the battery and experiment folders are downloading, and the most updated set of experiments are run through a validator. In this experiment selection screen, you are presented with experiment folders from <a class="reference external" href="http://www.github.com/expfactory/expfactory-experiments">http://www.github.com/expfactory/expfactory-experiments</a> repo that pass validation:</p>
 <img alt="_images/4experiments.png" src="_images/4experiments.png" />
 <p>You can select as many or as few as you want, and they will be included in your custom battery. Note that in the future you will be able to select experiments based on task or concept from the <a class="reference external" href="http://www.cognitiveatlas.org">cognitive atlas</a>.</p>
 <p>After experiment selection, your battery generation is complete, and the web interface will tell you where you can find the folder or Vagrantfile:</p>
@@ -281,19 +281,19 @@
 <li>Install VirtualBox from <a class="reference external" href="https://www.virtualbox.org/wiki/Downloads">https://www.virtualbox.org/wiki/Downloads</a></li>
 <li>Install Vagrant from <a class="reference external" href="http://www.vagrantup.com/downloads">http://www.vagrantup.com/downloads</a>. Vagrant is a provisioning system that sets up the virtual machine.</li>
 <li>If you don&#8217;t already have it, install git <a class="reference external" href="https://git-scm.com/downloads">https://git-scm.com/downloads</a></li>
-<li>You have two options to produce your Vagrantfile. If you want a custom battery, then you should run the executable psiturkpy, generate the file, and copy it to a folder outside of a the temporary directory. If you want to generate a vagrant machine with all valid tasks available, then you can clone the psiturk-vm repo and use the file &#8220;VagrantfileLocal&#8221; renamed to &#8220;Vagrantfile.&#8221; Note that this is also the case for the AWS version (instructions below).</li>
+<li>You have two options to produce your Vagrantfile. If you want a custom battery, then you should run the executable expfactory, generate the file, and copy it to a folder outside of a the temporary directory. If you want to generate a vagrant machine with all valid tasks available, then you can clone the expfactory-vm repo and use the file &#8220;VagrantfileLocal&#8221; renamed to &#8220;Vagrantfile.&#8221; Note that this is also the case for the AWS version (instructions below).</li>
 </ol>
 </div></blockquote>
 <div class="highlight-python"><div class="highlight"><pre>cd myvagrantdirectory
-git clone https://github.com/psiturk/psiturk-vm.git`
-cd psiturk-vm
+git clone https://github.com/expfactory/expfactory-vm.git`
+cd expfactory-vm
 </pre></div>
 </div>
 <p>We are now in a directory with the Vagrantfile. You can set up the virtual machine:</p>
 <div class="highlight-python"><div class="highlight"><pre>vagrant up
 </pre></div>
 </div>
-<p>Note that this can take some time. Keep the lookout for red statements that may indicate an error. If you find an error please report it as an <a class="reference external" href="https://github.com/psiturk/psiturk-vm/issues">issue</a>.</p>
+<p>Note that this can take some time. Keep the lookout for red statements that may indicate an error. If you find an error please report it as an <a class="reference external" href="https://github.com/expfactory/expfactory-vm/issues">issue</a>.</p>
 <img alt="_images/0vagrantup.png" src="_images/0vagrantup.png" />
 <p>The above shows a successful build.</p>
 <blockquote>
@@ -306,11 +306,11 @@ cd psiturk-vm
 </ol>
 <blockquote>
 <div><ol class="arabic simple" start="7">
-<li>Your experiment is located in $HOME/psiturk-battery. The build files are in psiturk-build. Note that when you turn the server on and debug, you will need the -p option to make sure the machine does not attempt to open the link with a browser in the terminal.</li>
+<li>Your experiment is located in $HOME/expfactory-battery. The build files are in expfactory-build. Note that when you turn the server on and debug, you will need the -p option to make sure the machine does not attempt to open the link with a browser in the terminal.</li>
 </ol>
 </div></blockquote>
 </div></blockquote>
-<div class="highlight-python"><div class="highlight"><pre>cd $HOME/psiturk-battery
+<div class="highlight-python"><div class="highlight"><pre>cd $HOME/expfactory-battery
 psiturk
 server on
 debug -p
@@ -319,7 +319,7 @@ debug -p
 </div>
 <div class="section" id="deployment-to-aws">
 <h4>Deployment to AWS<a class="headerlink" href="#deployment-to-aws" title="Permalink to this headline">¶</a></h4>
-<p>You can equivalently produce a Vagrantfile with the psiturkpy module that can be deployed to AWS. Some expertise is assumed, namely that you are familiar with the EC2 section of the <a class="reference external" href="http://console.aws.amazon.com">AWS console</a>. You will need to log in and create a security group, download a key, and fill in all variables required in the SCRIPT section of the Vagrantfile.</p>
+<p>You can equivalently produce a Vagrantfile with the expfactory module that can be deployed to AWS. Some expertise is assumed, namely that you are familiar with the EC2 section of the <a class="reference external" href="http://console.aws.amazon.com">AWS console</a>. You will need to log in and create a security group, download a key, and fill in all variables required in the SCRIPT section of the Vagrantfile.</p>
 <blockquote>
 <div><ol class="arabic simple">
 <li>Make sure you have the most up-to-date version of vagrant from <a class="reference external" href="https://www.vagrantup.com/downloads">https://www.vagrantup.com/downloads</a>, and install vagrant-aws. If you do not, you will see this error (version 1.6.5)</li>
@@ -368,17 +368,17 @@ Installed the plugin &#39;vagrant-aws (0.6.0)&#39;!
 </div>
 <div class="section" id="i-want-to-view-or-test-available-experiments">
 <h2>I want to view or test available experiments<a class="headerlink" href="#i-want-to-view-or-test-available-experiments" title="Permalink to this headline">¶</a></h2>
-<p>We provide static versions of all experiments, along with meta-data, in our <a class="reference external" href="http://psiturk.github.io/psiturk-experiments">psiturk-experiments</a> github pages.</p>
+<p>We provide static versions of all experiments, along with meta-data, in our <a class="reference external" href="http://expfactory.github.io/expfactory-experiments">expfactory-experiments</a> github pages.</p>
 </div>
 <div class="section" id="i-want-to-contribute-an-experiment">
 <h2>I want to contribute an experiment<a class="headerlink" href="#i-want-to-contribute-an-experiment" title="Permalink to this headline">¶</a></h2>
-<p>All of the experiments that can be selected from <a class="reference external" href="http://www.github.com/psiturk/psiturk-experiments">http://www.github.com/psiturk/psiturk-experiments</a> can be selected to include in a battery, and you can contribute an experiment.</p>
-<p>All of the experiments that can be selected from <a class="reference external" href="http://www.github.com/psiturk/psiturk-experiments">http://www.github.com/psiturk/psiturk-experiments</a> can be selected to include in a battery, and you can contribute an experiment by submitting a PR to the repo to add a folder with your experiment. More complete details about the format of the psiturk.json file that is required to describe the experiment will come soon.
+<p>All of the experiments that can be selected from <a class="reference external" href="http://www.github.com/expfactory/expfactory-experiments">http://www.github.com/expfactory/expfactory-experiments</a> can be selected to include in a battery, and you can contribute an experiment.</p>
+<p>All of the experiments that can be selected from <a class="reference external" href="http://www.github.com/expfactory/expfactory-experiments">http://www.github.com/expfactory/expfactory-experiments</a> can be selected to include in a battery, and you can contribute an experiment by submitting a PR to the repo to add a folder with your experiment. More complete details about the format of the config.json file that is required to describe the experiment will come soon.
 For now, use the other experiments as example.</p>
 </div>
-<div class="section" id="i-want-to-learn-about-the-psiturk-python-functions">
-<h2>I want to learn about the psiturk-python functions<a class="headerlink" href="#i-want-to-learn-about-the-psiturk-python-functions" title="Permalink to this headline">¶</a></h2>
-<p>The generation of the batteries, along with experiment validation, and virtual machine deployment, are controlled by the psiturk-python functions. You can see complete function documentation under <a class="reference internal" href="py-modindex.html"><span>Module Index</span></a>, and we welcome any contributions to the code base via Github pull requests (PRs) or <a class="reference external" href="http://www.github.com/psiturk/psiturk-python/issues">isses</a>.</p>
+<div class="section" id="i-want-to-learn-about-the-expfactory-python-functions">
+<h2>I want to learn about the expfactory-python functions<a class="headerlink" href="#i-want-to-learn-about-the-expfactory-python-functions" title="Permalink to this headline">¶</a></h2>
+<p>The generation of the batteries, along with experiment validation, and virtual machine deployment, are controlled by the expfactory-python functions. You can see complete function documentation under <a class="reference internal" href="py-modindex.html"><span>Module Index</span></a>, and we welcome any contributions to the code base via Github pull requests (PRs) or <a class="reference external" href="http://www.github.com/expfactory/expfactory-python/issues">isses</a>.</p>
 </div>
 </div>
 
@@ -392,7 +392,7 @@ For now, use the other experiments as example.</p>
         <a href="integrations.html" class="btn btn-neutral float-right" title="Integrations" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="psiturkpy.html" class="btn btn-neutral" title="psiturkpy package" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="expfactory.html" class="btn btn-neutral" title="expfactory package" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

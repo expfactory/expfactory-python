@@ -1,9 +1,9 @@
 '''
-vm.py: part of efactory package
-Functions to generate virtual machines to run efactory batteries
+vm.py: part of expfactory package
+Functions to generate virtual machines to run expfactory batteries
 
 '''
-from efactory.utils import get_template, sub_template, save_template, clean_fields
+from expfactory.utils import get_template, sub_template, save_template, clean_fields
 from git import Repo
 import tempfile
 import shutil
@@ -12,7 +12,7 @@ import os
 def download_repo(repo_type,destination):
     '''
 
-    Download a efactory infrastructure repo "repo_type" to a "destination"
+    Download a expfactory infrastructure repo "repo_type" to a "destination"
   
        repo_type: can be one of "experiments" "battery" "vm"
        destination: the full path to the destination for the repo
@@ -22,7 +22,7 @@ def download_repo(repo_type,destination):
     if repo_type not in acceptable_types:
         print "repo_type must be in %s" %(",".join(acceptable_types))
     else:
-        return Repo.clone_from("https://github.com/expfactory/efactory-%s" %(repo_type), destination)
+        return Repo.clone_from("https://github.com/expfactory/expfactory-%s" %(repo_type), destination)
 
 
 def custom_battery_download(tmpdir=None,repos=["experiments","battery"]):
@@ -65,7 +65,7 @@ def generate_database_url(dbtype=None,username=None,password=None,host=None,tabl
         table: table in the database
         template: can be one of "mysql" "sqlite3" or "postgresql" If specified, all other parameters are
                   ignored, and a default database URL is produced to work in a Vagrant VM produced by
-                  efactory
+                  expfactory
     
     '''
     if not template:
@@ -78,11 +78,11 @@ def generate_database_url(dbtype=None,username=None,password=None,host=None,tabl
                                          host,
                                          table)
     elif template == "mysql":
-        return "mysql://efactory:efactory@localhost:3306/efactory"
+        return "mysql://expfactory:expfactory@localhost:3306/expfactory"
     elif template == "sqlite3":
         return "sqlite:///participants.db" 
     elif template == "postgresql":
-        return "postgresql://efactory:efactory@localhost:5432/efactory"
+        return "postgresql://expfactory:expfactory@localhost:5432/expfactory"
 
 def prepare_vm(battery_dest,fields=None,vm_repo=None,vm_type="vagrant"):
     '''
@@ -90,7 +90,7 @@ def prepare_vm(battery_dest,fields=None,vm_repo=None,vm_type="vagrant"):
 
         battery_dest: the battery destination folder
         fields: if specified, will be added to the config.txt
-        vm_repo: the efactory-vm repo to use for templates. If not provided,
+        vm_repo: the expfactory-vm repo to use for templates. If not provided,
                  one will be downloaded to a temporary directory for use.
         vm_type: one of "vagrant" or "aws" Default is "vagrant" meaning a local
                  virtual machine with vagrant.

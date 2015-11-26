@@ -10,7 +10,7 @@ with codecs.open(os.path.join(here, 'README.md'), encoding='utf-8') as f:
 
 setup(
     # Application name:
-    name="efactory",
+    name="expfactory",
 
     # Version number (initial):
     version="1.0.0",
@@ -38,7 +38,7 @@ setup(
 
     entry_points = {
         'console_scripts': [
-            'efactory=efactory.interface:main',
+            'expfactory=expfactory.interface:main',
         ],
     },
 

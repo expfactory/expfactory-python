@@ -1,2 +1,2 @@
-recursive-include efactory/templates *
-recursive-include efactory/static *
+recursive-include expfactory/templates *
+recursive-include expfactory/static *

@@ -1,9 +1,9 @@
-from efactory.vm import custom_battery_download, add_custom_logo, generate_database_url, \
+from expfactory.vm import custom_battery_download, add_custom_logo, generate_database_url, \
      prepare_vm, specify_experiments, download_repo
-from efactory.experiment import validate, load_experiment, get_experiments
-from efactory.battery import generate, generate_config
+from expfactory.experiment import validate, load_experiment, get_experiments
+from expfactory.battery import generate, generate_config
 from flask import Flask, render_template, request
-from efactory.utils import copy_directory
+from expfactory.utils import copy_directory
 from werkzeug import secure_filename
 import tempfile
 import shutil
@@ -121,12 +121,12 @@ def select():
         if deploychoice == "folder":
 
             # Add to the battery
-            generate(battery_dest="%s/efactory-battery"%tmpdir,
+            generate(battery_dest="%s/expfactory-battery"%tmpdir,
                      battery_repo="%s/battery"%tmpdir,
                      experiments=experiment_folders,
                      make_config=False)
 
-            battery_dest = "%s/efactory-battery" %(tmpdir)
+            battery_dest = "%s/expfactory-battery" %(tmpdir)
 
         # Option 2 or 3: Virtual machine (vagrant) or cloud (aws)
         else:
