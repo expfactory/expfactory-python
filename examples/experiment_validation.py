@@ -1,15 +1,8 @@
-from psiturkpy.experiment import validate
-from psiturkpy.utils import find_directories
+from efactory.experiment import validate
+from efactory.utils import find_directories
 
-myexperiments = find_directories("../psiturk-experiments")
+myexperiments = find_directories("../efactory-experiments")
 
 for experiment in myexperiments:
     if not validate(experiment):
         print experiment
-
-#Problem reading psiturk.json, Expecting , delimiter: line 6 column 17 (char 105)
-#/home/vanessa/Documents/Dropbox/Code/psiturk/psiturk-experiments/go-nogo
-#Problem reading psiturk.json, No JSON object could be decoded
-#/home/vanessa/Documents/Dropbox/Code/psiturk/psiturk-experiments/tone-monitoring
-#Problem reading psiturk.json, No JSON object could be decoded
-#/home/vanessa/Documents/Dropbox/Code/psiturk/psiturk-experiments/stroop

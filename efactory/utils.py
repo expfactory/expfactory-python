@@ -1,5 +1,5 @@
 '''
-utils.py: part of psiturkpy package
+utils.py: part of efactory package
 
 '''
 import errno

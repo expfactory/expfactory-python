@@ -1,9 +1,9 @@
-from psiturkpy.vm import custom_battery_download, add_custom_logo, generate_database_url, \
+from efactory.vm import custom_battery_download, add_custom_logo, generate_database_url, \
      prepare_vm, specify_experiments, download_repo
-from psiturkpy.experiment import validate, load_experiment, get_experiments
-from psiturkpy.battery import generate, generate_config
+from efactory.experiment import validate, load_experiment, get_experiments
+from efactory.battery import generate, generate_config
 from flask import Flask, render_template, request
-from psiturkpy.utils import copy_directory
+from efactory.utils import copy_directory
 from werkzeug import secure_filename
 import tempfile
 import shutil
@@ -121,12 +121,12 @@ def select():
         if deploychoice == "folder":
 
             # Add to the battery
-            generate(battery_dest="%s/psiturk-battery"%tmpdir,
+            generate(battery_dest="%s/efactory-battery"%tmpdir,
                      battery_repo="%s/battery"%tmpdir,
                      experiments=experiment_folders,
                      make_config=False)
 
-            battery_dest = "%s/psiturk-battery" %(tmpdir)
+            battery_dest = "%s/efactory-battery" %(tmpdir)
 
         # Option 2 or 3: Virtual machine (vagrant) or cloud (aws)
         else:
@@ -149,7 +149,8 @@ def clean_up(dirpath):
 
 # This is how the command line version will run
 def main():
-    print "Time for Psiturkpy!"
+    print "Start up the Experiment Factory!"
+    print "Nobody ever comes in... nobody ever comes out..."
     app.run(host="0.0.0.0",debug=True)
     
 if __name__ == '__main__':

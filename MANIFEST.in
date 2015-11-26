@@ -1,2 +1,2 @@
-recursive-include psiturkpy/templates *
-recursive-include psiturkpy/static *
+recursive-include efactory/templates *
+recursive-include efactory/static *

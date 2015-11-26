@@ -10,7 +10,7 @@ with codecs.open(os.path.join(here, 'README.md'), encoding='utf-8') as f:
 
 setup(
     # Application name:
-    name="psiturkpy",
+    name="efactory",
 
     # Version number (initial):
     version="1.0.0",
@@ -27,18 +27,18 @@ setup(
     zip_safe=False,
 
     # Details
-    url="http://www.github.com/psiturk",
+    url="http://www.github.com/expfactory",
 
     license="LICENSE.txt",
-    description="Python module for managing psiturk javascript experiment files, a psiturk battery, and a psiturk virtual machine to host the compilation of those two things.",
+    description="Python module for managing experiment factory javascript experiment files, a psiturk battery, and virtual machines to host the compilation of these things.",
     long_description=long_description,
-    keywords='psiturk behavior neuroscience',
+    keywords='psiturk behavior neuroscience experiment factory',
 
     install_requires = ['numpy','Flask','gitpython'],
 
     entry_points = {
         'console_scripts': [
-            'psiturkpy=psiturkpy.interface:main',
+            'efactory=efactory.interface:main',
         ],
     },
 
