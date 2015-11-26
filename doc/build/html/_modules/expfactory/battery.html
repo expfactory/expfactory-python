@@ -1,0 +1,420 @@
+
+
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>expfactory.battery &mdash; expfactory 0.0.1 documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+
+  
+    <link rel="top" title="expfactory 0.0.1 documentation" href="../../index.html"/>
+        <link rel="up" title="Module code" href="../index.html"/> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> expfactory
+          
+
+          
+            
+            <img src="../../_static/psiturkpy_blue.png" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">Tools Available</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting-started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../integrations.html">Integrations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../development.html">Development</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/expfactory">GitHub repository</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../../index.html">expfactory</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+      
+    <li>expfactory.battery</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for expfactory.battery</h1><div class="highlight"><pre>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">battery.py: part of expfactory package</span>
+<span class="sd">Functions to generate batteries</span>
+
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="kn">from</span> <span class="nn">expfactory.experiment</span> <span class="kn">import</span> <span class="n">get_experiments</span><span class="p">,</span> <span class="n">load_experiment</span>
+<span class="kn">from</span> <span class="nn">expfactory.utils</span> <span class="kn">import</span> <span class="n">copy_directory</span><span class="p">,</span> <span class="n">get_template</span><span class="p">,</span> \
+     <span class="n">sub_template</span><span class="p">,</span> <span class="n">get_installdir</span><span class="p">,</span> <span class="n">save_template</span>
+<span class="kn">from</span> <span class="nn">expfactory.vm</span> <span class="kn">import</span> <span class="n">custom_battery_download</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">re</span>
+
+
+<div class="viewcode-block" id="generate"><a class="viewcode-back" href="../../expfactory.html#expfactory.battery.generate">[docs]</a><span class="k">def</span> <span class="nf">generate</span><span class="p">(</span><span class="n">battery_dest</span><span class="p">,</span><span class="n">battery_repo</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">experiment_repo</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">experiments</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">config</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">make_config</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;generate</span>
+<span class="sd">    will create a battery from a template and list of experiments</span>
+<span class="sd">    :param battery_dest: [required] is the output folder for your battery. This folder MUST NOT EXIST.</span>
+<span class="sd">    :param battery_repo: location of psiturk-battery repo to use as a template. If not specified, will be downloaded to a temporary directory</span>
+<span class="sd">    :param experiment_repo: location of a expfactory-experiments repo to check for valid experiments. If not specified, will be downloaded to a temporary directory</span>
+<span class="sd">    :param experiments: a list of experiments, meaning the &quot;tag&quot; variable in the config.json, to include. This variable also conincides with the experiment folder name.</span>
+<span class="sd">    :param config: A dictionary with keys that coincide with parameters in the config.txt file for a expfactory experiment. If not provided, a dummy config will be generated.</span>
+<span class="sd">    :param make_config: A boolean (default True) to control generation of the config. If there is a config generated before calling this function, this should be set to False.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="c"># We can only generate a battery to a folder that does not exist, to be safe</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">battery_dest</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">experiment_repo</span> <span class="o">==</span> <span class="bp">None</span> <span class="ow">or</span> <span class="n">battery_repo</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">tmpdir</span> <span class="o">=</span> <span class="n">custom_battery_download</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">experiment_repo</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="n">experiment_repo</span> <span class="o">=</span> <span class="s">&quot;</span><span class="si">%s</span><span class="s">/experiments&quot;</span> <span class="o">%</span><span class="p">(</span><span class="n">tmpdir</span><span class="p">)</span>     
+            <span class="k">if</span> <span class="n">battery_repo</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="n">battery_repo</span> <span class="o">=</span> <span class="s">&quot;</span><span class="si">%s</span><span class="s">/battery&quot;</span> <span class="o">%</span><span class="p">(</span><span class="n">tmpdir</span><span class="p">)</span>     
+
+        <span class="c"># Copy battery skeleton to destination</span>
+        <span class="n">copy_directory</span><span class="p">(</span><span class="n">battery_repo</span><span class="p">,</span><span class="n">battery_dest</span><span class="p">)</span>
+        <span class="n">valid_experiments</span> <span class="o">=</span> <span class="n">get_experiments</span><span class="p">(</span><span class="n">experiment_repo</span><span class="p">)</span>
+
+        <span class="c"># If the user wants to select a subset</span>
+        <span class="k">if</span> <span class="n">experiments</span> <span class="o">!=</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">subset_experiments</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">valid_experiments</span> <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="ow">in</span> <span class="n">experiments</span><span class="p">]</span>
+            <span class="n">valid_experiments</span> <span class="o">=</span> <span class="n">subset_experiments</span>      
+
+        <span class="c"># Fill in templates with the experiments, generate config</span>
+        <span class="n">template_experiments</span><span class="p">(</span><span class="n">battery_dest</span><span class="p">,</span><span class="n">battery_repo</span><span class="p">,</span><span class="n">valid_experiments</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">make_config</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">config</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="n">config</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+            <span class="n">generate_config</span><span class="p">(</span><span class="n">battery_dest</span><span class="p">,</span><span class="n">config</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">print</span> <span class="s">&quot;Folder exists at </span><span class="si">%s</span><span class="s">, cannot generate.&quot;</span> <span class="o">%</span><span class="p">(</span><span class="n">battery_dest</span><span class="p">)</span>
+
+        </div>
+<div class="viewcode-block" id="template_experiments"><a class="viewcode-back" href="../../expfactory.html#expfactory.battery.template_experiments">[docs]</a><span class="k">def</span> <span class="nf">template_experiments</span><span class="p">(</span><span class="n">battery_dest</span><span class="p">,</span><span class="n">battery_repo</span><span class="p">,</span><span class="n">valid_experiments</span><span class="p">,</span><span class="n">template_file</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;template_experiments:</span>
+<span class="sd">    For each valid experiment, copies the entire folder into the battery destination directory, and generates templates with appropriate paths to run them</span>
+<span class="sd">    :param battery_dest: full path to destination folder of battery</span>
+<span class="sd">    :param battery_repo: full path to psiturk-battery repo template</span>
+<span class="sd">    :param valid_experiments: a list of full paths to experiment folders to include</span>
+<span class="sd">    :param template_file: the load_experiments.js template file. If not specified, the file from the battery repo is used.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="c"># Generate run template, make substitutions</span>
+    <span class="k">if</span> <span class="n">template_file</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">template_file</span> <span class="o">=</span> <span class="s">&quot;</span><span class="si">%s</span><span class="s">/static/js/load_experiments.js&quot;</span> <span class="o">%</span><span class="p">(</span><span class="n">battery_repo</span><span class="p">)</span>
+    <span class="n">load_template</span> <span class="o">=</span> <span class="n">get_template</span><span class="p">(</span><span class="n">template_file</span><span class="p">)</span>
+    <span class="n">valid_experiments</span> <span class="o">=</span> <span class="n">move_experiments</span><span class="p">(</span><span class="n">valid_experiments</span><span class="p">,</span><span class="n">battery_dest</span><span class="p">)</span>
+    <span class="n">loadjs</span> <span class="o">=</span> <span class="n">get_load_js</span><span class="p">(</span><span class="n">valid_experiments</span><span class="p">)</span> 
+    <span class="n">concatjs</span> <span class="o">=</span> <span class="n">get_concat_js</span><span class="p">(</span><span class="n">valid_experiments</span><span class="p">)</span> 
+    <span class="n">timingjs</span> <span class="o">=</span> <span class="n">get_timing_js</span><span class="p">(</span><span class="n">valid_experiments</span><span class="p">)</span>
+    <span class="n">load_template</span> <span class="o">=</span> <span class="n">sub_template</span><span class="p">(</span><span class="n">load_template</span><span class="p">,</span><span class="s">&quot;[SUB_EXPERIMENTCONCAT_SUB]&quot;</span><span class="p">,</span><span class="n">concatjs</span><span class="p">)</span>
+    <span class="n">load_template</span> <span class="o">=</span> <span class="n">sub_template</span><span class="p">(</span><span class="n">load_template</span><span class="p">,</span><span class="s">&quot;[SUB_EXPERIMENTLOAD_SUB]&quot;</span><span class="p">,</span><span class="n">loadjs</span><span class="p">)</span>
+    <span class="n">load_template</span> <span class="o">=</span> <span class="n">sub_template</span><span class="p">(</span><span class="n">load_template</span><span class="p">,</span><span class="s">&quot;[SUB_EXPERIMENTTIMES_SUB]&quot;</span><span class="p">,</span><span class="nb">str</span><span class="p">(</span><span class="n">timingjs</span><span class="p">))</span> 
+    <span class="n">template_output</span> <span class="o">=</span> <span class="s">&quot;</span><span class="si">%s</span><span class="s">/static/js/load_experiments.js&quot;</span> <span class="o">%</span><span class="p">(</span><span class="n">battery_dest</span><span class="p">)</span>
+    <span class="n">filey</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">template_output</span><span class="p">,</span><span class="s">&#39;w&#39;</span><span class="p">)</span>
+    <span class="n">filey</span><span class="o">.</span><span class="n">writelines</span><span class="p">(</span><span class="n">load_template</span><span class="p">)</span>
+    <span class="n">filey</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>    
+
+</div>
+<div class="viewcode-block" id="move_experiments"><a class="viewcode-back" href="../../expfactory.html#expfactory.battery.move_experiments">[docs]</a><span class="k">def</span> <span class="nf">move_experiments</span><span class="p">(</span><span class="n">valid_experiments</span><span class="p">,</span><span class="n">battery_dest</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;move_experiments</span>
+<span class="sd">    Moves valid experiments into the experiments folder in battery repo</span>
+<span class="sd">    :param valid_experiments: a list of full paths to valid experiments</span>
+<span class="sd">    :param battery_dest: full path to battery destination folder</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="n">moved_experiments</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">valid_experiment</span> <span class="ow">in</span> <span class="n">valid_experiments</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">experiment_folder</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">valid_experiment</span><span class="p">)</span>
+            <span class="n">copy_directory</span><span class="p">(</span><span class="n">valid_experiment</span><span class="p">,</span><span class="s">&quot;</span><span class="si">%s</span><span class="s">/static/experiments/</span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span><span class="p">(</span><span class="n">battery_dest</span><span class="p">,</span><span class="n">experiment_folder</span><span class="p">))</span>
+            <span class="n">moved_experiments</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">valid_experiment</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+           <span class="k">print</span> <span class="s">&quot;Cannot move </span><span class="si">%s</span><span class="s">, will not be added.&quot;</span> <span class="o">%</span><span class="p">(</span><span class="n">valid_experiment</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">moved_experiments</span>
+
+</div>
+<div class="viewcode-block" id="generate_config"><a class="viewcode-back" href="../../expfactory.html#expfactory.battery.generate_config">[docs]</a><span class="k">def</span> <span class="nf">generate_config</span><span class="p">(</span><span class="n">battery_dest</span><span class="p">,</span><span class="n">fields</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;generate_config</span>
+<span class="sd">    takes a dictionary, and for matching fields, substitues and prints to &quot;config.txt&quot; in a specified battery directory</span>
+<span class="sd">    :param battery_dest: should be the copied, skeleton battery folder in generation</span>
+<span class="sd">    :param fields: should be a dictionary with fields that match those in the config non matching fields will be ignored.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">config</span> <span class="o">=</span> <span class="n">get_config</span><span class="p">()</span>
+    <span class="c"># Convert dictionaries back to string</span>
+    <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">config</span><span class="p">)):</span>
+        <span class="n">line</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="n">l</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">line</span><span class="p">,</span><span class="nb">dict</span><span class="p">):</span>
+            <span class="n">linekey</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">keys</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">linekey</span> <span class="ow">in</span> <span class="n">fields</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="n">config</span><span class="p">[</span><span class="n">l</span><span class="p">][</span><span class="n">linekey</span><span class="p">]</span> <span class="o">=</span> <span class="n">fields</span><span class="p">[</span><span class="n">linekey</span><span class="p">]</span>
+            <span class="n">config</span><span class="p">[</span><span class="n">l</span><span class="p">]</span> <span class="o">=</span> <span class="s">&quot;</span><span class="si">%s</span><span class="s"> = </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span><span class="p">(</span><span class="n">linekey</span><span class="p">,</span><span class="n">config</span><span class="p">[</span><span class="n">l</span><span class="p">][</span><span class="n">linekey</span><span class="p">])</span>
+    <span class="n">config</span> <span class="o">=</span> <span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>    
+    <span class="n">save_template</span><span class="p">(</span><span class="s">&quot;</span><span class="si">%s</span><span class="s">/config.txt&quot;</span> <span class="o">%</span><span class="n">battery_dest</span><span class="p">,</span><span class="n">config</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">config</span>
+
+
+</div>
+<div class="viewcode-block" id="get_config"><a class="viewcode-back" href="../../expfactory.html#expfactory.battery.get_config">[docs]</a><span class="k">def</span> <span class="nf">get_config</span><span class="p">():</span>
+    <span class="sd">&#39;&#39;&#39;get_config</span>
+<span class="sd">    load in a dummy config file from expfactory</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="n">module_path</span> <span class="o">=</span> <span class="n">get_installdir</span><span class="p">()</span>
+    <span class="n">template</span> <span class="o">=</span> <span class="s">&quot;</span><span class="si">%s</span><span class="s">/templates/config.txt&quot;</span> <span class="o">%</span><span class="p">(</span><span class="n">module_path</span><span class="p">)</span>
+    <span class="n">config</span> <span class="o">=</span> <span class="n">get_template</span><span class="p">(</span><span class="n">template</span><span class="p">)</span>
+    <span class="n">config</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">config</span><span class="p">)):</span>
+        <span class="n">line</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="n">l</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">line</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">line</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">!=</span><span class="s">&quot;[&quot;</span><span class="p">:</span>
+                <span class="n">fields</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s">&quot; &quot;</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&quot;=&quot;</span><span class="p">)]</span>
+                <span class="n">config</span><span class="p">[</span><span class="n">l</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="n">fields</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span><span class="n">fields</span><span class="p">[</span><span class="mi">1</span><span class="p">]}</span> 
+    <span class="k">return</span> <span class="n">config</span>
+
+</div>
+<div class="viewcode-block" id="get_load_js"><a class="viewcode-back" href="../../expfactory.html#expfactory.battery.get_load_js">[docs]</a><span class="k">def</span> <span class="nf">get_load_js</span><span class="p">(</span><span class="n">valid_experiments</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;get_load_js</span>
+<span class="sd">    Return javascript to load list of valid experiments, based on psiturk.json</span>
+<span class="sd">    :param valid_experiments: a list of full paths to valid experiments to include</span>
+
+<span class="sd">    ..note::</span>
+<span class="sd">        Format is:</span>
+<span class="sd">         {</span>
+<span class="sd">		case &quot;simple_rt&quot;:</span>
+<span class="sd">			loadjscssfile(&quot;static/css/experiments/simple_rt.css&quot;,&quot;css&quot;)</span>
+<span class="sd">			loadjscssfile(&quot;static/js/experiments/simple_rt.js&quot;,&quot;js&quot;)</span>
+<span class="sd">			break;</span>
+<span class="sd">		case &quot;choice_rt&quot;:</span>
+<span class="sd">			loadjscssfile(&quot;static/css/experiments/choice_rt.css&quot;,&quot;css&quot;)</span>
+<span class="sd">			loadjscssfile(&quot;static/js/experiments/choice_rt.js&quot;,&quot;js&quot;)</span>
+<span class="sd">			break;</span>
+
+<span class="sd">          ...</span>
+<span class="sd">          }</span>
+
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">loadstring</span> <span class="o">=</span> <span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span>
+    <span class="k">for</span> <span class="n">valid_experiment</span> <span class="ow">in</span> <span class="n">valid_experiments</span><span class="p">:</span>
+        <span class="n">experiment</span> <span class="o">=</span> <span class="n">load_experiment</span><span class="p">(</span><span class="n">valid_experiment</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">tag</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">experiment</span><span class="p">[</span><span class="s">&quot;tag&quot;</span><span class="p">])</span>
+        <span class="n">loadstring</span> <span class="o">=</span> <span class="s">&#39;</span><span class="si">%s</span><span class="s">case &quot;</span><span class="si">%s</span><span class="s">&quot;:</span><span class="se">\n</span><span class="s">&#39;</span> <span class="o">%</span><span class="p">(</span><span class="n">loadstring</span><span class="p">,</span><span class="n">tag</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">script</span> <span class="ow">in</span> <span class="n">experiment</span><span class="p">[</span><span class="s">&quot;run&quot;</span><span class="p">]:</span>
+            <span class="n">fname</span><span class="p">,</span><span class="n">ext</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">script</span><span class="p">)</span>
+            <span class="n">ext</span> <span class="o">=</span> <span class="n">ext</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&quot;.&quot;</span><span class="p">,</span><span class="s">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+            <span class="c"># If the file is included in the experiment</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">script</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&quot;/&quot;</span><span class="p">))</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>                
+                <span class="n">loadstring</span> <span class="o">=</span> <span class="s">&#39;</span><span class="si">%s</span><span class="s">         loadjscssfile(&quot;static/experiments/</span><span class="si">%s</span><span class="s">/</span><span class="si">%s</span><span class="s">&quot;,&quot;</span><span class="si">%s</span><span class="s">&quot;)</span><span class="se">\n</span><span class="s">&#39;</span> <span class="o">%</span><span class="p">(</span><span class="n">loadstring</span><span class="p">,</span><span class="n">tag</span><span class="p">,</span><span class="n">script</span><span class="p">,</span><span class="n">ext</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">loadstring</span> <span class="o">=</span> <span class="s">&#39;</span><span class="si">%s</span><span class="s">         loadjscssfile(&quot;</span><span class="si">%s</span><span class="s">&quot;,&quot;</span><span class="si">%s</span><span class="s">&quot;)</span><span class="se">\n</span><span class="s">&#39;</span> <span class="o">%</span><span class="p">(</span><span class="n">loadstring</span><span class="p">,</span><span class="n">script</span><span class="p">,</span><span class="n">ext</span><span class="p">)</span>
+        <span class="n">loadstring</span> <span class="o">=</span> <span class="s">&quot;</span><span class="si">%s</span><span class="s">         break;</span><span class="se">\n</span><span class="s">&quot;</span> <span class="o">%</span><span class="p">(</span><span class="n">loadstring</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">loadstring</span>
+
+</div>
+<div class="viewcode-block" id="get_concat_js"><a class="viewcode-back" href="../../expfactory.html#expfactory.battery.get_concat_js">[docs]</a><span class="k">def</span> <span class="nf">get_concat_js</span><span class="p">(</span><span class="n">valid_experiments</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;get_concat_js</span>
+<span class="sd">    Return javascript concat section for valid experiments, based on psiturk.json</span>
+<span class="sd">    :param valid_experiments: full paths to valid experiments to include</span>
+
+<span class="sd">    ..note::</span>
+
+<span class="sd">			case &quot;simple-rt&quot;:</span>
+<span class="sd">				experiments = experiments.concat(simple-rt_experiment)</span>
+<span class="sd">				break;</span>
+<span class="sd">			case &quot;choice-rt&quot;:</span>
+<span class="sd">				experiments = experiments.concat(choice-rt_experiment)</span>
+<span class="sd">				break;</span>
+
+<span class="sd">               Format for experiment variables is [tag]_experiment</span>
+
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">concatjs</span> <span class="o">=</span> <span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span>
+    <span class="k">for</span> <span class="n">valid_experiment</span> <span class="ow">in</span> <span class="n">valid_experiments</span><span class="p">:</span>
+        <span class="n">experiment</span> <span class="o">=</span> <span class="n">load_experiment</span><span class="p">(</span><span class="n">valid_experiment</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">tag</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">experiment</span><span class="p">[</span><span class="s">&quot;tag&quot;</span><span class="p">])</span>
+        <span class="n">concatjs</span> <span class="o">=</span> <span class="s">&#39;</span><span class="si">%s</span><span class="s">case &quot;</span><span class="si">%s</span><span class="s">&quot;:</span><span class="se">\n</span><span class="s">&#39;</span> <span class="o">%</span><span class="p">(</span><span class="n">concatjs</span><span class="p">,</span><span class="n">tag</span><span class="p">)</span>
+        <span class="n">concatjs</span> <span class="o">=</span> <span class="s">&#39;</span><span class="si">%s</span><span class="s">      experiments = experiments.concat(</span><span class="si">%s</span><span class="s">_experiment)</span><span class="se">\n</span><span class="s">&#39;</span> <span class="o">%</span><span class="p">(</span><span class="n">concatjs</span><span class="p">,</span><span class="n">tag</span><span class="p">)</span>
+        <span class="n">concatjs</span> <span class="o">=</span> <span class="s">&#39;</span><span class="si">%s</span><span class="s">      break;</span><span class="se">\n</span><span class="s">&#39;</span> <span class="o">%</span><span class="p">(</span><span class="n">concatjs</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">concatjs</span>
+</div>
+<div class="viewcode-block" id="get_timing_js"><a class="viewcode-back" href="../../expfactory.html#expfactory.battery.get_timing_js">[docs]</a><span class="k">def</span> <span class="nf">get_timing_js</span><span class="p">(</span><span class="n">valid_experiments</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;get_timing_js</span>
+<span class="sd">    Produce string (json / dictionary) of experiment timings</span>
+<span class="sd">    :param valid_experiments: a list of full paths to valid experiments to include</span>
+
+<span class="sd">    ..note::</span>
+
+<span class="sd">         Produces the following format for each experiment</span>
+
+<span class="sd">         {name:&quot;simple_rt&quot;, time: 3.5}, {name:&quot;choice_rt&quot;, time: 4}, ...</span>
+<span class="sd">    </span>
+<span class="sd">    </span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">timingjs</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">valid_experiment</span> <span class="ow">in</span> <span class="n">valid_experiments</span><span class="p">:</span>
+        <span class="n">experiment</span> <span class="o">=</span> <span class="n">load_experiment</span><span class="p">(</span><span class="n">valid_experiment</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">timingjs</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s">&quot;name&quot;</span><span class="p">:</span><span class="nb">str</span><span class="p">(</span><span class="n">experiment</span><span class="p">[</span><span class="s">&quot;tag&quot;</span><span class="p">]),</span><span class="s">&quot;time&quot;</span><span class="p">:</span><span class="n">experiment</span><span class="p">[</span><span class="s">&quot;time&quot;</span><span class="p">]})</span>
+    <span class="k">return</span> <span class="n">timingjs</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015, Poldracklab, Stanford University.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'0.0.1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>
