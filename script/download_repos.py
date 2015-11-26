@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-from efactory.vm import custom_battery_download
+from expfactory.vm import custom_battery_download
 import sys
 
 # Standard battery setup script

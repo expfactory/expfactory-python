@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-from efactory.battery import generate
+from expfactory.battery import generate
 import sys
 
 # Standard battery setup script

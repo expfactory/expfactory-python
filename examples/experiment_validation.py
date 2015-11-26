@@ -1,7 +1,7 @@
-from efactory.experiment import validate
-from efactory.utils import find_directories
+from expfactory.experiment import validate
+from expfactory.utils import find_directories
 
-myexperiments = find_directories("../efactory-experiments")
+myexperiments = find_directories("../expfactory-experiments")
 
 for experiment in myexperiments:
     if not validate(experiment):

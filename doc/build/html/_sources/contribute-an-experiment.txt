@@ -1,4 +1,0 @@
-Contributing an Experiment
-================
-
-Testing 1.23,...

@@ -1,47 +1,53 @@
 '''
-experiment.py: part of efactory package
+experiment.py: part of expfactory package
 Functions to work with javascript experiments
 
 '''
 
-from efactory.utils import find_directories, remove_unicode_dict
+from expfactory.utils import find_directories, remove_unicode_dict
 from glob import glob
 import json
 import os
 
 
 def get_validation_fields():
-    """
+    """get_validation_fields
     Returns a list of tuples (each a field)
-      required for a valid json
-      (field,value,type)
+    ..note:: 
+          specifies fields required for a valid json
+          (field,value,type)
           field: the field name
           value: indicates minimum required entires
+                 0: not required, no warning
+                 1: required, not valid
+                 2: not required, warning      
           type: indicates the variable type
 
     """
-    return [("doi",0,str),
+    return [("doi",2,str),
             ("run",1,list),
-            ("name",0,str), 
+            ("name",2,str), 
             ("contributors",0,str),
             ("time",1,int), 
             ("notes",0,str),
-            ("reference",0,str), 
+            ("reference",2,str), 
             ("lab",0,str), 
             ("cognitive_atlas_concept_id",1,str), 
-            ("cognitive_atlas_concept",0,str),
+            ("cognitive_atlas_concept",2,str),
             ("tag",1,str),
-            ("cognitive_atlas_task_id",0,str),
+            ("cognitive_atlas_task_id",2,str),
             ("publish",1,str)]
+
 
 def notvalid(reason):
     print reason
     return False
 
+def warning(reason):
+    print reason
 
-def validate(experiment_folder):
-    """
-    validate:
+def validate(experiment_folder,warning=True):
+    """validate
     takes an experiment folder, and looks for validation based on:
 
     - config.json
@@ -50,39 +56,62 @@ def validate(experiment_folder):
     All fields should be defined, but for now we just care about run scripts
     """
 
-    #TODO:
-    # check publish variable
-    # issue warnings for empty fields
-    # check that tag corresponds with folder name
-    meta = load_experiment(experiment_folder)
+    try:
+        meta = load_experiment(experiment_folder)
+        experiment_name = os.path.basename(experiment_folder)
+    except:
+        return notvalid("%s: config.json is not loadable." %(experiment_folder))
+
     if len(meta)>1:
-        return notvalid("config.json has length > 1, not valid.")
+        return notvalid("%s: config.json has length > 1, not valid." %(experiment_folder))
     fields = get_validation_fields()
+
     for field,value,ftype in fields:
-        if value != 0:
-            # Field must exist in the keys
-            if field not in meta[0].keys():
-                return notvalid("config.json is missing field %s" %(field))
+
+        # Field must be in the keys
+        if field not in meta[0].keys():
+            return notvalid("%s: config.json is missing field %s" %(experiment_name,field))
+
+        # Tag must correspond with folder name
+        if field == "tag":
+            if meta[0][field] != experiment_name:
+                return notvalid("%s: tag parameter %s does not match folder name." %(experiment_name,meta[0][field]))
+
+
+        # Check if experiment is production ready
+        if field == "publish":
+            if meta[0][field] == "False":
+                return notvalid("%s: config.json specifiesnot production ready." %experiment_name)
+
+        # Below is for required parameters
+        if value == 1:
             if meta[0][field] == "":
-                return notvalid("config.json must be defined for field %s" %(field))
+                return notvalid("%s: config.json must be defined for field %s" %(experiment_name,field))
             # Field value must have minimum of value entries
             if not isinstance(meta[0][field],list):
                 tocheck = [meta[0][field]]
             else:
                 tocheck = meta[0][field]
             if len(tocheck) < value:
-                return notvalid("config.json must have >= %s for field %s" %(value,field))
+                return notvalid("%s: config.json must have >= %s for field %s" %(experiment_name,value,field))
+        
+        # Below is for warning parameters
+        elif value == 2:
+            if meta[0][field] == "":
+                if warning == True:
+                    warning("WARNING: config.json is missing value for field %s: %s" %(field,experiment_name))
+
         # Run must be a list of strings
         if field == "run":
             # Is it a list?
             if not isinstance(meta[0][field],ftype):
-                return notvalid("field %s must be %s" %(field,ftype))
+                return notvalid("%s: field %s must be %s" %(experiment_name,field,ftype))
             # Is each script in the list a string?
             for script in meta[0][field]:
                 # If we have a single file, is it in the experiment folder?
                 if len(script.split("/")) == 1:
                     if not os.path.exists("%s/%s" %(experiment_folder,script)):
-                        return notvalid("%s is missing in %s." %(script,experiment_folder))
+                        return notvalid("%s: %s is specified in config.json but missing." %(experiment_name,script))
     return True   
 
 
@@ -138,3 +167,4 @@ def load_experiment(experiment_folder):
         return [meta]
     except ValueError as e:
         print "Problem reading config.json, %s" %(e)
+        raise

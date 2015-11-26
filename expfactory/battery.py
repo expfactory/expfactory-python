@@ -1,33 +1,25 @@
 '''
-battery.py: part of efactory package
+battery.py: part of expfactory package
 Functions to generate batteries
 
 '''
-from efactory.experiment import get_experiments, load_experiment
-from efactory.utils import copy_directory, get_template, \
+from expfactory.experiment import get_experiments, load_experiment
+from expfactory.utils import copy_directory, get_template, \
      sub_template, get_installdir, save_template
-from efactory.vm import custom_battery_download
+from expfactory.vm import custom_battery_download
 import os
 import re
 
 
 def generate(battery_dest,battery_repo=None,experiment_repo=None,experiments=None,config=None,make_config=True):
-    '''
-    generate will create a battery from a template
-    and list of experiments
-
-        battery_dest [required] is the output folder for your battery. This folder MUST NOT EXIST.
-        battery_repo: location of psiturk-battery repo to use as a template. If not specified, will be
-                      downloaded to a temporary directory
-        experiment_repo: location of a efactory-experiments repo to check for valid experiments. If not specified, will be
-                      downloaded to a temporary directory
-        experiments: a list of experiments, meaning the "tag" variable in the config.json, to include. This variable also
-                     conincides with the experiment folder name.
-        config: A dictionary with keys that coincide with parameters in the config.txt file for a efactory experiment. If not provided,
-                     a dummy config will be generated.
-        make_config: A boolean (default True) to control generation of the config. If there is a config generated before calling this
-                     function, this should be set to False.
-
+    '''generate
+    will create a battery from a template and list of experiments
+    :param battery_dest: [required] is the output folder for your battery. This folder MUST NOT EXIST.
+    :param battery_repo: location of psiturk-battery repo to use as a template. If not specified, will be downloaded to a temporary directory
+    :param experiment_repo: location of a expfactory-experiments repo to check for valid experiments. If not specified, will be downloaded to a temporary directory
+    :param experiments: a list of experiments, meaning the "tag" variable in the config.json, to include. This variable also conincides with the experiment folder name.
+    :param config: A dictionary with keys that coincide with parameters in the config.txt file for a expfactory experiment. If not provided, a dummy config will be generated.
+    :param make_config: A boolean (default True) to control generation of the config. If there is a config generated before calling this function, this should be set to False.
     '''
     # We can only generate a battery to a folder that does not exist, to be safe
     if not os.path.exists(battery_dest):
@@ -58,17 +50,12 @@ def generate(battery_dest,battery_repo=None,experiment_repo=None,experiments=Non
 
         
 def template_experiments(battery_dest,battery_repo,valid_experiments,template_file=None):
-    '''
-    template_experiments:
-    For each valid experiment, copies the entire folder into the battery destination
-    directory, and generates templates with appropriate paths to run them
-
-        battery_dest: full path to destination folder of battery
-        battery_repo: full path to psiturk-battery repo template
-        valid_experiments: a list of full paths to experiment folders to include
-        template_file: the load_experiments.js template file. If not specified,
-                       the file from the battery repo is used.
-
+    '''template_experiments:
+    For each valid experiment, copies the entire folder into the battery destination directory, and generates templates with appropriate paths to run them
+    :param battery_dest: full path to destination folder of battery
+    :param battery_repo: full path to psiturk-battery repo template
+    :param valid_experiments: a list of full paths to experiment folders to include
+    :param template_file: the load_experiments.js template file. If not specified, the file from the battery repo is used.
     '''
     # Generate run template, make substitutions
     if template_file == None:
@@ -88,11 +75,10 @@ def template_experiments(battery_dest,battery_repo,valid_experiments,template_fi
 
 
 def move_experiments(valid_experiments,battery_dest):
-    '''
+    '''move_experiments
     Moves valid experiments into the experiments folder in battery repo
-    
-        valid_experiments: a list of full paths to valid experiments
-        battery_dest: full path to battery destination folder
+    :param valid_experiments: a list of full paths to valid experiments
+    :param battery_dest: full path to battery destination folder
     '''
 
     moved_experiments = []
@@ -107,15 +93,10 @@ def move_experiments(valid_experiments,battery_dest):
 
 
 def generate_config(battery_dest,fields):
-    '''
-    generate_config
-    takes a dictionary, and for matching fields, substitues and prints
-    to "config.txt" in a specified battery directory
-
-      battery_dest: should be the copied, skeleton battery folder in generation
-      fields: should be a dictionary with fields that match those in the config
-              non matching fields will be ignored.
-
+    '''generate_config
+    takes a dictionary, and for matching fields, substitues and prints to "config.txt" in a specified battery directory
+    :param battery_dest: should be the copied, skeleton battery folder in generation
+    :param fields: should be a dictionary with fields that match those in the config non matching fields will be ignored.
     '''
     config = get_config()
     # Convert dictionaries back to string
@@ -133,8 +114,8 @@ def generate_config(battery_dest,fields):
 
 
 def get_config():
-    '''
-    get_config: load in a dummy config file from efactory
+    '''get_config
+    load in a dummy config file from expfactory
     '''
 
     module_path = get_installdir()
@@ -151,13 +132,13 @@ def get_config():
 
 
 def get_load_js(valid_experiments):
-    '''
+    '''get_load_js
     Return javascript to load list of valid experiments, based on psiturk.json
-    
-        valid_experiments: a list of full paths to valid experiments to include
+    :param valid_experiments: a list of full paths to valid experiments to include
 
-    Format is:
-    {
+    ..note::
+        Format is:
+         {
 		case "simple_rt":
 			loadjscssfile("static/css/experiments/simple_rt.css","css")
 			loadjscssfile("static/js/experiments/simple_rt.js","js")
@@ -167,8 +148,9 @@ def get_load_js(valid_experiments):
 			loadjscssfile("static/js/experiments/choice_rt.js","js")
 			break;
 
-    ...
-    }
+          ...
+          }
+
     '''
     loadstring = "\n"
     for valid_experiment in valid_experiments:
@@ -188,10 +170,11 @@ def get_load_js(valid_experiments):
 
 
 def get_concat_js(valid_experiments):
-    '''
+    '''get_concat_js
     Return javascript concat section for valid experiments, based on psiturk.json
+    :param valid_experiments: full paths to valid experiments to include
 
-        valid_experiments: full paths to valid experiments to include
+    ..note::
 
 			case "simple-rt":
 				experiments = experiments.concat(simple-rt_experiment)
@@ -200,7 +183,7 @@ def get_concat_js(valid_experiments):
 				experiments = experiments.concat(choice-rt_experiment)
 				break;
 
-    Format for experiment variables is [tag]_experiment
+               Format for experiment variables is [tag]_experiment
 
     '''
     concatjs = "\n"
@@ -213,12 +196,17 @@ def get_concat_js(valid_experiments):
     return concatjs
 
 def get_timing_js(valid_experiments):
-    '''
-    Produce string (json / dictionary) of experiment timings in the format:
-     {name:"simple_rt", time: 3.5}, {name:"choice_rt", time: 4}, ...
-    
-        valid_experiments: a list of full paths to valid experiments to include
+    '''get_timing_js
+    Produce string (json / dictionary) of experiment timings
+    :param valid_experiments: a list of full paths to valid experiments to include
 
+    ..note::
+
+         Produces the following format for each experiment
+
+         {name:"simple_rt", time: 3.5}, {name:"choice_rt", time: 4}, ...
+    
+    
     '''
     timingjs = []
     for valid_experiment in valid_experiments:

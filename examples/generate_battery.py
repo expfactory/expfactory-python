@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-from efactory.battery import generate
+from expfactory.battery import generate
 
 # Location of battery repo, and experiment repo
 # In future, these will not be required
