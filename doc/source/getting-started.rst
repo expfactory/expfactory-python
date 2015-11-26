@@ -8,6 +8,7 @@ You can generate a battery, meaning a psiturk experiment folder that may include
 
 How do I choose a deployment?
 '''''''''''''''''''''''''''''
+
 If you already have psiturk configured on your local machine and basically want to produce a folder to run, then you should choose the "Folder" option for deployment. If you do not specify database parameters, the default is to generate a sqlite3 file (a static database file in the same folder as your experiment).
 
 If you want to use psiturk but don't want to install things on your local machine, a vagrant virtual machine would be appropriate. This means that you will ssh into the machine to "see" the folder with your experiment, and all required software and databases will be installed for you. The default IP address you will use to access the virtual machine in your browser is 192.128.0.20.
@@ -17,10 +18,12 @@ If you want a deployment that, for example, your lab could use to run many parti
 
 Battery Generation
 ''''''''''''''''''
+
 A battery of experiments is a selection of experimental paradigms that are presented in sequence. In the psiturk experiment infrastructure, a battery would coincide with a single folder that contains a custom setup to run many different tasks for a single HIT. We have made it easy to select one or more experiments from http://www.github.com/expfactory/expfactory-experiments, merge them into a `expfactory battery <http://www.github.com/expfactory/expfactory-battery>`_, and deploy in a `virtual machine <http://www.github.com/expfactory/expfactory-vm>`_. 
 
 0. Install psiturk
 ..................
+
 Before getting started, you should familiarize yourself with [psiturk](https://psiturk.org/quick_start/). Likely you will be interested in setting up an experiment on your local machine, and so you should follow the installation instructions and go through the entire demo to make sure things are working properly.
 
 
@@ -70,7 +73,8 @@ This means that you should open your browser to `localhost:5000`. The web interf
 
 A. Collection of experiment details
 ...................................
-A psiturk experiment is controlled via a config.json file, in which you specify details of your experiment. Here we will collect those fields:
+
+An experiment is controlled via a config.json file, in which you specify details of your experiment. Here we will collect those fields:
 
 .. image:: _static/img/getting-started/1config.png
 
@@ -86,6 +90,7 @@ All fields are required. Specifically:
 
 B. Database connection parameters
 .................................
+
 If you don't know anything about databases, you should let expfactory set up the database for you. In the case of a local folder, this will mean an sqlite3 file. In the case of a virtual machine or cloud (AWS) deployment, expfactory will configure a mysql database on the same server.
 
 .. image:: _static/img/getting-started/2database.png
@@ -101,6 +106,7 @@ Psiturkpy does not test these parameters for you.
 
 C. Deployment
 .............
+
 You have several deployment options, including a local folder, a virtual machine (vagrant), or a cloud deployment (Amazon Web Services, or AWS).
 
 .. image:: _static/img/getting-started/3deployment.png
@@ -109,6 +115,7 @@ Choosing "folder" will generate a local experiment, and either of the virtual ma
 
 D. Experiment selection
 .......................
+
 When you click "Next" on part C above, behind the scenes the battery and experiment folders are downloading, and the most updated set of experiments are run through a validator. In this experiment selection screen, you are presented with experiment folders from http://www.github.com/expfactory/expfactory-experiments repo that pass validation:
 
 .. image:: _static/img/getting-started/4experiments.png
@@ -131,6 +138,7 @@ In the case of a "vagrant" or "AWS" configuration, you will find a `Vagrantfile`
 
 Vagrant Deployment
 ''''''''''''''''''
+
 One of the options is to produce a "Vagrantfile" for use on your local machine. This is ideal if you want to use psiturk locally, but don't want to go through installation of the module or a database. 
 
 Setting up a local VM
@@ -179,6 +187,7 @@ The above shows a successful build.
 
 Deployment to AWS
 .................
+
 You can equivalently produce a Vagrantfile with the expfactory module that can be deployed to AWS. Some expertise is assumed, namely that you are familiar with the EC2 section of the `AWS console <http://console.aws.amazon.com>`_. You will need to log in and create a security group, download a key, and fill in all variables required in the SCRIPT section of the Vagrantfile. 
 
  1. Make sure you have the most up-to-date version of vagrant from https://www.vagrantup.com/downloads, and install vagrant-aws. If you do not, you will see this error (version 1.6.5)
@@ -231,18 +240,19 @@ A few important notes:
 
 I want to view or test available experiments
 --------------------------------------------
+
 We provide static versions of all experiments, along with meta-data, in our `expfactory-experiments <http://expfactory.github.io/expfactory-experiments>`_ github pages.
 
 I want to contribute an experiment
 ----------------------------------
+
 All of the experiments that can be selected from http://www.github.com/expfactory/expfactory-experiments can be selected to include in a battery, and you can contribute an experiment.
 
-Contributing an experiment
-++++++++++++++++++++++++++
 All of the experiments that can be selected from http://www.github.com/expfactory/expfactory-experiments can be selected to include in a battery, and you can contribute an experiment by submitting a PR to the repo to add a folder with your experiment. More complete details about the format of the config.json file that is required to describe the experiment will come soon.
 For now, use the other experiments as example.
 
 
 I want to learn about the expfactory-python functions
 -----------------------------------------------------
+
 The generation of the batteries, along with experiment validation, and virtual machine deployment, are controlled by the expfactory-python functions. You can see complete function documentation under :ref:`modindex`, and we welcome any contributions to the code base via Github pull requests (PRs) or `isses <http://www.github.com/expfactory/expfactory-python/issues>`_.

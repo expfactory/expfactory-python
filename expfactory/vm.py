@@ -10,13 +10,10 @@ import shutil
 import os
 
 def download_repo(repo_type,destination):
-    '''
-
+    '''download_repo
     Download a expfactory infrastructure repo "repo_type" to a "destination"
-  
-       repo_type: can be one of "experiments" "battery" "vm"
-       destination: the full path to the destination for the repo
-
+    :param repo_type: can be one of "experiments" "battery" "vm"
+    :param destination: the full path to the destination for the repo
     '''
     acceptable_types = ["experiments","battery","vm"]
     if repo_type not in acceptable_types:
@@ -26,16 +23,10 @@ def download_repo(repo_type,destination):
 
 
 def custom_battery_download(tmpdir=None,repos=["experiments","battery"]):
-    '''
-
-    custom_battery_download
-
-    Download battery and experiment repos to a temporary folder to build a custom
-    battery, return the path to the tmp folders
-
-        tmpdir: The directory to download to. If none, a temporary directory will be made
-        repos: The repositories to download, valid choices are "experiments" "battery" and "vm"
-
+    '''custom_battery_download
+    Download battery and experiment repos to a temporary folder to build a custom battery, return the path to the tmp folders
+    :param tmpdir: The directory to download to. If none, a temporary directory will be made
+    :param repos: The repositories to download, valid choices are "experiments" "battery" and "vm"
     '''
     if not tmpdir:
         tmpdir = tempfile.mkdtemp()
@@ -45,27 +36,23 @@ def custom_battery_download(tmpdir=None,repos=["experiments","battery"]):
 
 
 def add_custom_logo(battery_repo,logo):
-    '''
-    
+    '''add_custom_logo
     Add a custom logo to the vm battery
-
-        battery_repo: the full path to the battery repo base, assumed to have an "img" folder
-        logo: the full path to the logo to copy. Should ideally be png.
+    :param battery_repo: the full path to the battery repo base, assumed to have an "img" folder
+    :param logo: the full path to the logo to copy. Should ideally be png.
     '''
     shutil.copy(logo,"%s/img/logo.png" %(battery_repo))
     
 
 def generate_database_url(dbtype=None,username=None,password=None,host=None,table=None,template=None):
-    '''
+    '''generate_database_url
     Generate a database url from input parameters, or get a template
-        dbtype: the type of database, must be one of "mysql" or "postgresql"
-        username: username to connect to the database
-        password: password to connect to the database
-        host: database host
-        table: table in the database
-        template: can be one of "mysql" "sqlite3" or "postgresql" If specified, all other parameters are
-                  ignored, and a default database URL is produced to work in a Vagrant VM produced by
-                  expfactory
+    :param dbtype: the type of database, must be one of "mysql" or "postgresql"
+    :param username: username to connect to the database
+    :param password: password to connect to the database
+    :param host: database host
+    :para table: table in the database
+    :param template: can be one of "mysql" "sqlite3" or "postgresql" If specified, all other parameters are ignored, and a default database URL is produced to work in a Vagrant VM produced by expfactory
     
     '''
     if not template:
@@ -85,15 +72,13 @@ def generate_database_url(dbtype=None,username=None,password=None,host=None,tabl
         return "postgresql://expfactory:expfactory@localhost:5432/expfactory"
 
 def prepare_vm(battery_dest,fields=None,vm_repo=None,vm_type="vagrant"):
-    '''
+    '''prepare_vm
     Prepare virtual machine to run local with vagrant, or with vagrant-aws
-
-        battery_dest: the battery destination folder
-        fields: if specified, will be added to the config.txt
-        vm_repo: the expfactory-vm repo to use for templates. If not provided,
-                 one will be downloaded to a temporary directory for use.
-        vm_type: one of "vagrant" or "aws" Default is "vagrant" meaning a local
-                 virtual machine with vagrant.
+    :param battery_dest: the battery destination folder
+    :param fields: if specified, will be added to the config.txt
+    :param vm_repo: the expfactory-vm repo to use for templates. If not provided, one will be downloaded to a temporary directory for use.
+    :param vm_type: one of "vagrant" or "aws" Default is "vagrant" meaning a localvirtual machine with vagrant.
+    
     '''
 
     # Download vm_repo if it hasn't been specified
@@ -121,11 +106,10 @@ def prepare_vm(battery_dest,fields=None,vm_repo=None,vm_type="vagrant"):
     return template
 
 def specify_experiments(battery_dest,experiments):
-    '''
+    '''specify_experiments
     Specify experiments for a Vagrantfile in an output folder
-
-        battery_dest: destination folder for battery
-        experiments: a list of experiment tags to include
+    :param battery_dest: destination folder for battery
+    :param experiments: a list of experiment tags to include
 
     '''
     experiments = [e.encode("utf-8") for e in experiments]
