@@ -11,9 +11,11 @@ import os
 
 
 def get_validation_fields():
-    """get_validation_fields
+    '''get_validation_fields
     Returns a list of tuples (each a field)
+
     ..note:: 
+
           specifies fields required for a valid json
           (field,value,type)
           field: the field name
@@ -23,7 +25,7 @@ def get_validation_fields():
                  2: not required, warning      
           type: indicates the variable type
 
-    """
+    '''
     return [("doi",2,str),
             ("run",1,list),
             ("name",2,str), 
@@ -47,14 +49,20 @@ def warning(reason):
     print reason
 
 def validate(experiment_folder,warning=True):
-    """validate
-    takes an experiment folder, and looks for validation based on:
+    '''validate
+    :param experiment_folder: full path to experiment folder with config.json
+    :param warning: issue a warning for empty fields with level 2 (warning)
 
-    - config.json
-    - files existing specified in config.json
+    ..note::
 
-    All fields should be defined, but for now we just care about run scripts
-    """
+        takes an experiment folder, and looks for validation based on:
+    
+        - config.json
+        - files existing specified in config.json
+
+        All fields should be defined, but for now we just care about run scripts
+    
+    '''
 
     try:
         meta = load_experiment(experiment_folder)
@@ -116,15 +124,12 @@ def validate(experiment_folder,warning=True):
 
 
 def get_experiments(experiment_repo,load=False):
-    """
-    get_experiments
-    return loaded json for all valid experiments from an 
-    experiment folder
-        experiment_repo: full path to the experiments repo
-        load: if True, returns a list of loaded config.json objects
-              if False (default) returns the paths to the experiments
+    '''get_experiments
+    return loaded json for all valid experiments from an experiment folder
+    :param experiment_repo: full path to the experiments repo
+    :param load: if True, returns a list of loaded config.json objects. If False (default) returns the paths to the experiments
 
-    """
+    '''
 
     experiments = find_directories(experiment_repo)
     valid_experiments = [e for e in experiments if validate(e)]
@@ -134,12 +139,10 @@ def get_experiments(experiment_repo,load=False):
     return valid_experiments
 
 def load_experiments(experiment_folders):
-    """
-    load_experiments
-       a wrapper for load_experiment to read multiple experiments
-       experiment_folders: a list of experiment folders to load,
-                           full paths
-    """
+    '''load_experiments
+    a wrapper for load_experiment to read multiple experiments
+    :param experiment_folders: a list of experiment folders to load, full paths
+    '''
     experiments = []
     if isinstance(experiment_folders,str):
         experiment_folders = [experiment_folders]
@@ -149,14 +152,10 @@ def load_experiments(experiment_folders):
     return experiments
 
 def load_experiment(experiment_folder):
-    """
-
-    load_experiment:
-    reads in the config.json for an:
-         
-        experiment folder: full path to experiment folder
-
-    """
+    '''load_experiment:
+    reads in the config.json for an
+    :param experiment folder: full path to experiment folder
+    '''
     fullpath = os.path.abspath(experiment_folder)
     configjson = "%s/config.json" %(fullpath)
     if not os.path.exists(configjson):

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# efactory-python documentation build configuration file, created by
+# expfactory-python documentation build configuration file, created by
 # sphinx-quickstart on Sun Oct 18 11:00:32 2015.
 #
 # This file is execfile()d with the current directory set to its
@@ -282,7 +282,7 @@ man_pages = [
 #  dir menu entry, description, category)
 texinfo_documents = [
   (master_doc, 'expfactory', u'expfactory Documentation',
-   author, 'efactory', 'The Experiment Factory at Poldracklab, Stanford University',
+   author, 'expfactory', 'The Experiment Factory at Poldracklab, Stanford University',
    'Miscellaneous'),
 ]
 
