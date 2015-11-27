@@ -59,7 +59,7 @@ To run the executable to open up a web interface to design your experiment:
 
 You will see that it tells you that it is running at port 5000:
 
-.. image:: _static/img/getting-started/0running.png
+.. image:: static/img/getting-started/0running.png
 
 The Experiment Factory Web Interface
 ''''''''''''''''''''''''''''''''''''
@@ -76,7 +76,7 @@ A. Collection of experiment details
 
 An experiment is controlled via a config.json file, in which you specify details of your experiment. Here we will collect those fields:
 
-.. image:: _static/img/getting-started/1config.png
+.. image:: static/img/getting-started/1config.png
 
 
 All fields are required. Specifically:
@@ -93,13 +93,13 @@ B. Database connection parameters
 
 If you don't know anything about databases, you should let expfactory set up the database for you. In the case of a local folder, this will mean an sqlite3 file. In the case of a virtual machine or cloud (AWS) deployment, expfactory will configure a mysql database on the same server.
 
-.. image:: _static/img/getting-started/2database.png
+.. image:: static/img/getting-started/2database.png
 
 If you are testing, we recommend that you let expfactory set it up for you. For an actual deployment, and especially a cloud deployment, it is essential that you specify custom MySQL or Postgresql database parameters. Letting expfactory set up a cloud deployment means that the connection parameters are available for all to see, and this is a risk to your data and to the privacy of your participants. 
 
 Finally, we do not allow for the option of an sqlite3 database beyond a local folder, because sqlite3 can only handle one read/write at a time, and thus is only appropriate for single-user, local testing. When setting up a database, example parameters are shown below:
 
-.. image:: _static/img/getting-started/2database2.png
+.. image:: static/img/getting-started/2database2.png
 
 Psiturkpy does not test these parameters for you.
 
@@ -109,7 +109,7 @@ C. Deployment
 
 You have several deployment options, including a local folder, a virtual machine (vagrant), or a cloud deployment (Amazon Web Services, or AWS).
 
-.. image:: _static/img/getting-started/3deployment.png
+.. image:: static/img/getting-started/3deployment.png
 
 Choosing "folder" will generate a local experiment, and either of the virtual machine options will produce a Vagrantfile that can be run to deploy the Virtual Machine. Specific instructions for a local vagrant or vagrant-aws are provided. Note that you can use the VagrantfileLocal or VagrantfileAWS file (renamed to Vagrantfile) as is from the `virtual machine <http://www.github.com/expfactory/expfactory-vm>`_ repo to generate a battery with all available, valid experiments.
 
@@ -118,23 +118,23 @@ D. Experiment selection
 
 When you click "Next" on part C above, behind the scenes the battery and experiment folders are downloading, and the most updated set of experiments are run through a validator. In this experiment selection screen, you are presented with experiment folders from http://www.github.com/expfactory/expfactory-experiments repo that pass validation:
 
-.. image:: _static/img/getting-started/4experiments.png
+.. image:: static/img/getting-started/4experiments.png
 
 You can select as many or as few as you want, and they will be included in your custom battery. Note that in the future you will be able to select experiments based on task or concept from the `cognitive atlas <http://www.cognitiveatlas.org>`_.
 
 After experiment selection, your battery generation is complete, and the web interface will tell you where you can find the folder or Vagrantfile:
 
-.. image:: _static/img/getting-started/5complete.png
+.. image:: static/img/getting-started/5complete.png
 
 In the case of a "folder" generation, you will see a standard psiturk experiment structure:
 
-.. image:: _static/img/getting-started/6config.png
+.. image:: static/img/getting-started/6config.png
 
 We recommend you move this folder to where you would like to keep it, and then cd to the folder, and type `psiturk` to start the experiment. Note that this assumes that you have properly installed psiturk on your machine. If not, please return to `these instructions <https://psiturk.org/quick_start/>`_.
 
 In the case of a "vagrant" or "AWS" configuration, you will find a `Vagrantfile` in the output folder:
 
-.. image:: _static/img/getting-started/5vagrantfile.png
+.. image:: static/img/getting-started/5vagrantfile.png
 
 Vagrant Deployment
 ''''''''''''''''''
@@ -165,7 +165,7 @@ We are now in a directory with the Vagrantfile. You can set up the virtual machi
 Note that this can take some time. Keep the lookout for red statements that may indicate an error. If you find an error please report it as an `issue <https://github.com/expfactory/expfactory-vm/issues>`_.
 
 
-.. image:: _static/img/vagrant/0vagrantup.png
+.. image:: static/img/vagrant/0vagrantup.png
 
 
 The above shows a successful build.
