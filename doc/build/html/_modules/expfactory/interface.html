@@ -1,0 +1,363 @@
+
+
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>expfactory.interface &mdash; expfactory 0.0.1 documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+
+  
+    <link rel="top" title="expfactory 0.0.1 documentation" href="../../index.html"/>
+        <link rel="up" title="Module code" href="../index.html"/> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> expfactory
+          
+
+          
+            
+            <img src="../../_static/expfactoryticketyellow.png" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">Tools Available</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting-started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../integrations.html">Integrations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../development.html">Development</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/expfactory">GitHub repository</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../../index.html">expfactory</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+      
+    <li>expfactory.interface</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for expfactory.interface</h1><div class="highlight"><pre>
+<span class="kn">from</span> <span class="nn">expfactory.vm</span> <span class="kn">import</span> <span class="n">custom_battery_download</span><span class="p">,</span> <span class="n">add_custom_logo</span><span class="p">,</span> <span class="n">generate_database_url</span><span class="p">,</span> \
+     <span class="n">prepare_vm</span><span class="p">,</span> <span class="n">specify_experiments</span><span class="p">,</span> <span class="n">download_repo</span>
+<span class="kn">from</span> <span class="nn">expfactory.experiment</span> <span class="kn">import</span> <span class="n">validate</span><span class="p">,</span> <span class="n">load_experiment</span><span class="p">,</span> <span class="n">get_experiments</span>
+<span class="kn">from</span> <span class="nn">expfactory.battery</span> <span class="kn">import</span> <span class="n">generate</span><span class="p">,</span> <span class="n">generate_config</span>
+<span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">Flask</span><span class="p">,</span> <span class="n">render_template</span><span class="p">,</span> <span class="n">request</span>
+<span class="kn">from</span> <span class="nn">expfactory.utils</span> <span class="kn">import</span> <span class="n">copy_directory</span>
+<span class="kn">from</span> <span class="nn">werkzeug</span> <span class="kn">import</span> <span class="n">secure_filename</span>
+<span class="kn">import</span> <span class="nn">tempfile</span>
+<span class="kn">import</span> <span class="nn">shutil</span>
+<span class="kn">import</span> <span class="nn">random</span>
+<span class="kn">import</span> <span class="nn">os</span>
+
+<span class="n">app</span> <span class="o">=</span> <span class="n">Flask</span><span class="p">(</span><span class="n">__name__</span><span class="p">)</span>
+<span class="n">app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s">&#39;ALLOWED_EXTENSIONS&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">set</span><span class="p">([</span><span class="s">&#39;png&#39;</span><span class="p">,</span> <span class="s">&#39;jpg&#39;</span><span class="p">,</span> <span class="s">&#39;jpeg&#39;</span><span class="p">,</span><span class="s">&#39;gif&#39;</span><span class="p">])</span>
+    
+<span class="c"># For a given file, return whether it&#39;s an allowed type or not</span>
+<div class="viewcode-block" id="allowed_file"><a class="viewcode-back" href="../../expfactory.html#expfactory.interface.allowed_file">[docs]</a><span class="k">def</span> <span class="nf">allowed_file</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+    <span class="k">return</span> <span class="s">&#39;.&#39;</span> <span class="ow">in</span> <span class="n">filename</span> <span class="ow">and</span> \
+        <span class="n">filename</span><span class="o">.</span><span class="n">rsplit</span><span class="p">(</span><span class="s">&#39;.&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span> <span class="ow">in</span> <span class="n">app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s">&#39;ALLOWED_EXTENSIONS&#39;</span><span class="p">]</span>
+</div>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Get value from a form field</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="get_field"><a class="viewcode-back" href="../../expfactory.html#expfactory.interface.get_field">[docs]</a><span class="k">def</span> <span class="nf">get_field</span><span class="p">(</span><span class="n">request</span><span class="p">,</span><span class="n">fields</span><span class="p">,</span><span class="n">value</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+        <span class="n">fields</span><span class="p">[</span><span class="n">value</span><span class="p">]</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="p">[</span><span class="n">value</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">fields</span>
+</div>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Main function for starting interface to generate a battery</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="c"># Step 0: User is presented with base interface</span>
+<span class="nd">@app.route</span><span class="p">(</span><span class="s">&#39;/&#39;</span><span class="p">)</span>
+<div class="viewcode-block" id="start"><a class="viewcode-back" href="../../expfactory.html#expfactory.interface.start">[docs]</a><span class="k">def</span> <span class="nf">start</span><span class="p">():</span>
+    <span class="n">tmpdir</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">mkdtemp</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s">&#39;index.html&#39;</span><span class="p">,</span><span class="n">tmpdir</span><span class="o">=</span><span class="n">tmpdir</span><span class="p">)</span>
+
+
+<span class="c"># STEP 1: Validation of user input for battery</span></div>
+<span class="nd">@app.route</span><span class="p">(</span><span class="s">&#39;/validate&#39;</span><span class="p">,</span><span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;POST&#39;</span><span class="p">])</span>
+<div class="viewcode-block" id="validate"><a class="viewcode-back" href="../../expfactory.html#expfactory.interface.validate">[docs]</a><span class="k">def</span> <span class="nf">validate</span><span class="p">():</span>
+    <span class="n">logo</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s">&#39;POST&#39;</span><span class="p">:</span>
+        <span class="n">fields</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">field</span><span class="p">,</span><span class="n">value</span> <span class="ow">in</span> <span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">field</span> <span class="o">==</span> <span class="s">&quot;tmpdir&quot;</span><span class="p">:</span>
+                <span class="n">tmpdir</span> <span class="o">=</span> <span class="n">value</span>
+            <span class="k">elif</span> <span class="n">field</span> <span class="o">==</span> <span class="s">&quot;dbsetupchoice&quot;</span><span class="p">:</span>
+                <span class="n">dbsetupchoice</span> <span class="o">=</span> <span class="n">value</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">fields</span><span class="p">[</span><span class="n">field</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+
+        <span class="c"># DATABASE SETUP ###################################################</span>
+        <span class="c"># If the user wants to generate a custom database:</span>
+        <span class="k">if</span> <span class="n">dbsetupchoice</span> <span class="o">==</span> <span class="s">&quot;manual&quot;</span><span class="p">:</span>
+
+            <span class="c"># Generate a database url from the inputs</span>
+            <span class="n">fields</span><span class="p">[</span><span class="s">&quot;database_url&quot;</span><span class="p">]</span> <span class="o">=</span>  <span class="n">generate_database_url</span><span class="p">(</span><span class="n">dbtype</span><span class="o">=</span><span class="n">fields</span><span class="p">[</span><span class="s">&quot;dbtype&quot;</span><span class="p">],</span>
+                                                 <span class="n">username</span><span class="o">=</span><span class="n">fields</span><span class="p">[</span><span class="s">&quot;dbusername&quot;</span><span class="p">],</span>
+                                                 <span class="n">password</span><span class="o">=</span><span class="n">fields</span><span class="p">[</span><span class="s">&quot;dbpassword&quot;</span><span class="p">],</span>
+                                                 <span class="n">host</span><span class="o">=</span><span class="n">fields</span><span class="p">[</span><span class="s">&quot;dbhost&quot;</span><span class="p">],</span>
+                                                 <span class="n">table</span><span class="o">=</span><span class="n">fields</span><span class="p">[</span><span class="s">&quot;dbtable&quot;</span><span class="p">])</span> 
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c"># If generating a folder, use sqlite3</span>
+            <span class="k">if</span> <span class="n">fields</span><span class="p">[</span><span class="s">&quot;deploychoice&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s">&quot;folder&quot;</span><span class="p">:</span>
+                <span class="n">fields</span><span class="p">[</span><span class="s">&quot;database_url&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">generate_database_url</span><span class="p">(</span><span class="n">template</span><span class="o">=</span><span class="s">&quot;sqlite3&quot;</span><span class="p">)</span>       
+            <span class="c"># Otherwise, use postgres</span>
+            <span class="k">else</span><span class="p">:</span> 
+                <span class="n">fields</span><span class="p">[</span><span class="s">&quot;database_url&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">generate_database_url</span><span class="p">(</span><span class="n">template</span><span class="o">=</span><span class="s">&quot;mysql&quot;</span><span class="p">)</span>       
+        
+        <span class="c"># LOCAL FOLDER #####################################################</span>
+        <span class="k">if</span> <span class="n">fields</span><span class="p">[</span><span class="s">&quot;deploychoice&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s">&quot;folder&quot;</span><span class="p">:</span>
+
+            <span class="c"># Prepare temp folder with battery and experiments</span>
+            <span class="n">custom_battery_download</span><span class="p">(</span><span class="n">tmpdir</span><span class="o">=</span><span class="n">tmpdir</span><span class="p">)</span>
+
+            <span class="c"># Copy the custom logo</span>
+            <span class="k">if</span> <span class="s">&quot;file&quot;</span> <span class="ow">in</span> <span class="n">request</span><span class="o">.</span><span class="n">files</span> <span class="ow">and</span> <span class="n">allowed_file</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">files</span><span class="p">[</span><span class="s">&quot;file&quot;</span><span class="p">]):</span>
+                <span class="n">logo</span> <span class="o">=</span> <span class="n">secure_filename</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">files</span><span class="p">[</span><span class="s">&quot;file&quot;</span><span class="p">])</span>
+                <span class="n">add_custom_logo</span><span class="p">(</span><span class="n">battery_repo</span><span class="o">=</span><span class="s">&quot;</span><span class="si">%s</span><span class="s">/battery&quot;</span> <span class="o">%</span><span class="p">(</span><span class="n">tmpdir</span><span class="p">),</span><span class="n">logo</span><span class="o">=</span><span class="n">logo</span><span class="p">)</span>
+    
+            <span class="c"># Generate battery folder with config file with parameters</span>
+            <span class="n">generate_config</span><span class="p">(</span><span class="s">&quot;</span><span class="si">%s</span><span class="s">/battery&quot;</span> <span class="o">%</span><span class="p">(</span><span class="n">tmpdir</span><span class="p">),</span><span class="n">fields</span><span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span> 
+            <span class="n">prepare_vm</span><span class="p">(</span><span class="n">battery_dest</span><span class="o">=</span><span class="n">tmpdir</span><span class="p">,</span><span class="n">fields</span><span class="o">=</span><span class="n">fields</span><span class="p">,</span><span class="n">vm_type</span><span class="o">=</span><span class="n">fields</span><span class="p">[</span><span class="s">&quot;deploychoice&quot;</span><span class="p">])</span>
+            <span class="n">download_repo</span><span class="p">(</span><span class="s">&quot;experiments&quot;</span><span class="p">,</span><span class="s">&quot;</span><span class="si">%s</span><span class="s">/experiments/&quot;</span> <span class="o">%</span><span class="p">(</span><span class="n">tmpdir</span><span class="p">))</span>
+
+        <span class="c"># Get valid experiments to present to user</span>
+        <span class="n">valid_experiments</span> <span class="o">=</span> <span class="n">get_experiments</span><span class="p">(</span><span class="s">&quot;</span><span class="si">%s</span><span class="s">/experiments/&quot;</span> <span class="o">%</span><span class="p">(</span><span class="n">tmpdir</span><span class="p">),</span><span class="n">load</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s">&#39;experiments.html&#39;</span><span class="p">,</span>
+                                <span class="n">experiments</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">valid_experiments</span><span class="p">),</span>
+                                <span class="n">this_many</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">valid_experiments</span><span class="p">),</span>
+                                <span class="n">tmpdir</span><span class="o">=</span><span class="n">tmpdir</span><span class="p">,</span>
+                                <span class="n">deploychoice</span><span class="o">=</span><span class="n">fields</span><span class="p">[</span><span class="s">&quot;deploychoice&quot;</span><span class="p">])</span>
+
+    <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s">&#39;index.html&#39;</span><span class="p">)</span>
+
+<span class="c"># STEP 2: User must select experiments</span></div>
+<span class="nd">@app.route</span><span class="p">(</span><span class="s">&#39;/select&#39;</span><span class="p">,</span><span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;POST&#39;</span><span class="p">])</span>
+<div class="viewcode-block" id="select"><a class="viewcode-back" href="../../expfactory.html#expfactory.interface.select">[docs]</a><span class="k">def</span> <span class="nf">select</span><span class="p">():</span>
+    <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s">&#39;POST&#39;</span><span class="p">:</span>
+        <span class="n">fields</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">field</span><span class="p">,</span><span class="n">value</span> <span class="ow">in</span> <span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">field</span> <span class="o">==</span> <span class="s">&quot;tmpdir&quot;</span><span class="p">:</span>
+                <span class="n">tmpdir</span> <span class="o">=</span> <span class="n">value</span>
+            <span class="k">elif</span> <span class="n">field</span> <span class="o">==</span> <span class="s">&quot;deploychoice&quot;</span><span class="p">:</span>
+                <span class="n">deploychoice</span> <span class="o">=</span> <span class="n">value</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">fields</span><span class="p">[</span><span class="n">field</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+
+        <span class="c"># Retrieve experiment folders </span>
+        <span class="n">valid_experiments</span> <span class="o">=</span> <span class="n">get_experiments</span><span class="p">(</span><span class="s">&quot;</span><span class="si">%s</span><span class="s">/experiments&quot;</span> <span class="o">%</span><span class="p">(</span><span class="n">tmpdir</span><span class="p">),</span><span class="n">load</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+        <span class="n">experiments</span> <span class="o">=</span>  <span class="p">[</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s">&quot;tag&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">valid_experiments</span><span class="p">]</span>
+        <span class="n">selected_experiments</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">fields</span><span class="o">.</span><span class="n">values</span><span class="p">()</span> <span class="k">if</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">experiments</span><span class="p">]</span>
+        <span class="n">experiment_folders</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;</span><span class="si">%s</span><span class="s">/experiments/</span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span><span class="p">(</span><span class="n">tmpdir</span><span class="p">,</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">selected_experiments</span><span class="p">]</span>
+
+        <span class="c"># Option 1: A folder on the local machine</span>
+        <span class="k">if</span> <span class="n">deploychoice</span> <span class="o">==</span> <span class="s">&quot;folder&quot;</span><span class="p">:</span>
+
+            <span class="c"># Add to the battery</span>
+            <span class="n">generate</span><span class="p">(</span><span class="n">battery_dest</span><span class="o">=</span><span class="s">&quot;</span><span class="si">%s</span><span class="s">/expfactory-battery&quot;</span><span class="o">%</span><span class="n">tmpdir</span><span class="p">,</span>
+                     <span class="n">battery_repo</span><span class="o">=</span><span class="s">&quot;</span><span class="si">%s</span><span class="s">/battery&quot;</span><span class="o">%</span><span class="n">tmpdir</span><span class="p">,</span>
+                     <span class="n">experiments</span><span class="o">=</span><span class="n">experiment_folders</span><span class="p">,</span>
+                     <span class="n">make_config</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+
+            <span class="n">battery_dest</span> <span class="o">=</span> <span class="s">&quot;</span><span class="si">%s</span><span class="s">/expfactory-battery&quot;</span> <span class="o">%</span><span class="p">(</span><span class="n">tmpdir</span><span class="p">)</span>
+
+        <span class="c"># Option 2 or 3: Virtual machine (vagrant) or cloud (aws)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">specify_experiments</span><span class="p">(</span><span class="n">battery_dest</span><span class="o">=</span><span class="n">tmpdir</span><span class="p">,</span><span class="n">experiments</span><span class="o">=</span><span class="n">selected_experiments</span><span class="p">)</span>
+            <span class="n">battery_dest</span> <span class="o">=</span> <span class="n">tmpdir</span> 
+
+        <span class="c"># Clean up</span>
+        <span class="n">clean_up</span><span class="p">(</span><span class="s">&quot;</span><span class="si">%s</span><span class="s">/experiments&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">tmpdir</span><span class="p">))</span>
+        <span class="n">clean_up</span><span class="p">(</span><span class="s">&quot;</span><span class="si">%s</span><span class="s">/battery&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">tmpdir</span><span class="p">))</span>
+        <span class="n">clean_up</span><span class="p">(</span><span class="s">&quot;</span><span class="si">%s</span><span class="s">/vm&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">tmpdir</span><span class="p">))</span>        
+
+        <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s">&#39;complete.html&#39;</span><span class="p">,</span><span class="n">battery_dest</span><span class="o">=</span><span class="n">battery_dest</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s">&#39;index.html&#39;</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="clean_up"><a class="viewcode-back" href="../../expfactory.html#expfactory.interface.clean_up">[docs]</a><span class="k">def</span> <span class="nf">clean_up</span><span class="p">(</span><span class="n">dirpath</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">dirpath</span><span class="p">):</span>
+        <span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span><span class="p">(</span><span class="n">dirpath</span><span class="p">)</span>
+
+
+<span class="c"># This is how the command line version will run</span></div>
+<div class="viewcode-block" id="main"><a class="viewcode-back" href="../../expfactory.html#expfactory.interface.main">[docs]</a><span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+    <span class="k">print</span> <span class="s">&quot;Start up the Experiment Factory!&quot;</span>
+    <span class="k">print</span> <span class="s">&quot;Nobody ever comes in... nobody ever comes out...&quot;</span>
+    <span class="n">app</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">host</span><span class="o">=</span><span class="s">&quot;0.0.0.0&quot;</span><span class="p">,</span><span class="n">debug</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    </div>
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">app</span><span class="o">.</span><span class="n">debug</span> <span class="o">=</span> <span class="bp">True</span>
+    <span class="n">app</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">host</span><span class="o">=</span><span class="s">&#39;0.0.0.0&#39;</span><span class="p">)</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015, Poldracklab, Stanford University.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'0.0.1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

@@ -1,0 +1,597 @@
+
+
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>expfactory package &mdash; expfactory 0.0.1 documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="_static/favicon.ico"/>
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+
+  
+    <link rel="top" title="expfactory 0.0.1 documentation" href="index.html"/>
+        <link rel="up" title="Tools Available" href="modules.html"/>
+        <link rel="next" title="Getting Started" href="getting-started.html"/>
+        <link rel="prev" title="Tools Available" href="modules.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> expfactory
+          
+
+          
+            
+            <img src="_static/expfactoryticketyellow.png" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">Tools Available</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="modules.html#expfactory-python">expfactory-python</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modules.html#expfactory-battery">expfactory-battery</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="modules.html#expfactory-experiments">expfactory-experiments</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="modules.html#modules">Modules</a><ul class="current">
+<li class="toctree-l4 current"><a class="current reference internal" href="">expfactory package</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="getting-started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="integrations.html">Integrations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="development.html">Development</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/expfactory">GitHub repository</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="index.html">expfactory</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="modules.html">Tools Available</a> &raquo;</li>
+      
+    <li>expfactory package</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/expfactory.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="expfactory-package">
+<h1>expfactory package<a class="headerlink" href="#expfactory-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-expfactory.battery">
+<span id="expfactory-battery-module"></span><h2>expfactory.battery module<a class="headerlink" href="#module-expfactory.battery" title="Permalink to this headline">¶</a></h2>
+<p>battery.py: part of expfactory package
+Functions to generate batteries</p>
+<dl class="function">
+<dt id="expfactory.battery.generate">
+<code class="descclassname">expfactory.battery.</code><code class="descname">generate</code><span class="sig-paren">(</span><em>battery_dest</em>, <em>battery_repo=None</em>, <em>experiment_repo=None</em>, <em>experiments=None</em>, <em>config=None</em>, <em>make_config=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/expfactory/battery.html#generate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#expfactory.battery.generate" title="Permalink to this definition">¶</a></dt>
+<dd><p>will create a battery from a template and list of experiments
+:param battery_dest: [required] is the output folder for your battery. This folder MUST NOT EXIST.
+:param battery_repo: location of psiturk-battery repo to use as a template. If not specified, will be downloaded to a temporary directory
+:param experiment_repo: location of a expfactory-experiments repo to check for valid experiments. If not specified, will be downloaded to a temporary directory
+:param experiments: a list of experiments, meaning the &#8220;tag&#8221; variable in the config.json, to include. This variable also conincides with the experiment folder name.
+:param config: A dictionary with keys that coincide with parameters in the config.txt file for a expfactory experiment. If not provided, a dummy config will be generated.
+:param make_config: A boolean (default True) to control generation of the config. If there is a config generated before calling this function, this should be set to False.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="expfactory.battery.generate_config">
+<code class="descclassname">expfactory.battery.</code><code class="descname">generate_config</code><span class="sig-paren">(</span><em>battery_dest</em>, <em>fields</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/expfactory/battery.html#generate_config"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#expfactory.battery.generate_config" title="Permalink to this definition">¶</a></dt>
+<dd><p>takes a dictionary, and for matching fields, substitues and prints to &#8220;config.txt&#8221; in a specified battery directory
+:param battery_dest: should be the copied, skeleton battery folder in generation
+:param fields: should be a dictionary with fields that match those in the config non matching fields will be ignored.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="expfactory.battery.get_concat_js">
+<code class="descclassname">expfactory.battery.</code><code class="descname">get_concat_js</code><span class="sig-paren">(</span><em>valid_experiments</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/expfactory/battery.html#get_concat_js"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#expfactory.battery.get_concat_js" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return javascript concat section for valid experiments, based on psiturk.json
+:param valid_experiments: full paths to valid experiments to include</p>
+<p>..note:</p>
+<div class="highlight-python"><div class="highlight"><pre>         case &quot;simple-rt&quot;:
+                 experiments = experiments.concat(simple-rt_experiment)
+                 break;
+         case &quot;choice-rt&quot;:
+                 experiments = experiments.concat(choice-rt_experiment)
+                 break;
+
+Format for experiment variables is [tag]_experiment
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="expfactory.battery.get_config">
+<code class="descclassname">expfactory.battery.</code><code class="descname">get_config</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/expfactory/battery.html#get_config"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#expfactory.battery.get_config" title="Permalink to this definition">¶</a></dt>
+<dd><p>load in a dummy config file from expfactory</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="expfactory.battery.get_load_js">
+<code class="descclassname">expfactory.battery.</code><code class="descname">get_load_js</code><span class="sig-paren">(</span><em>valid_experiments</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/expfactory/battery.html#get_load_js"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#expfactory.battery.get_load_js" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return javascript to load list of valid experiments, based on psiturk.json
+:param valid_experiments: a list of full paths to valid experiments to include</p>
+<dl class="docutils">
+<dt>..note::</dt>
+<dd><dl class="first last docutils">
+<dt>Format is:</dt>
+<dd><dl class="first last docutils">
+<dt>{</dt>
+<dd><blockquote class="first">
+<div><dl class="docutils">
+<dt>case &#8220;simple_rt&#8221;:</dt>
+<dd>loadjscssfile(&#8220;static/css/experiments/simple_rt.css&#8221;,&#8221;css&#8221;)
+loadjscssfile(&#8220;static/js/experiments/simple_rt.js&#8221;,&#8221;js&#8221;)
+break;</dd>
+<dt>case &#8220;choice_rt&#8221;:</dt>
+<dd>loadjscssfile(&#8220;static/css/experiments/choice_rt.css&#8221;,&#8221;css&#8221;)
+loadjscssfile(&#8220;static/js/experiments/choice_rt.js&#8221;,&#8221;js&#8221;)
+break;</dd>
+</dl>
+</div></blockquote>
+<p class="last">...
+}</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="expfactory.battery.get_timing_js">
+<code class="descclassname">expfactory.battery.</code><code class="descname">get_timing_js</code><span class="sig-paren">(</span><em>valid_experiments</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/expfactory/battery.html#get_timing_js"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#expfactory.battery.get_timing_js" title="Permalink to this definition">¶</a></dt>
+<dd><p>Produce string (json / dictionary) of experiment timings
+:param valid_experiments: a list of full paths to valid experiments to include</p>
+<p>..note:</p>
+<div class="highlight-python"><div class="highlight"><pre>Produces the following format for each experiment
+
+{name:&quot;simple_rt&quot;, time: 3.5}, {name:&quot;choice_rt&quot;, time: 4}, ...
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="expfactory.battery.move_experiments">
+<code class="descclassname">expfactory.battery.</code><code class="descname">move_experiments</code><span class="sig-paren">(</span><em>valid_experiments</em>, <em>battery_dest</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/expfactory/battery.html#move_experiments"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#expfactory.battery.move_experiments" title="Permalink to this definition">¶</a></dt>
+<dd><p>Moves valid experiments into the experiments folder in battery repo
+:param valid_experiments: a list of full paths to valid experiments
+:param battery_dest: full path to battery destination folder</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="expfactory.battery.template_experiments">
+<code class="descclassname">expfactory.battery.</code><code class="descname">template_experiments</code><span class="sig-paren">(</span><em>battery_dest</em>, <em>battery_repo</em>, <em>valid_experiments</em>, <em>template_file=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/expfactory/battery.html#template_experiments"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#expfactory.battery.template_experiments" title="Permalink to this definition">¶</a></dt>
+<dd><p>template_experiments:
+For each valid experiment, copies the entire folder into the battery destination directory, and generates templates with appropriate paths to run them
+:param battery_dest: full path to destination folder of battery
+:param battery_repo: full path to psiturk-battery repo template
+:param valid_experiments: a list of full paths to experiment folders to include
+:param template_file: the load_experiments.js template file. If not specified, the file from the battery repo is used.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-expfactory.database">
+<span id="expfactory-database-module"></span><h2>expfactory.database module<a class="headerlink" href="#module-expfactory.database" title="Permalink to this headline">¶</a></h2>
+<p>db.py: part of expfactory package
+Functions to work with a psiturk experiment database</p>
+</div>
+<div class="section" id="module-expfactory.experiment">
+<span id="expfactory-experiment-module"></span><h2>expfactory.experiment module<a class="headerlink" href="#module-expfactory.experiment" title="Permalink to this headline">¶</a></h2>
+<p>experiment.py: part of expfactory package
+Functions to work with javascript experiments</p>
+<dl class="function">
+<dt id="expfactory.experiment.dowarning">
+<code class="descclassname">expfactory.experiment.</code><code class="descname">dowarning</code><span class="sig-paren">(</span><em>reason</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/expfactory/experiment.html#dowarning"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#expfactory.experiment.dowarning" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="expfactory.experiment.get_experiments">
+<code class="descclassname">expfactory.experiment.</code><code class="descname">get_experiments</code><span class="sig-paren">(</span><em>experiment_repo</em>, <em>load=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/expfactory/experiment.html#get_experiments"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#expfactory.experiment.get_experiments" title="Permalink to this definition">¶</a></dt>
+<dd><p>return loaded json for all valid experiments from an experiment folder
+:param experiment_repo: full path to the experiments repo
+:param load: if True, returns a list of loaded config.json objects. If False (default) returns the paths to the experiments</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="expfactory.experiment.get_validation_fields">
+<code class="descclassname">expfactory.experiment.</code><code class="descname">get_validation_fields</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/expfactory/experiment.html#get_validation_fields"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#expfactory.experiment.get_validation_fields" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list of tuples (each a field)</p>
+<p>..note:</p>
+<div class="highlight-python"><div class="highlight"><pre>specifies fields required for a valid json
+(field,value,type)
+field: the field name
+value: indicates minimum required entires
+       0: not required, no warning
+       1: required, not valid
+       2: not required, warning      
+type: indicates the variable type
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="expfactory.experiment.load_experiment">
+<code class="descclassname">expfactory.experiment.</code><code class="descname">load_experiment</code><span class="sig-paren">(</span><em>experiment_folder</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/expfactory/experiment.html#load_experiment"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#expfactory.experiment.load_experiment" title="Permalink to this definition">¶</a></dt>
+<dd><p>load_experiment:
+reads in the config.json for an
+:param experiment folder: full path to experiment folder</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="expfactory.experiment.load_experiments">
+<code class="descclassname">expfactory.experiment.</code><code class="descname">load_experiments</code><span class="sig-paren">(</span><em>experiment_folders</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/expfactory/experiment.html#load_experiments"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#expfactory.experiment.load_experiments" title="Permalink to this definition">¶</a></dt>
+<dd><p>a wrapper for load_experiment to read multiple experiments
+:param experiment_folders: a list of experiment folders to load, full paths</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="expfactory.experiment.notvalid">
+<code class="descclassname">expfactory.experiment.</code><code class="descname">notvalid</code><span class="sig-paren">(</span><em>reason</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/expfactory/experiment.html#notvalid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#expfactory.experiment.notvalid" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="expfactory.experiment.validate">
+<code class="descclassname">expfactory.experiment.</code><code class="descname">validate</code><span class="sig-paren">(</span><em>experiment_folder</em>, <em>warning=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/expfactory/experiment.html#validate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#expfactory.experiment.validate" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>experiment_folder</strong> &#8211; full path to experiment folder with config.json</li>
+<li><strong>warning</strong> &#8211; issue a warning for empty fields with level 2 (warning)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>..note:</p>
+<div class="highlight-python"><div class="highlight"><pre>takes an experiment folder, and looks for validation based on:
+
+- config.json
+- files existing specified in config.json
+
+All fields should be defined, but for now we just care about run scripts
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="module-expfactory.interface">
+<span id="expfactory-interface-module"></span><h2>expfactory.interface module<a class="headerlink" href="#module-expfactory.interface" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="expfactory.interface.allowed_file">
+<code class="descclassname">expfactory.interface.</code><code class="descname">allowed_file</code><span class="sig-paren">(</span><em>filename</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/expfactory/interface.html#allowed_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#expfactory.interface.allowed_file" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="expfactory.interface.clean_up">
+<code class="descclassname">expfactory.interface.</code><code class="descname">clean_up</code><span class="sig-paren">(</span><em>dirpath</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/expfactory/interface.html#clean_up"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#expfactory.interface.clean_up" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="expfactory.interface.get_field">
+<code class="descclassname">expfactory.interface.</code><code class="descname">get_field</code><span class="sig-paren">(</span><em>request</em>, <em>fields</em>, <em>value</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/expfactory/interface.html#get_field"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#expfactory.interface.get_field" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="expfactory.interface.main">
+<code class="descclassname">expfactory.interface.</code><code class="descname">main</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/expfactory/interface.html#main"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#expfactory.interface.main" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="expfactory.interface.select">
+<code class="descclassname">expfactory.interface.</code><code class="descname">select</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/expfactory/interface.html#select"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#expfactory.interface.select" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="expfactory.interface.start">
+<code class="descclassname">expfactory.interface.</code><code class="descname">start</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/expfactory/interface.html#start"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#expfactory.interface.start" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="expfactory.interface.validate">
+<code class="descclassname">expfactory.interface.</code><code class="descname">validate</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/expfactory/interface.html#validate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#expfactory.interface.validate" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-expfactory.utils">
+<span id="expfactory-utils-module"></span><h2>expfactory.utils module<a class="headerlink" href="#module-expfactory.utils" title="Permalink to this headline">¶</a></h2>
+<p>utils.py: part of expfactory package</p>
+<dl class="function">
+<dt id="expfactory.utils.clean_fields">
+<code class="descclassname">expfactory.utils.</code><code class="descname">clean_fields</code><span class="sig-paren">(</span><em>mydict</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/expfactory/utils.html#clean_fields"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#expfactory.utils.clean_fields" title="Permalink to this definition">¶</a></dt>
+<dd><p>Ensure utf-8</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="expfactory.utils.copy_directory">
+<code class="descclassname">expfactory.utils.</code><code class="descname">copy_directory</code><span class="sig-paren">(</span><em>src</em>, <em>dest</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/expfactory/utils.html#copy_directory"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#expfactory.utils.copy_directory" title="Permalink to this definition">¶</a></dt>
+<dd><p>Copy an entire directory recursively</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="expfactory.utils.find_directories">
+<code class="descclassname">expfactory.utils.</code><code class="descname">find_directories</code><span class="sig-paren">(</span><em>root</em>, <em>fullpath=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/expfactory/utils.html#find_directories"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#expfactory.utils.find_directories" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return directories at one level specified by user
+(not recursive)</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="expfactory.utils.find_subdirectories">
+<code class="descclassname">expfactory.utils.</code><code class="descname">find_subdirectories</code><span class="sig-paren">(</span><em>basepath</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/expfactory/utils.html#find_subdirectories"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#expfactory.utils.find_subdirectories" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return directories (and sub) starting from a base</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="expfactory.utils.get_installdir">
+<code class="descclassname">expfactory.utils.</code><code class="descname">get_installdir</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/expfactory/utils.html#get_installdir"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#expfactory.utils.get_installdir" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="expfactory.utils.get_template">
+<code class="descclassname">expfactory.utils.</code><code class="descname">get_template</code><span class="sig-paren">(</span><em>template_file</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/expfactory/utils.html#get_template"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#expfactory.utils.get_template" title="Permalink to this definition">¶</a></dt>
+<dd><p>get_template: read in and return a template file</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="expfactory.utils.is_type">
+<code class="descclassname">expfactory.utils.</code><code class="descname">is_type</code><span class="sig-paren">(</span><em>var, types=[&lt;type 'int'&gt;, &lt;type 'float'&gt;, &lt;type 'list'&gt;]</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/expfactory/utils.html#is_type"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#expfactory.utils.is_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check type</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="expfactory.utils.remove_unicode_dict">
+<code class="descclassname">expfactory.utils.</code><code class="descname">remove_unicode_dict</code><span class="sig-paren">(</span><em>input_dict</em>, <em>encoding='utf-8'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/expfactory/utils.html#remove_unicode_dict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#expfactory.utils.remove_unicode_dict" title="Permalink to this definition">¶</a></dt>
+<dd><p>remove unicode keys and values from dict, encoding in utf8</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="expfactory.utils.save_template">
+<code class="descclassname">expfactory.utils.</code><code class="descname">save_template</code><span class="sig-paren">(</span><em>output_file</em>, <em>html_snippet</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/expfactory/utils.html#save_template"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#expfactory.utils.save_template" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="expfactory.utils.sub_template">
+<code class="descclassname">expfactory.utils.</code><code class="descname">sub_template</code><span class="sig-paren">(</span><em>template</em>, <em>template_tag</em>, <em>substitution</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/expfactory/utils.html#sub_template"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#expfactory.utils.sub_template" title="Permalink to this definition">¶</a></dt>
+<dd><p>make a substitution for a template_tag in a template</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-expfactory.vm">
+<span id="expfactory-vm-module"></span><h2>expfactory.vm module<a class="headerlink" href="#module-expfactory.vm" title="Permalink to this headline">¶</a></h2>
+<p>vm.py: part of expfactory package
+Functions to generate virtual machines to run expfactory batteries</p>
+<dl class="function">
+<dt id="expfactory.vm.add_custom_logo">
+<code class="descclassname">expfactory.vm.</code><code class="descname">add_custom_logo</code><span class="sig-paren">(</span><em>battery_repo</em>, <em>logo</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/expfactory/vm.html#add_custom_logo"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#expfactory.vm.add_custom_logo" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a custom logo to the vm battery
+:param battery_repo: the full path to the battery repo base, assumed to have an &#8220;img&#8221; folder
+:param logo: the full path to the logo to copy. Should ideally be png.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="expfactory.vm.custom_battery_download">
+<code class="descclassname">expfactory.vm.</code><code class="descname">custom_battery_download</code><span class="sig-paren">(</span><em>tmpdir=None, repos=['experiments', 'battery']</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/expfactory/vm.html#custom_battery_download"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#expfactory.vm.custom_battery_download" title="Permalink to this definition">¶</a></dt>
+<dd><p>Download battery and experiment repos to a temporary folder to build a custom battery, return the path to the tmp folders
+:param tmpdir: The directory to download to. If none, a temporary directory will be made
+:param repos: The repositories to download, valid choices are &#8220;experiments&#8221; &#8220;battery&#8221; and &#8220;vm&#8221;</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="expfactory.vm.download_repo">
+<code class="descclassname">expfactory.vm.</code><code class="descname">download_repo</code><span class="sig-paren">(</span><em>repo_type</em>, <em>destination</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/expfactory/vm.html#download_repo"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#expfactory.vm.download_repo" title="Permalink to this definition">¶</a></dt>
+<dd><p>Download a expfactory infrastructure repo &#8220;repo_type&#8221; to a &#8220;destination&#8221;
+:param repo_type: can be one of &#8220;experiments&#8221; &#8220;battery&#8221; &#8220;vm&#8221;
+:param destination: the full path to the destination for the repo</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="expfactory.vm.generate_database_url">
+<code class="descclassname">expfactory.vm.</code><code class="descname">generate_database_url</code><span class="sig-paren">(</span><em>dbtype=None</em>, <em>username=None</em>, <em>password=None</em>, <em>host=None</em>, <em>table=None</em>, <em>template=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/expfactory/vm.html#generate_database_url"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#expfactory.vm.generate_database_url" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate a database url from input parameters, or get a template
+:param dbtype: the type of database, must be one of &#8220;mysql&#8221; or &#8220;postgresql&#8221;
+:param username: username to connect to the database
+:param password: password to connect to the database
+:param host: database host
+:para table: table in the database
+:param template: can be one of &#8220;mysql&#8221; &#8220;sqlite3&#8221; or &#8220;postgresql&#8221; If specified, all other parameters are ignored, and a default database URL is produced to work in a Vagrant VM produced by expfactory</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="expfactory.vm.prepare_vm">
+<code class="descclassname">expfactory.vm.</code><code class="descname">prepare_vm</code><span class="sig-paren">(</span><em>battery_dest</em>, <em>fields=None</em>, <em>vm_repo=None</em>, <em>vm_type='vagrant'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/expfactory/vm.html#prepare_vm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#expfactory.vm.prepare_vm" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prepare virtual machine to run local with vagrant, or with vagrant-aws
+:param battery_dest: the battery destination folder
+:param fields: if specified, will be added to the config.txt
+:param vm_repo: the expfactory-vm repo to use for templates. If not provided, one will be downloaded to a temporary directory for use.
+:param vm_type: one of &#8220;vagrant&#8221; or &#8220;aws&#8221; Default is &#8220;vagrant&#8221; meaning a localvirtual machine with vagrant.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="expfactory.vm.specify_experiments">
+<code class="descclassname">expfactory.vm.</code><code class="descname">specify_experiments</code><span class="sig-paren">(</span><em>battery_dest</em>, <em>experiments</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/expfactory/vm.html#specify_experiments"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#expfactory.vm.specify_experiments" title="Permalink to this definition">¶</a></dt>
+<dd><p>Specify experiments for a Vagrantfile in an output folder
+:param battery_dest: destination folder for battery
+:param experiments: a list of experiment tags to include</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-expfactory">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-expfactory" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="getting-started.html" class="btn btn-neutral float-right" title="Getting Started" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="modules.html" class="btn btn-neutral" title="Tools Available" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015, Poldracklab, Stanford University.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'0.0.1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>
