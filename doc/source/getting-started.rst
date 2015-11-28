@@ -4,7 +4,7 @@ Getting Started
 I want to generate a custom battery
 -----------------------------------
 
-After 'installation `<http://vbmis.com/bmi/project/expfactory/installation.html>`_ You can generate a battery, meaning a psiturk experiment folder that may include a selection of experiments, on your local machine, a virtual (vagrant) machine, or a cloud (Amazon Web Services) machine.  You should start the application:
+After `installation <http://vbmis.com/bmi/project/expfactory/installation.html>`_ You can generate a battery, meaning a psiturk experiment folder that may include a selection of experiments, on your local machine, a virtual (vagrant) machine, or a cloud (Amazon Web Services) machine.  You should start the application:
 
 :: 
 
@@ -41,7 +41,7 @@ A battery of experiments is a selection of experimental paradigms that are prese
 1. Check out psiturk
 ....................
 
-Before getting started, you should familiarize yourself with [psiturk](https://psiturk.org/quick_start/). Likely you will be interested in setting up an experiment on your local machine, and so you should follow the installation instructions and go through the entire demo to make sure things are working properly.
+Before getting started, you should familiarize yourself with `psiturk <https://psiturk.org/quick_start/>`_. Likely you will be interested in setting up an experiment on your local machine, and so you should follow the installation instructions and go through the entire demo to make sure things are working properly.
 
 
 2. Install expfactory-python
