@@ -47,7 +47,6 @@
                                         <div class="col-sm-6 col-sm-offset-1">
 
                                         </div>
-                                        <input name="tmpdir" id="tmpdir" type="hidden" class="form-control">
                                         <input name="deploychoice" id="deploychoice" type="hidden" class="form-control">
 
                                         <!-- experiments will be appended here-->               
@@ -101,7 +100,6 @@ for (i=0;i<experiments.length;i++){
 }
 
 // Variables passed from earlier steps
-$("#tmpdir").val("{{ tmpdir }}");
 $("#deploychoice").val("{{ deploychoice }}");
 
 // Toggle all experiments

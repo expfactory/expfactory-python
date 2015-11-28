@@ -123,7 +123,7 @@ def validate(experiment_folder,warning=True):
     return True   
 
 
-def get_experiments(experiment_repo,load=False):
+def get_experiments(experiment_repo,load=False,warning=True):
     '''get_experiments
     return loaded json for all valid experiments from an experiment folder
     :param experiment_repo: full path to the experiments repo
@@ -132,7 +132,7 @@ def get_experiments(experiment_repo,load=False):
     '''
 
     experiments = find_directories(experiment_repo)
-    valid_experiments = [e for e in experiments if validate(e)]
+    valid_experiments = [e for e in experiments if validate(e,warning)]
     print "Found %s valid experiments" %(len(valid_experiments))
     if load == True:
         valid_experiments = load_experiments(valid_experiments)
@@ -167,3 +167,17 @@ def load_experiment(experiment_folder):
     except ValueError as e:
         print "Problem reading config.json, %s" %(e)
         raise
+
+
+def make_lookup(experiment_list,key_field):
+    '''make_lookup
+    returns dict object to quickly look up query experiment on tag
+    :param experiment_list: a list of query (dict objects)
+    :param key_field: the key in the dictionary to base the lookup key (str)
+    :returns lookup: dict (json) with key as "key_field" from query_list 
+    '''
+    lookup = dict()
+    for single_experiment in experiment_list:
+        lookup_key = single_experiment[0][key_field]
+        lookup[lookup_key] = single_experiment[0]
+    return lookup

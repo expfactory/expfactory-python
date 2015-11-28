@@ -11,7 +11,7 @@ import os
 import re
 
 
-def generate(battery_dest,battery_repo=None,experiment_repo=None,experiments=None,config=None,make_config=True):
+def generate(battery_dest,battery_repo=None,experiment_repo=None,experiments=None,config=None,make_config=True,warning=True):
     '''generate
     will create a battery from a template and list of experiments
     :param battery_dest: [required] is the output folder for your battery. This folder MUST NOT EXIST.
@@ -20,6 +20,7 @@ def generate(battery_dest,battery_repo=None,experiment_repo=None,experiments=Non
     :param experiments: a list of experiments, meaning the "tag" variable in the config.json, to include. This variable also conincides with the experiment folder name.
     :param config: A dictionary with keys that coincide with parameters in the config.txt file for a expfactory experiment. If not provided, a dummy config will be generated.
     :param make_config: A boolean (default True) to control generation of the config. If there is a config generated before calling this function, this should be set to False.
+    :param warning: Show config.json warnings when validating experiments. Default is True
     '''
     # We can only generate a battery to a folder that does not exist, to be safe
     if not os.path.exists(battery_dest):
@@ -32,11 +33,11 @@ def generate(battery_dest,battery_repo=None,experiment_repo=None,experiments=Non
 
         # Copy battery skeleton to destination
         copy_directory(battery_repo,battery_dest)
-        valid_experiments = get_experiments(experiment_repo)
+        valid_experiments = get_experiments(experiment_repo,warning=warning)
 
         # If the user wants to select a subset
         if experiments != None:
-            subset_experiments = [x for x in valid_experiments if os.path.basename(x) in experiments]
+            subset_experiments = [x for x in valid_experiments if os.path.basename(x) in [os.path.basename(e) for e in experiments]]
             valid_experiments = subset_experiments      
 
         # Fill in templates with the experiments, generate config

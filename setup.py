@@ -38,7 +38,7 @@ setup(
 
     entry_points = {
         'console_scripts': [
-            'expfactory=expfactory.interface:main',
+            'expfactory=expfactory.scripts:main',
         ],
     },
 

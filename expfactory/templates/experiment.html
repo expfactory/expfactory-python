@@ -1,0 +1,30 @@
+<!DOCTYPE html><html class=''>
+<head>
+    <meta charset='UTF-8'>
+    <meta name="robots" content="noindex">
+    <title>The Experiment Factory: Preview</title>
+    {{css}}
+    <link rel='stylesheet prefetch' href='https://rawgithub.com/expfactory/expfactory-battery/master/static/css/default_style.css'>
+    <link rel='stylesheet prefetch' href='https://rawgithub.com/expfactory/expfactory-battery/master/static/css/jspsych.css'>
+</head>
+
+<body>
+
+<script src='//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
+<script src='https://rawgithub.com/expfactory/expfactory-battery/master/static/js/jspsych/jspsych.js'></script>
+<script src='https://rawgithub.com/expfactory/expfactory-battery/master/static/js/jspsych/plugins/jspsych-text.js'></script>
+<script src='https://rawgithub.com/expfactory/expfactory-battery/master/static/js/jspsych/plugins/jspsych-instructions.js'></script>
+<script src='https://rawgithub.com/expfactory/expfactory-battery/master/static/js/jspsych/plugins/jspsych-single-stim.js'></script>
+<script src='https://rawgithub.com/expfactory/expfactory-battery/master/static/js/jspsych/plugins/jspsych-categorize.js'></script>
+<script src='https://rawgithub.com/expfactory/expfactory-battery/master/static/js/jspsych/plugins/jspsych-survey-text.js'></script>
+{{js}}
+<script>
+jsPsych.init({
+    experiment_structure: {{tag}}_experiment,
+    on_finish: function () {
+        jsPsych.data.localSave('your_results.csv', 'csv');
+    }
+});
+</script>
+</body>
+</html>

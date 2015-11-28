@@ -28,6 +28,8 @@ def custom_battery_download(tmpdir=None,repos=["experiments","battery"]):
     :param tmpdir: The directory to download to. If none, a temporary directory will be made
     :param repos: The repositories to download, valid choices are "experiments" "battery" and "vm"
     '''
+    if isinstance(repos,str):
+        repos = [repos]
     if not tmpdir:
         tmpdir = tempfile.mkdtemp()
     for repo in repos:
@@ -120,3 +122,30 @@ def specify_experiments(battery_dest,experiments):
     template = sub_template(template,"[SUB_EXPERIMENTS_SUB]",str(experiments))
     save_template(vagrantfile,template)
     return template
+
+def get_stylejs(experiment):
+    '''get_stylejs
+    return string for js and css scripts to insert into a page based on battery path structure
+    '''
+    js = ""
+    css = ""
+    scripts = experiment[0]["run"]
+    tag = experiment[0]["tag"]
+    for script in scripts:
+        ext = script.split(".")[-1]
+
+        # Do we have a relative experiment path?
+        if len(script.split("/")) == 1:
+            if ext == "js":
+                js = "%s\n<script src='static/experiments/%s/%s'></script>" %(js,tag,script)
+            elif ext == "css":
+                css = "%s\n<link rel='stylesheet prefetch' href='static/experiments/%s/%s'>" %(css,tag,script)
+
+        # Do we have a battery relative path?
+        else:    
+            if ext == "js":
+                js = "%s\n<script src='%s'></script>" %(js,script)
+            elif ext == "css":
+                css = "%s\n<link rel='stylesheet prefetch' href='%s'>" %(css,script)
+
+    return css,js
