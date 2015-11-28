@@ -1,26 +1,68 @@
 Installation
 ============
 
-To install, use pip:
+To install the latest version, use pip:
 
 ::
 
-      pip install git+git://github.com/psiturk/psiturk-python.git
+      pip install git+git://github.com/expfactory/expfactory-python.git
 
 
-Running to Generate a Battery
------------------------------
 
-Installation will place an executable, `psyturkpy` in your bin folder. To run the executable to open up a web interface to design your experiment:
+To install a (possibly older) version:
+
 
 ::
 
-      psiturkpy
+
+     pip install expfactory
+ 
 
 
-The web interface will take you through the following steps:
+Installation will place an executable, `expfactory` in your bin folder. You should be able to type `which expfactory` and see the location of your application. If you cannot, you likely installed the application locally, and the executable was placed in a folder not on your path. You can either try installation with sudo, or look at the output of the installation to find the path that it was installed to:
 
-* A. collection of experiment details
-* B. database connection parameters
-* C. selection of local (folder) experiment, or deployment to AWS.
-* D. selection of experiments
+::
+
+      Installing expfactory script to /usr/local/bin
+
+
+
+
+Quickstart
+''''''''''
+
+To run the executable to open up a web interface to select what you would like to do:
+
+
+::
+
+      expfactory
+
+
+
+You can also specify a port:
+
+
+::
+
+      expfactory --port=8088
+
+
+To preview a folder (experiment) you are working on, you can cd into that folder, and use the `--preview` command:
+
+
+::
+
+
+      cd simple_experiment
+      expfactory --preview
+
+
+You can also specify the folder as an argument:
+
+::
+
+      expfactory --preview --folder /home/vanessa/Desktop/simple_rt
+      
+
+.. image:: _static/img/api/webinterface.png

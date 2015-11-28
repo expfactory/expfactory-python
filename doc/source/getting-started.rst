@@ -4,7 +4,23 @@ Getting Started
 I want to generate a custom battery
 -----------------------------------
 
-You can generate a battery, meaning a psiturk experiment folder that may include a selection of experiments, on your local machine, a virtual (vagrant) machine, or a cloud (Amazon Web Services) machine. 
+After 'installation `<http://vbmis.com/bmi/project/expfactory/installation.html>`_ You can generate a battery, meaning a psiturk experiment folder that may include a selection of experiments, on your local machine, a virtual (vagrant) machine, or a cloud (Amazon Web Services) machine.  You should start the application:
+
+:: 
+
+      expfactory
+
+
+And then click "battery." The web interface will take you through the following steps:
+
+* A. collection of experiment details
+* B. database connection parameters
+* C. selection of local (folder) experiment, or deployment to AWS.
+* D. selection of experiments
+
+
+More details are provided below about choosing a deployment, and configuring your battery.
+
 
 How do I choose a deployment?
 '''''''''''''''''''''''''''''
@@ -21,20 +37,28 @@ Battery Generation
 
 A battery of experiments is a selection of experimental paradigms that are presented in sequence. In the psiturk experiment infrastructure, a battery would coincide with a single folder that contains a custom setup to run many different tasks for a single HIT. We have made it easy to select one or more experiments from http://www.github.com/expfactory/expfactory-experiments, merge them into a `expfactory battery <http://www.github.com/expfactory/expfactory-battery>`_, and deploy in a `virtual machine <http://www.github.com/expfactory/expfactory-vm>`_. 
 
-0. Install psiturk
-..................
+
+1. Check out psiturk
+....................
 
 Before getting started, you should familiarize yourself with [psiturk](https://psiturk.org/quick_start/). Likely you will be interested in setting up an experiment on your local machine, and so you should follow the installation instructions and go through the entire demo to make sure things are working properly.
 
 
-1. Install expfactory-python
+2. Install expfactory-python
 ............................
 
-expfactory-python is the controller of all pieces of this infrastructure. You can install it with pip:
+expfactory-python is the controller of all pieces of this infrastructure. You can install it with pip, either the development version:
 
 ::
 
       pip install git+git://github.com/expfactory/expfactory-python.git
+
+
+or from pypi
+
+::
+
+      pip install expfactory
 
 
 This will install the module so that you can use its functions in your own scripts, for example:
@@ -43,11 +67,12 @@ This will install the module so that you can use its functions in your own scrip
 
      from expfactory.battery import generate
 
-and also place an executable, `psyturkpy` in your bin folder. 
+
+and also place an executable, `expfactory` in your bin folder. 
 
 
-2. Web interface to design experiment
-.....................................
+3. The Experiment Factory Application Portal
+............................................
 
 To run the executable to open up a web interface to design your experiment:
 
@@ -56,20 +81,24 @@ To run the executable to open up a web interface to design your experiment:
       expfactory
 
 
-
-You will see that it tells you that it is running at port 5000:
-
 .. image:: _static/img/getting-started/0running.png
 
-The Experiment Factory Web Interface
-''''''''''''''''''''''''''''''''''''
+This will open up your browser to the experiment factory portal. From here you can click on `battery` to start design of your psiturk experiment battery.
 
-This means that you should open your browser to `localhost:5000`. The web interface will take you through the following steps:
+
+.. image:: _static/img/api/webinterface.png
+
+
+Configure a psiturk battery of experiments
+''''''''''''''''''''''''''''''''''''''''''
+
+The web interface will take you through the following steps:
 
 * A. collection of experiment details
 * B. database connection parameters
 * C. selection of local (folder) experiment, or deployment to AWS.
 * D. selection of experiments
+
 
 A. Collection of experiment details
 ...................................
@@ -111,7 +140,8 @@ You have several deployment options, including a local folder, a virtual machine
 
 .. image:: _static/img/getting-started/3deployment.png
 
-Choosing "folder" will generate a local experiment, and either of the virtual machine options will produce a Vagrantfile that can be run to deploy the Virtual Machine. Specific instructions for a local vagrant or vagrant-aws are provided. Note that you can use the VagrantfileLocal or VagrantfileAWS file (renamed to Vagrantfile) as is from the `virtual machine <http://www.github.com/expfactory/expfactory-vm>`_ repo to generate a battery with all available, valid experiments.
+Choosing "folder" will generate a local experiment, and either of the virtual machine options will produce a Vagrantfile that can be run to deploy the Virtual Machine. Specific instructions for a local vagrant or vagrant-aws are provided. Note that you can use the VagrantfileLocal or VagrantfileAWS file (renamed to Vagrantfile) as is from the `virtual machine <http://www.github.com/expfactory/expfactory-vm>`_ repo to generate a battery with all available, valid experiments. We expect to add docker deployment as an option.
+
 
 D. Experiment selection
 .......................
@@ -238,18 +268,16 @@ A few important notes:
  * Many times you will not be able to connect to your machine because the security group input/output is too stringent. Make sure to open ports to allow the default psiturk port to come through (22362) as well as SSH.
 
 
-I want to view or test available experiments
---------------------------------------------
+I want to preview available experiments
+---------------------------------------
 
-We provide static versions of all experiments, along with meta-data, in our `expfactory-experiments <http://expfactory.github.io/expfactory-experiments>`_ github pages.
+We provide static versions of all experiments, along with meta-data, in our `expfactory-experiments <http://expfactory.github.io/expfactory-experiments>`_ github pages. You can preview the currently available experiments in our `online portal <http://expfactory.github.io/table.html>`_.
+
 
 I want to contribute an experiment
 ----------------------------------
 
-All of the experiments that can be selected from http://www.github.com/expfactory/expfactory-experiments can be selected to include in a battery, and you can contribute an experiment.
-
-All of the experiments that can be selected from http://www.github.com/expfactory/expfactory-experiments can be selected to include in a battery, and you can contribute an experiment by submitting a PR to the repo to add a folder with your experiment. More complete details about the format of the config.json file that is required to describe the experiment will come soon.
-For now, use the other experiments as example.
+The short story is that all of the experiments that can be selected are just folders on github, http://www.github.com/expfactory/expfactory-experiments, and you can contribute by modifying an existing experiment or creating a new one by submitting a PR to this repository. For complete details about experiment contributions, please see our `development <http://vbmis.com/bmi/project/expfactory/development.html#contributing-to-experiments>`_ pages. 
 
 
 I want to learn about the expfactory-python functions

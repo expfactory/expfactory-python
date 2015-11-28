@@ -13,13 +13,6 @@ expfactory.battery module
     :undoc-members:
     :show-inheritance:
 
-expfactory.database module
---------------------------
-
-.. automodule:: expfactory.database
-    :members:
-    :undoc-members:
-    :show-inheritance:
 
 expfactory.experiment module
 ----------------------------
@@ -44,6 +37,23 @@ expfactory.utils module
     :members:
     :undoc-members:
     :show-inheritance:
+
+expfactory.scripts module
+-------------------------
+
+.. automodule:: expfactory.scripts
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+expfactory.views module
+-------------------------
+
+.. automodule:: expfactory.views
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 
 expfactory.vm module
 --------------------
