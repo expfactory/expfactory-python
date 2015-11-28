@@ -463,6 +463,24 @@ If you see a white screen, it usually means there is a JavaScript error. While w
 
 .. image:: _static/img/development/2error.png
 
+* Is the jspsych script included with the battery? If you specify a path in the run variable in config.json and it's not found, it's likely not included in the battery repo, and you can `look to check <https://github.com/expfactory/expfactory-battery/tree/master/static/js>`_. If you are missing a script and would like one added, please submit a PR to the repo and it will be done, and this will fix your error.
+* Is your browser caching an old script? You might make a change, but then the error persists, and this is because the browser caches style and js files by default. You can disable this in the settings, so it won't cache when the development console is open:
+
+.. image:: _static/img/development/3cache.png
+
+or you can use Incognito mode (Control + Shift + N).
+
+* If you get this error:
+
+::
+
+    httpd.server_close()
+    UnboundLocalError: local variable 'httpd' referenced before assignment
+
+
+It should work if you wait a few seconds and try again, as the browser is still closing the port that was being served. If you are super impatient you can alternate ports between tests.
+
+
 * Do you have a syntax error or a missing variable? 
 * What is the scope of your variable? If you reference a variable inside a function, it will not be available outside of that function. This is called scope.
 
