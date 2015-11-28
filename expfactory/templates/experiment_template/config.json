@@ -1,0 +1,27 @@
+[
+    {
+        "name": "",
+        "run": [
+                "experiment.js",
+                "style.css"
+               ],
+        "tag": "experiment_template",
+        "cognitive_atlas_concept_id":"",
+        "cognitive_atlas_concept":"",
+        "cognitive_atlas_task_id": "",
+        "contributors": [
+                         "Ian Eisenberg",
+                         "Zeynep Enkavi",
+                         "Patrick Bissett",
+                         "Vanessa Sochat",
+                         "Russell Poldrack"
+                        ], 
+        "lab": "Poldracklab",
+        "time":3.5,
+        "doi": "",
+        "reference": "",
+        "notes": "",
+        "publish":"False"
+    
+   }
+]
