@@ -19,7 +19,7 @@ To install a (possibly older) version:
  
 
 
-Installation will place an executable, `expfactory` in your bin folder. You should be able to type `which expfactory` and see the location of your application. If you cannot, you likely installed the application locally, and the executable was placed in a folder not on your path. You can either try installation with sudo, or look at the output of the installation to find the path that it was installed to:
+Please note that expfactory was developed with python 2.7 and has not been tested on other versions. Installation will place an executable, `expfactory` in your bin folder. You should be able to type `which expfactory` and see the location of your application. If you cannot, you likely installed the application locally, and the executable was placed in a folder not on your path. You can either try installation with sudo, or look at the output of the installation to find the path that it was installed to:
 
 ::
 
