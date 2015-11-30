@@ -20,6 +20,7 @@ Contents:
    development
    modules
    about
+   Website <https://expfactory.github.io>
    GitHub repository <https://github.com/expfactory>
 
 
