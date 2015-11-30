@@ -8,18 +8,19 @@ functions for developing experiments and batteries, viewing and testing things
 from expfactory.utils import copy_directory, get_installdir, sub_template
 from expfactory.vm import custom_battery_download, get_stylejs
 from expfactory.experiment import load_experiment
+from numpy.random import choice
 import SimpleHTTPServer
 import SocketServer
 import webbrowser
 import shutil
 import os
 
-def preview_experiment(folder=None,port=2020):
+def preview_experiment(folder=None,port=None):
 
     if folder==None:
         folder=os.path.abspath(os.getcwd())
 
-    tmpdir = custom_battery_download()
+    tmpdir = custom_battery_download(repos=["battery"])
     experiment = load_experiment("%s" %folder)
     tag = experiment[0]["tag"]
 
@@ -45,6 +46,8 @@ def preview_experiment(folder=None,port=2020):
     os.chdir(battery_folder)
     
     try:
+        if port == None:
+            port = choice(range(8000,9999),1)[0]
         Handler = SimpleHTTPServer.SimpleHTTPRequestHandler
         httpd = SocketServer.TCPServer(("", port), Handler)
         print "Preview experiment at localhost:%s" %port
