@@ -6,7 +6,6 @@ Runtime executable
 
 '''
 from expfactory.views import preview_experiment
-from interface import start
 from glob import glob
 import argparse
 import sys
@@ -16,7 +15,7 @@ def main():
     parser = argparse.ArgumentParser(
     description="generate experiments and infrastructure to serve them.")
     parser.add_argument("--folder", dest='folder', help="full path to experiment folder", type=str, default=None)
-    parser.add_argument("--port", dest='port', help="port to preview experiment", type=int, default=2020)
+    parser.add_argument("--port", dest='port', help="port to preview experiment", type=int, default=None)
     parser.add_argument('--preview', dest='preview', default=False, action='store_true')
 
     try:
@@ -29,6 +28,7 @@ def main():
     if args.preview == True:
         preview_experiment(folder=args.folder,port=args.port)
     else:        
+        from expfactory.interface import start
         start(port=args.port)    
 
 if __name__ == '__main__':
