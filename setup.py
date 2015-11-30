@@ -34,7 +34,7 @@ setup(
     long_description=long_description,
     keywords='psiturk behavior neuroscience experiment factory',
 
-    install_requires = ['numpy','Flask','gitpython'],
+    install_requires = ['numpy','Flask','gitpython','flask-restful'],
 
     entry_points = {
         'console_scripts': [
