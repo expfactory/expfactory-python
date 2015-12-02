@@ -118,11 +118,10 @@ def get_config():
     '''get_config
     load in a dummy config file from expfactory
     '''
-
     module_path = get_installdir()
     template = "%s/templates/config.txt" %(module_path)
     config = get_template(template)
-    config = config.split("\n")
+    config = config.split(os.linesep)
     for l in range(len(config)):
         line = config[l]
         if len(line)>0:
