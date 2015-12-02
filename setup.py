@@ -4,16 +4,12 @@ import os
 
 here = os.path.abspath(os.path.dirname(__file__))
 
-# Get the long description from the relevant file
-with codecs.open(os.path.join(here, 'README.md'), encoding='utf-8') as f:
-    long_description = f.read()
-
 setup(
     # Application name:
     name="expfactory",
 
     # Version number (initial):
-    version="1.0.4",
+    version="1.0.5",
 
     # Application author details:
     author="poldracklab",
@@ -30,9 +26,9 @@ setup(
     url="http://www.github.com/expfactory",
 
     license="LICENSE.txt",
-    description="Python module for managing experiment factory javascript experiment files, a psiturk battery, and virtual machines to host the compilation of these things.",
-    long_description=long_description,
-    keywords='psiturk behavior neuroscience experiment factory',
+    description="Python module for managing experiment factory experiments, for deployment to a psiturk battery or docker container.",
+    long_description=description,
+    keywords='psiturk behavior neuroscience experiment factory docker',
 
     install_requires = ['numpy','Flask','gitpython','flask-restful'],
 
