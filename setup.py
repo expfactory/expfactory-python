@@ -9,7 +9,7 @@ setup(
     name="expfactory",
 
     # Version number (initial):
-    version="1.0.5",
+    version="1.0.6",
 
     # Application author details:
     author="poldracklab",
@@ -27,7 +27,6 @@ setup(
 
     license="LICENSE.txt",
     description="Python module for managing experiment factory experiments, for deployment to a psiturk battery or docker container.",
-    long_description=description,
     keywords='psiturk behavior neuroscience experiment factory docker',
 
     install_requires = ['numpy','Flask','gitpython','flask-restful'],
