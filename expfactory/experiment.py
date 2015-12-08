@@ -34,10 +34,8 @@ def get_validation_fields():
             ("notes",0,str),
             ("reference",2,str), 
             ("lab",0,str), 
-            ("cognitive_atlas_concept_id",1,str), 
-            ("cognitive_atlas_concept",2,str),
             ("tag",1,str),
-            ("cognitive_atlas_task_id",2,str),
+            ("cognitive_atlas_task_id",1,str),
             ("publish",1,str)]
 
 
