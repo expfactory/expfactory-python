@@ -15,6 +15,17 @@ import webbrowser
 import shutil
 import os
 
+
+def embed_experiment(folder,url_prefix=""):
+    '''embed_experiment
+    return an html snippet for embedding into an application. This assumes the same directory structure, that all jspsych files can be found in static/js/jspych, and experiments under static/experiments/[folder]
+    :param folder: full path to experiment folder with config.json
+    '''
+    folder = os.path.abspath(folder)
+    experiment = load_experiment("%s" %folder)
+    return get_experiment_html(experiment,url_prefix=url_prefix)
+    
+
 def preview_experiment(folder=None,port=None):
 
     if folder==None:
@@ -33,12 +44,7 @@ def preview_experiment(folder=None,port=None):
     index_file = "%s/index.html" %(battery_folder)
         
     # Generate code for js and css
-    css,js = get_stylejs(experiment)
-    exp_template = "%s/templates/experiment.html" %get_installdir()
-    exp_template = "".join(open(exp_template,"r").readlines())
-    exp_template = sub_template(exp_template,"{{js}}",js)
-    exp_template = sub_template(exp_template,"{{css}}",css)
-    exp_template = sub_template(exp_template,"{{tag}}",experiment[0]["tag"])
+    exp_template = get_experiment_html(experiment)
     filey = open(index_file,"w")
     filey.writelines(exp_template)
     filey.close()
@@ -58,3 +64,15 @@ def preview_experiment(folder=None,port=None):
         httpd.server_close()
         shutil.rmtree(tmpdir)
 
+def get_experiment_html(experiment,url_prefix=""):
+    '''get_experiment_html
+    return the html template to test a single experiment
+    :param experiment: the loaded config.json for an experiment (json)
+    '''
+    css,js = get_stylejs(experiment,url_prefix)
+    exp_template = "%s/templates/experiment.html" %get_installdir()
+    exp_template = "".join(open(exp_template,"r").readlines())
+    exp_template = sub_template(exp_template,"{{js}}",js)
+    exp_template = sub_template(exp_template,"{{css}}",css)
+    exp_template = sub_template(exp_template,"{{tag}}",experiment[0]["tag"])
+    return exp_template

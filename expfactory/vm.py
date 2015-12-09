@@ -123,7 +123,7 @@ def specify_experiments(battery_dest,experiments):
     save_template(vagrantfile,template)
     return template
 
-def get_stylejs(experiment):
+def get_stylejs(experiment,url_prefix=""):
     '''get_stylejs
     return string for js and css scripts to insert into a page based on battery path structure
     '''
@@ -137,15 +137,15 @@ def get_stylejs(experiment):
         # Do we have a relative experiment path?
         if len(script.split("/")) == 1:
             if ext == "js":
-                js = "%s\n<script src='static/experiments/%s/%s'></script>" %(js,tag,script)
+                js = "%s\n<script src='%sstatic/experiments/%s/%s'></script>" %(js,url_prefix,tag,script)
             elif ext == "css":
-                css = "%s\n<link rel='stylesheet prefetch' href='static/experiments/%s/%s'>" %(css,tag,script)
+                css = "%s\n<link rel='stylesheet prefetch' href='%sstatic/experiments/%s/%s'>" %(css,url_prefix,tag,script)
 
         # Do we have a battery relative path?
         else:    
             if ext == "js":
-                js = "%s\n<script src='%s'></script>" %(js,script)
+                js = "%s\n<script src='%s%s'></script>" %(js,url_prefix,script)
             elif ext == "css":
-                css = "%s\n<link rel='stylesheet prefetch' href='%s'>" %(css,script)
+                css = "%s\n<link rel='stylesheet prefetch' href='%s%s'>" %(css,url_prefix,script)
 
     return css,js
