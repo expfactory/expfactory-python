@@ -12,6 +12,7 @@ from numpy.random import choice
 import SimpleHTTPServer
 import SocketServer
 import webbrowser
+import tempfile
 import shutil
 import os
 
@@ -26,12 +27,18 @@ def embed_experiment(folder,url_prefix=""):
     return get_experiment_html(experiment,url_prefix=url_prefix)
     
 
-def preview_experiment(folder=None,port=None):
+def preview_experiment(folder=None,battery_folder=None,port=None):
 
     if folder==None:
         folder=os.path.abspath(os.getcwd())
 
-    tmpdir = custom_battery_download(repos=["battery"])
+    if battery_folder == None:
+        tmpdir = custom_battery_download(repos=["battery"])
+    # If user has supplied a local battery folder, copy to tempdir
+    else:
+        tmpdir = tempfile.mkdtemp()
+        copy_directory(battery_folder,"%s/battery" %tmpdir)
+        
     experiment = load_experiment("%s" %folder)
     tag = experiment[0]["tag"]
 
