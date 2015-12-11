@@ -131,7 +131,7 @@ def get_config():
     return config
 
 
-def get_load_js(valid_experiments):
+def get_load_js(valid_experiments,url_prefix=""):
     '''get_load_js
     Return javascript to load list of valid experiments, based on psiturk.json
     :param valid_experiments: a list of full paths to valid experiments to include
@@ -162,9 +162,9 @@ def get_load_js(valid_experiments):
             ext = ext.replace(".","").lower()
             # If the file is included in the experiment
             if len(script.split("/")) == 1:                
-                loadstring = '%s         loadjscssfile("static/experiments/%s/%s","%s")\n' %(loadstring,tag,script,ext)
+                loadstring = '%s         loadjscssfile("%sstatic/experiments/%s/%s","%s")\n' %(loadstring,url_prefix,tag,script,ext)
             else:
-                loadstring = '%s         loadjscssfile("%s","%s")\n' %(loadstring,script,ext)
+                loadstring = '%s         loadjscssfile("%s%s","%s")\n' %(loadstring,url_prefix,script,ext)
         loadstring = "%s         break;\n" %(loadstring)
     return loadstring
 
