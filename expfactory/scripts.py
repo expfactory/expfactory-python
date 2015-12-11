@@ -16,7 +16,7 @@ def main():
     description="generate experiments and infrastructure to serve them.")
     parser.add_argument("--folder", dest='folder', help="full path to experiment folder", type=str, default=None)
     parser.add_argument("--port", dest='port', help="port to preview experiment", type=int, default=None)
-    parser.add_argument("--battery", dest='battery_folder', help="full path to local battery folder to use as template", type=int, default=None)
+    parser.add_argument("--battery", dest='battery_folder', help="full path to local battery folder to use as template", type=str, default=None)
     parser.add_argument('--preview', dest='preview', default=False, action='store_true')
 
     try:
