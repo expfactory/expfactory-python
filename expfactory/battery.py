@@ -131,6 +131,29 @@ def get_config():
     return config
 
 
+def get_load_static(valid_experiments,url_prefix=""):
+    '''get_load_static
+    return the scripts and styles as <link> and <script> to embed in a page directly
+    '''
+    loadstring = "\n"
+    for valid_experiment in valid_experiments:
+        experiment = load_experiment(valid_experiment)[0]
+        tag = str(experiment["tag"])
+        loadstring = '%scase "%s":\n' %(loadstring,tag)
+        for script in experiment["run"]:
+            fname,ext = os.path.splitext(script)
+            ext = ext.replace(".","").lower()
+            # If the file is included in the experiment
+            if len(script.split("/")) == 1:               
+                if ext == "js":   
+                    loadstring = '%s<script type="text/javascript" src="%sstatic/experiments/%s/%s"></script>\n' %(loadstring,url_prefix,tag,script)
+                else:
+                    loadstring = '%s<link rel="stylesheet" href="%sstatic/experiments/%s/%s" />\n' %(loadstring,url_prefix,tag,script)
+            else:
+                loadstring = '%s<script type="text/javascript" src="%s%s"></script>\n' %(loadstring,url_prefix,script)    
+    return loadstring
+
+
 def get_load_js(valid_experiments,url_prefix=""):
     '''get_load_js
     Return javascript to load list of valid experiments, based on psiturk.json
