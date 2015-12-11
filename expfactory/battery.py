@@ -139,7 +139,6 @@ def get_load_static(valid_experiments,url_prefix=""):
     for valid_experiment in valid_experiments:
         experiment = load_experiment(valid_experiment)[0]
         tag = str(experiment["tag"])
-        loadstring = '%scase "%s":\n' %(loadstring,tag)
         for script in experiment["run"]:
             fname,ext = os.path.splitext(script)
             ext = ext.replace(".","").lower()
