@@ -28,7 +28,12 @@ def embed_experiment(folder,url_prefix=""):
     
 
 def preview_experiment(folder=None,battery_folder=None,port=None):
-
+    '''preview_experiment
+    preview an experiment locally with the --preview tag
+    :param folder: full path to experiment folder to preview. If none specified, PWD is used
+    :param battery_folder: full path to battery folder to use as a template. If none specified, the expfactory-battery repo will be used.
+    :param PORT: the port number, default will be randomly generated between 8000 and 9999
+    '''
     if folder==None:
         folder=os.path.abspath(os.getcwd())
 
