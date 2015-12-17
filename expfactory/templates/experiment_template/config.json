@@ -6,8 +6,6 @@
                 "style.css"
                ],
         "tag": "experiment_template",
-        "cognitive_atlas_concept_id":"",
-        "cognitive_atlas_concept":"",
         "cognitive_atlas_task_id": "",
         "contributors": [
                          "Ian Eisenberg",
@@ -16,9 +14,9 @@
                          "Vanessa Sochat",
                          "Russell Poldrack"
                         ], 
-        "lab": "Poldracklab",
         "time":3.5,
-        "doi": "",
+        "performance_variable":"",
+        "rejection_variable":"",
         "reference": "",
         "notes": "",
         "publish":"False"
