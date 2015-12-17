@@ -26,16 +26,16 @@ def get_validation_fields():
           type: indicates the variable type
 
     '''
-    return [("doi",2,str),
-            ("run",1,list),
+    return [("run",1,list),
             ("name",2,str), 
             ("contributors",0,str),
             ("time",1,int), 
             ("notes",0,str),
             ("reference",2,str), 
-            ("lab",0,str), 
             ("tag",1,str),
             ("cognitive_atlas_task_id",1,str),
+            ("performance_variable",0,dict),
+            ("rejection_variable",0,dict),
             ("publish",1,str)]
 
 
