@@ -292,13 +292,11 @@ will produce the following code in `load_experiment.js`:
 			break;
 
 
- - cognitive_atlas_concept: the cognitive atlas concept(s) that are measured by the experiment
- - cognitive_atlas_concept_id: the name of the cognitive atlas concept(s)
  - cognitive_atlas_task_id: the identifier for the experiment defined in the cognitive atlas
  - contributors: a list of contributors to the task code base.
- - lab: a list of labs associated with the task.
- - doi: the doi of associated papers.
- - reference: url(s) to referenced papers to develop the task
+ - reference: url(s) to referenced papers to develop the task. This field is to be removed, and the reference or DOI should be stored in the CognitiveAtlas.
+ - performance_variable: should be a dictionary to specify a variable to be used to measure performance. An example is provided below. If empty, specify as ""
+ - rejection_variable: should be a dictionary to specify a variable to be used to assess if a participant does not receive credit (eg, catch trial, number missed, etc). If empty, specify as ""
  - notes: any notes about the implementation, etc.
  - publish: either "True" or "False" to determine if the experiment should be revealed to the user of the expfactory-python application.
 
@@ -311,8 +309,7 @@ An example of a config.json data structure is follows:
           {
               "name": "Model-Based Influences on Humans' Choices and Striatal Prediction Errors",
               "tag": "2-stage-decision",
-              "cognitive_atlas_concept_id":"trm_4aae62e4ad209",
-              "cognitive_atlas_concept":"cognitive control",
+              "cognitive_atlas_task_id":"trm_4aae62e4ad209",
               "contributors": [
                                "Ian Eisenberg",
                                "Zeynep Enkavi",
@@ -320,19 +317,62 @@ An example of a config.json data structure is follows:
                                "Vanessa Sochat",
                                "Russell Poldrack"
                               ], 
-              "lab": "Poldracklab",
               "run": [
                       "experiment.js",
                       "style.css",
                       "plugin.js"
                      ],
-              "doi":"10.1016/j.neuron.2011.02.027",
+              "performance_variable":"",
+              "rejection_variable":"",
               "reference": "http://www.sciencedirect.com/science/article/pii/S0896627311001255",
               "notes": "Condition = ordered stims in stage 1 and stage 2 (so [0, 1] or [1, 0] for stage 1 and [2, 3], [4, 5] etc. for stage 2 and FB for the FB condition (1 for reward, 0 for no reward)",
               "publish": "True"
     
          }
       ]
+
+
+Here is an example of different kinds of experiment variables (performance_variable and rejection_variable). Here is how to specify if you do not have any variable:
+
+::
+
+              "performance_variable":"",
+      
+
+A boolean variable
+
+::
+
+              "performance_variable":{
+                                     "name":"passed_check",
+                                     "type":"boolean"
+                                     "description":"JavaScript boolean to indicate the participant passed the check."
+                                      },
+
+
+A numeric variable (both int and float are stored as float)
+
+::
+
+              "performance_variable":{
+                                     "name":"number_correct",
+                                     "type":"numeric",
+                                     "range":[0,100],
+                                     "description":"the total number of correct choices."
+                                      },
+
+
+A string variable 
+
+::
+
+              "performance_variable":{
+                                     "name":"quality_label",
+                                     "type":"string",
+                                     "range":["low","average","good","very good"],
+                                     "description":"The quality of the responses."
+                                      },
+
 
 run
 ...
