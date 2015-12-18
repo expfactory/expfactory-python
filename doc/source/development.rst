@@ -345,7 +345,7 @@ A boolean variable that is to be used to calculate bonus for a task
 
               "experiment_variables": [{
                                          "name":"passed_check",
-                                         "label":"bonus",
+                                         "type":"bonus",
                                          "datatype":"boolean"
                                          "description":"JavaScript boolean to indicate the participant passed the check."
                                        }]
