@@ -3,6 +3,7 @@ utils.py: part of expfactory package
 
 '''
 import errno
+import collections
 import shutil
 import os
 import re
@@ -42,25 +43,19 @@ def find_directories(root,fullpath=True):
                     directories.append(item)
     return directories
 
-def remove_unicode_dict(input_dict,encoding="utf-8"):
+def remove_unicode_dict(input_dict):
     """
     remove unicode keys and values from dict, encoding in utf8
 
     """
-
-    output_dict = dict()
-    for key,value in input_dict.iteritems():
-        if isinstance(input_dict[key],list):
-            output_new = [x.encode(encoding) for x in input_dict[key]]
-        elif isinstance(input_dict[key],int):
-            output_new = input_dict[key]
-        elif isinstance(input_dict[key],float):
-            output_new = input_dict[key]
-        else:
-            output_new = input_dict[key].encode(encoding)
-        output_dict[key.encode(encoding)] = output_new
-    return output_dict
-
+    if isinstance(input_dict, basestring):
+        return str(input_dict)
+    elif isinstance(input_dict, collections.Mapping):
+        return dict(map(remove_unicode_dict, input_dict.iteritems()))
+    elif isinstance(input_dict, collections.Iterable):
+        return type(input_dict)(map(remove_unicode_dict, input_dict))
+    else:
+        return input_dict
  
 def copy_directory(src, dest):
     """
