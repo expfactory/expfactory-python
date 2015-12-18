@@ -34,7 +34,7 @@ def get_validation_fields():
             ("reference",2,str), 
             ("tag",1,str),
             ("cognitive_atlas_task_id",1,str),
-            ("experiment_variables",0,dict),
+            ("experiment_variables",0,list),
             ("publish",1,str)]
 
 
