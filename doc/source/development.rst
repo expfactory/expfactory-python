@@ -295,8 +295,8 @@ will produce the following code in `load_experiment.js`:
  - cognitive_atlas_task_id: the identifier for the experiment defined in the cognitive atlas
  - contributors: a list of contributors to the task code base.
  - reference: url(s) to referenced papers to develop the task. This field is to be removed, and the reference or DOI should be stored in the CognitiveAtlas.
- - performance_variable: should be a dictionary to specify a variable to be used to measure performance. An example is provided below. If empty, specify as ""
- - rejection_variable: should be a dictionary to specify a variable to be used to assess if a participant does not receive credit (eg, catch trial, number missed, etc). If empty, specify as ""
+ - experiment_variables: should be a list of dictionaries to specify one or more variables to be available for use to measure performance, allocate bonus, or receive credit. The fields of this variable include "name" "type" "label" "range" and "description."  The "label" field will determine if the Experiment Factory docker virtual machine will parse the variable as being available to use for a reward (eg, label == "reward") or for allocation of credit (eg, label == "credit"). 
+ - rejection_variable: should be a dictionary to specify a variable to be used to assess if a participant does not receive credit (eg, catch trial, number missed, etc). If you do not want to specify any variables, specify as ""
  - notes: any notes about the implementation, etc.
  - publish: either "True" or "False" to determine if the experiment should be revealed to the user of the expfactory-python application.
 
@@ -322,7 +322,7 @@ An example of a config.json data structure is follows:
                       "style.css",
                       "plugin.js"
                      ],
-              "performance_variable":"",
+              "experiment_variables":"",
               "rejection_variable":"",
               "reference": "http://www.sciencedirect.com/science/article/pii/S0896627311001255",
               "notes": "Condition = ordered stims in stage 1 and stage 2 (so [0, 1] or [1, 0] for stage 1 and [2, 3], [4, 5] etc. for stage 2 and FB for the FB condition (1 for reward, 0 for no reward)",
@@ -332,46 +332,49 @@ An example of a config.json data structure is follows:
       ]
 
 
-Here is an example of different kinds of experiment variables (performance_variable and rejection_variable). Here is how to specify if you do not have any variable:
+Here are examples of different kinds of experiment variables. First, here is how to specify if you do not have any variable:
 
 ::
 
-              "performance_variable":"",
+              "experiment_variables":"",
       
 
-A boolean variable
+A boolean variable that is to be used to calculate bonus for a task
 
 ::
 
-              "performance_variable":{
-                                     "name":"passed_check",
-                                     "type":"boolean"
-                                     "description":"JavaScript boolean to indicate the participant passed the check."
-                                      },
+              "experiment_variables": [{
+                                         "name":"passed_check",
+                                         "label":"bonus",
+                                         "datatype":"boolean"
+                                         "description":"JavaScript boolean to indicate the participant passed the check."
+                                       }]
 
 
-A numeric variable (both int and float are stored as float)
-
-::
-
-              "performance_variable":{
-                                     "name":"number_correct",
-                                     "type":"numeric",
-                                     "range":[0,100],
-                                     "description":"the total number of correct choices."
-                                      },
-
-
-A string variable 
+A numeric variable (both int and float are stored as float) to be used to assess if credit should be given (or not)
 
 ::
 
-              "performance_variable":{
-                                     "name":"quality_label",
-                                     "type":"string",
-                                     "range":["low","average","good","very good"],
-                                     "description":"The quality of the responses."
-                                      },
+              "experiment_variables": [{
+                                         "name":"number_correct",
+                                         "type":"credit",
+                                         "datatype":"numeric",
+                                         "range":[0,100],
+                                         "description":"the total number of correct choices."
+                                       }]
+
+
+A string variable that will be included as a model (we will be including other ways to explore results, not implemented for now) but not intended for allocation of credit / rejection, or bonus:
+
+::
+
+
+              "experiment_variables": [{
+                                         "name":"quality_label",
+                                         "datatype":"string",
+                                         "range":["low","average","good","very good"],
+                                         "description":"The quality of the responses."
+                                       }]
 
 
 run
