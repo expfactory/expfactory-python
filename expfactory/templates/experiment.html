@@ -21,7 +21,7 @@
 {{js}}
 <script>
 jsPsych.init({
-    experiment_structure: {{tag}}_experiment,
+    timeline: {{tag}}_experiment,
     on_finish: function () {
         jsPsych.data.localSave('{{tag}}_results.csv', 'csv');
     }
