@@ -7,6 +7,7 @@ Functions to work with javascript experiments
 from expfactory.utils import find_directories, remove_unicode_dict
 from glob import glob
 import json
+import re
 import os
 
 
@@ -77,11 +78,14 @@ def validate(experiment_folder,warning=True):
         if field not in meta[0].keys():
             return notvalid("%s: config.json is missing field %s" %(experiment_name,field))
 
-        # Tag must correspond with folder name
         if field == "tag":
+            # Tag must correspond with folder name
             if meta[0][field] != experiment_name:
                 return notvalid("%s: tag parameter %s does not match folder name." %(experiment_name,meta[0][field]))
 
+            # name cannot have special characters, only _ and letters/numbers
+            if not re.match("^[a-z0-9_]*$", meta[0][field]): 
+                return notvalid("%s: tag parameter %s has invalid characters, only lowercase [a-z],[0-9], and _ allowed." %(experiment_name,meta[0][field]))
 
         # Check if experiment is production ready
         if field == "publish":
