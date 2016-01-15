@@ -271,7 +271,15 @@ A few important notes:
 I want to preview available experiments
 ---------------------------------------
 
-We provide static versions of all experiments, along with meta-data, in our `expfactory-experiments <http://expfactory.github.io/expfactory-experiments>`_ github pages. You can preview the currently available experiments in our `online portal <http://expfactory.github.io/table.html>`_.
+We provide static versions of all experiments, along with meta-data, in our `expfactory-experiments <http://expfactory.github.io/expfactory-experiments>`_ github pages. You can preview the currently available experiments in our `online portal <http://expfactory.github.io/table.html>`_. You can generate this portal on the fly on your local machine as well:
+
+::
+
+      from expfactory.views import generate_experiment_web
+      output_folder = os.path.abspath("/home/vanessa/Desktop/web")
+      generate_experiment_web(output_folder)
+
+The output folder does not need to exist. This will generate the equivalent interface hosted on expfactory.github.io.
 
 
 I want to contribute an experiment
