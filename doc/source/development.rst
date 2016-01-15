@@ -261,7 +261,7 @@ Summary of Best Practices
 * the folder name must correspond with the "tag" variable in the config.json
 * experiment folder names should be all lowercase, no hyphens (-), or spaces.
 * you can include any images/sounds supplementary files in your experiment folder, it will be included
-* these supplementary files specified in experiment.js should have paths relative to the battery experiment base directory, `/static/experiments/[tag]/images/hello.png`
+* these supplementary files specified in experiment.js should have paths relative to the battery experiment base directory, `static/experiments/[tag]/images/hello.png`
 * supplementary files specified in style.css should be relative to the experiment folder.
 
 
@@ -390,7 +390,7 @@ A list of javascript and css files that are essential for the experiment to run,
 
 ::
 
-      /static/js/jspsych/plugins/jspsych-call-function.js
+      static/js/jspsych/plugins/jspsych-call-function.js
 
 
 Any files with full paths specified as the above will be checked for existance within the expfactory-battery folder. If found, the file will be linked successfully. If not found, the file will be looked for in the experiment folder. If the file does not exist in either place, an error will trigger upon generation of the battery.

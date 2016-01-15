@@ -9,5 +9,5 @@ from numpy.testing import assert_equal
 
 def validate_experiment_directories(experiment_folder):
     experiments = find_directories(experiment_folder)
-    for contender in experiment:
+    for contender in experiments:
         assert_equal(validate(contender),True)
