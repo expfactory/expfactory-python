@@ -5,15 +5,18 @@ part of the experiment factory package
 functions for developing experiments and batteries, viewing and testing things
 '''
 
-from expfactory.utils import copy_directory, get_installdir, sub_template
+from expfactory.utils import copy_directory, get_installdir, sub_template, get_template, save_pretty_json
+from expfactory.experiment import load_experiment, get_experiments
 from expfactory.vm import custom_battery_download, get_stylejs
-from expfactory.experiment import load_experiment
+from expfactory.battery import template_experiments
 from numpy.random import choice
 import SimpleHTTPServer
 import SocketServer
 import webbrowser
 import tempfile
+import json
 import shutil
+import pandas
 import os
 
 
@@ -75,6 +78,132 @@ def preview_experiment(folder=None,battery_folder=None,port=None):
         print "Stopping web server..."
         httpd.server_close()
         shutil.rmtree(tmpdir)
+
+
+def generate_experiment_web(output_dir,experiment_folder=None,make_table=True,
+                            make_index=True,make_experiments=True,make_data=True):
+    '''get_experiment_table
+    Generate a table with links to preview all experiments
+    :param experiment_folder: folder with experiments inside
+    :param output_dir: output folder for experiment and table html, and battery files 
+    :param make_table: generate table.html 
+    :param make_index: generate d3 visualization index  
+    :param make_experiments: generate experiment preview files (linked from table and index) 
+    :param make_data: generate json/tsv data to download 
+    '''
+    tmpdir = custom_battery_download()
+
+    if not os.path.exists(output_dir):
+        os.mkdir(output_dir)
+
+    if experiment_folder == None:
+        experiment_folder = "%s/experiments" %tmpdir
+    experiments = get_experiments(experiment_folder,load=True)
+
+    # Fields to keep for the table
+    fields = ['preview','tag',
+              'contributors','time','notes',
+              'cognitive_atlas_task_id']
+
+    valid = pandas.DataFrame(columns=fields)
+
+    # Make a table of experiment information
+    for experiment in experiments:
+        for field in experiment[0].keys():
+            if field in fields:
+                values = experiment[0][field]
+                # Join lists with a comma
+                if field == "reference":
+                    if values != '':
+                        values = '<a href="%s" target="_blank">%s</a>' %(values,values)
+                if isinstance(values,list):
+                    values = ",".join(values)
+                valid.loc[experiment[0]["tag"],field] = values
+
+        # Add a preview link
+        valid.loc[experiment[0]["tag"],"preview"] = '<a href="%s.html" target="_blank">DEMO</a>' %(experiment[0]["tag"])
+
+    # If the user wants to create the index page
+    if make_index == True:
+        output_index = os.path.abspath("%s/index.html" %output_dir)
+
+        # For each experiment, we will prepare an interactive node for the site
+        nodes = []
+        for experiment in experiments:
+            nodes.append('{"cluster": 1, "radius": "10", "color": colors[%s], "tag": "%s" }' %(choice([0,1,2]),experiment[0]["tag"]))
+
+        # Generate index page
+        index_template = get_template("%s/templates/expfactory_index.html" %get_installdir())        
+        index_template = index_template.replace("[SUB_NODES_SUB]",",".join(nodes))
+        index_template = index_template.replace("[SUB_TOTAL_SUB]",str(len(nodes)))
+        filey = open(output_index,"wb")
+        filey.writelines(index_template)
+        filey.close()
+
+
+    # Update entire static directory
+    old_dirs = ["templates","static"]
+    for folder in old_dirs:
+        copy_to = os.path.abspath("%s/%s" %(output_dir,folder))
+        copy_from = "%s/battery/%s" %(tmpdir,folder)
+        if os.path.exists(copy_to):
+            shutil.rmtree(copy_to)
+        copy_directory(copy_from,copy_to)
+
+    # Clear old experiments
+    experiment_dir = os.path.abspath("%s/static/experiments/" %output_dir)
+    if os.path.exists(experiment_dir):
+        shutil.rmtree(experiment_dir)
+
+    # Copy updated valid experiments into our experiment directory
+    battery_repo = "%s/battery" %(tmpdir)
+    experiment_repo = "%s/experiments" %(tmpdir)
+    valid_experiments = ["%s/%s" %(experiment_repo,x[0]["tag"]) for x in experiments]
+    template_experiments(output_dir,battery_repo,valid_experiments)
+
+    # For each experiment, we will generate a demo page
+    for experiment in experiments:
+        demo_page = os.path.abspath("%s/%s.html" %(output_dir,experiment[0]["tag"]))
+        exp_template = get_experiment_html(experiment)
+        filey = open(demo_page,"wb")
+        filey.writelines(exp_template)
+        filey.close()
+
+    # If the user wants to make a table
+    if make_table == True:
+
+        table_template = get_template("%s/templates/table.html" %get_installdir())
+        output_table = os.path.abspath("%s/table.html" %output_dir)
+
+        # First prepare rendered table
+        table = '<table id="fresh-table" class="table">\n<thead>\n'
+        for field in fields:
+            table = '%s<th data-field="%s" data-sortable="true">%s</th>' %(table,field,field)
+        table = '%s\n</thead>\n<tbody>\n' %(table)
+
+        for row in valid.iterrows():
+            table = "%s<tr>\n" %(table)
+            for field in row[1]:
+                table = "%s<td>%s</td>\n" %(table,field)
+            table = "%s</tr>\n" %(table)
+
+        table = "%s</tbody></table>\n" %(table)
+
+        # Write the new table
+        table_template = table_template.replace("[[SUB_TABLE_SUB]]",table)
+        filey = open("%s/table.html" %output_dir,"wb")
+        filey.writelines(table_template)
+        filey.close()
+
+    # If the user wants to make data
+    if make_data == True:
+        data_folder = os.path.abspath("%s/data" %output_dir)
+        if not os.path.exists(data_folder):
+            os.mkdir(data_folder)
+        save_pretty_json("%s/expfactory-experiments.json" %(data_folder),json.loads(valid.to_json(orient="records")))
+        valid.to_csv("%s/expfactory-experiments.tsv" %(data_folder),sep="\t",index=None)
+        valid.to_pickle("%s/expfactory-experiments.pkl" %(data_folder))
+
 
 def get_experiment_html(experiment,url_prefix=""):
     '''get_experiment_html

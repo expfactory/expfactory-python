@@ -261,7 +261,7 @@ Summary of Best Practices
 * the folder name must correspond with the "tag" variable in the config.json
 * experiment folder names should be all lowercase, no hyphens (-), or spaces.
 * you can include any images/sounds supplementary files in your experiment folder, it will be included
-* these supplementary files specified in experiment.js should have paths relative to the battery experiment base directory, `static/experiments/[tag]/images/hello.png`
+* these supplementary files specified in experiment.js should have paths relative to the battery experiment base directory, `/static/experiments/[tag]/images/hello.png`
 * supplementary files specified in style.css should be relative to the experiment folder.
 
 
@@ -291,9 +291,9 @@ will produce the following code in `load_experiment.js`:
 ::
 
 		case "multi-source":
-			loadjscssfile("static/experiments/multi-source/experiment.js","js")
-			loadjscssfile("static/experiments/multi-source/style.css","css")
-			loadjscssfile("static/experiments/multi-source/plugin.js","js")
+			loadjscssfile("/static/experiments/multi-source/experiment.js","js")
+			loadjscssfile("/static/experiments/multi-source/style.css","css")
+			loadjscssfile("/static/experiments/multi-source/plugin.js","js")
 			break;
 
 
@@ -390,7 +390,7 @@ A list of javascript and css files that are essential for the experiment to run,
 
 ::
 
-      static/js/jspsych/plugins/jspsych-call-function.js
+      /static/js/jspsych/plugins/jspsych-call-function.js
 
 
 Any files with full paths specified as the above will be checked for existance within the expfactory-battery folder. If found, the file will be linked successfully. If not found, the file will be looked for in the experiment folder. If the file does not exist in either place, an error will trigger upon generation of the battery.
@@ -402,18 +402,18 @@ Files hard coded into the experiment.js should have a path with the following fo
 
 ::
 
-      static/experiments/[folder-name]/images/
+      /static/experiments/[folder-name]/images/
 
 
 where `folder-name` is replaced with the name of the experiment folder, and any subdirectories to that (e.g., "images" should exist in the experiment directory. For example, to link a sound file in an experiment folder, `tone-monitoring`:
 
 ::
 
-      practice_stims = [{sound: 'static/experiments/tone_monitoring/sounds/880Hz_-6dBFS_.5s.mp3',
+      practice_stims = [{sound: '/static/experiments/tone_monitoring/sounds/880Hz_-6dBFS_.5s.mp3',
 		  data: {exp_id: 'tone_monitoring', trial_id: 'high', condition: 'practice'}},
-		 {sound: 'static/experiments/tone_monitoring/sounds/440Hz_-6dBFS_.5s.mp3',
+		 {sound: '/static/experiments/tone_monitoring/sounds/440Hz_-6dBFS_.5s.mp3',
 		  data: {exp_id: 'tone_monitoring', trial_id: 'medium', condition: 'practice'}},
-		 {sound: 'static/experiments/tone_monitoring/sounds/220Hz_-6dBFS_.5s.mp3',
+		 {sound: '/static/experiments/tone_monitoring/sounds/220Hz_-6dBFS_.5s.mp3',
 		 data: {exp_id: 'tone_monitoring', trial_id: 'low', condition: 'practice'}}
       ]
 
@@ -430,17 +430,17 @@ These files would be in the tone-monitoring experiment folder as:
                  220Hz_-6dBFS_.5s.mp3
 
 
-as the entire thing will be included in the experiment's folder (under `static/experiments/[folder-name]`), with the same structure. You are free to include any necessary static files in your experiment, and can name subfolders in your experiment folder however you like. Most of these files do not need to be specified in the "run" variable of the config.json. These specified files should be those js and css that will be embedded in the dynamically produced experiment html so that the experiment functions. If you find that your experiment is not running, likely you can inspect the console and see that you are missing a file. When validation of an experiment occurs upon battery generation, all files specified in this "run" variable will be checked for existence, and an error output if not found.
+as the entire thing will be included in the experiment's folder (under `/static/experiments/[folder-name]`), with the same structure. You are free to include any necessary static files in your experiment, and can name subfolders in your experiment folder however you like. Most of these files do not need to be specified in the "run" variable of the config.json. These specified files should be those js and css that will be embedded in the dynamically produced experiment html so that the experiment functions. If you find that your experiment is not running, likely you can inspect the console and see that you are missing a file. When validation of an experiment occurs upon battery generation, all files specified in this "run" variable will be checked for existence, and an error output if not found.
 
 
 experiment.js
 '''''''''''''
 
-This is the main javascript file to run the experiment, typically named experiment.js. The name can change, but must be specified in the config.json as one of the "run" variables. Paths to images, sounds, and other files referenced in this file will be expected to follow the same pattern as above, e.g.: `static/experiments/[folder-name]/images/filename.png` `(required)`.
+This is the main javascript file to run the experiment, typically named experiment.js. The name can change, but must be specified in the config.json as one of the "run" variables. Paths to images, sounds, and other files referenced in this file will be expected to follow the same pattern as above, e.g.: `/static/experiments/[folder-name]/images/filename.png` `(required)`.
 
 Supplementary files
 '''''''''''''''''''
-You might want a folder of images, sounds, or other, to be included with your experiment. You are allowed to include, and specify these files as needed in the style.css or experiment.js. Important** if you specify an image/other in the style sheet, the path should be relative to the css file (the experiment folder). If you specify an image or file in your experiment.js file, the path should be relative to the battery base folder (e.g., static/experiments/[folder-name]/images/. 
+You might want a folder of images, sounds, or other, to be included with your experiment. You are allowed to include, and specify these files as needed in the style.css or experiment.js. Important** if you specify an image/other in the style sheet, the path should be relative to the css file (the experiment folder). If you specify an image or file in your experiment.js file, the path should be relative to the battery base folder (e.g., /static/experiments/[folder-name]/images/. 
 
 style.css
 '''''''''
@@ -452,7 +452,6 @@ We will be added interactive functions and documentation to generate a new exper
 Testing your Experiment
 '''''''''''''''''''''''
 
-You have two options here, and we are going to hopefully provide a third option using `Code Pen <http://codepen.io/vsoch/pen/NGXGGE>`_ for more live/interactive development. 
 
 Working from experiments repo
 .............................
@@ -484,6 +483,22 @@ You can also specify a port:
 Your browser will open to show the experiment. You can press Control+C to shut down the server. 
 
 
+As stated previously, you should validate your config.json, folder structure and files, by running:
+
+
+::
+
+      cd simple_experiment
+      expfactory --validate
+
+
+This function also works to specify a folder
+
+::
+
+      expfactory --validate --folder /home/vanessa/Desktop/simple_rt
+
+
 Working from a psiturk battery
 ..............................
 
@@ -491,7 +506,7 @@ If you want to work offline, or simply want to develop an experiment using psitu
 
 * use the expfactory tool to generate a battery
 * move the battery folder from your tmp directory to where you want it
-* copy experiment folders / create new folders into the battery "static/experiments" folder
+* copy experiment folders / create new folders into the battery "/static/experiments" folder
 * test and debug using psiturk (instructions not provided here)
 * move the folder back to your expfactory-experiments repo, commit changes, and push as normal.
 
@@ -511,7 +526,7 @@ If you see a white screen, it usually means there is a JavaScript error. While w
 
 .. image:: _static/img/development/2error.png
 
-* Is the jspsych script included with the battery? If you specify a path in the run variable in config.json and it's not found, it's likely not included in the battery repo, and you can `look to check <https://github.com/expfactory/expfactory-battery/tree/master/static/js>`_. If you are missing a script and would like one added, please submit a PR to the repo and it will be done, and this will fix your error.
+* Is the jspsych script included with the battery? If you specify a path in the run variable in config.json and it's not found, it's likely not included in the battery repo, and you can `look to check <https://github.com/expfactory/expfactory-battery/tree/master//static/js>`_. If you are missing a script and would like one added, please submit a PR to the repo and it will be done, and this will fix your error.
 * Is your browser caching an old script? You might make a change, but then the error persists, and this is because the browser caches style and js files by default. You can disable this in the settings, so it won't cache when the development console is open:
 
 .. image:: _static/img/development/3cache.png

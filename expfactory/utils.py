@@ -5,6 +5,7 @@ utils.py: part of expfactory package
 import errno
 import collections
 import shutil
+import json
 import os
 import re
 import __init__
@@ -95,6 +96,12 @@ def save_template(output_file,html_snippet):
     filey = open(output_file,"w")
     filey.writelines(html_snippet)
     filey.close()
+
+def save_pretty_json(outfile,myjson):
+    filey = open(outfile,'wb')
+    filey.write(json.dumps(myjson, sort_keys=True,indent=4, separators=(',', ': ')))
+    filey.close()
+
 
 def is_type(var,types=[int,float,list]):
     """
