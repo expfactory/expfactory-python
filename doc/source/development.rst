@@ -25,7 +25,7 @@ A. Fork our experiment repo
 When you browse to `our repo <https://github.com/expfactory/expfactory-experiments>`_, you will see a "Fork" button in the upper right:
 
 
-.. image:: _/static/img/development/0fork.png
+.. image:: _static/img/development/0fork.png
 
 
 Click it, and select your Github username to create a copy of the repository under your account name. 
@@ -217,7 +217,7 @@ E. submit a pull request (PR) to our master branch
 
 Once you have made a change, and commit the change to your remote (cloud) repo, you would want to submit this change to us to consider merging into the expfactory master branch. It's easiest to do this with the online interface. You should go to your repo, and find the "Pull Request" button:
 
-.. image:: _/static/img/development/1pr.png
+.. image:: _static/img/development/1pr.png
 
 You will then want to select merging your base/branch into the expfactory/master branch. Please tell us in the comments what you have changed or added, and then submit the PR. We will be able to review your changes and give you feedback.
 
@@ -524,12 +524,12 @@ If you see a white screen, it usually means there is a JavaScript error. While w
 
 * Did you specify all required jspsych scripts in your "run" variable? A script that is not specified will not be included in the page, and you will likely see a message like this:
 
-.. image:: _/static/img/development/2error.png
+.. image:: _static/img/development/2error.png
 
 * Is the jspsych script included with the battery? If you specify a path in the run variable in config.json and it's not found, it's likely not included in the battery repo, and you can `look to check <https://github.com/expfactory/expfactory-battery/tree/master//static/js>`_. If you are missing a script and would like one added, please submit a PR to the repo and it will be done, and this will fix your error.
 * Is your browser caching an old script? You might make a change, but then the error persists, and this is because the browser caches style and js files by default. You can disable this in the settings, so it won't cache when the development console is open:
 
-.. image:: _/static/img/development/3cache.png
+.. image:: _static/img/development/3cache.png
 
 or you can use Incognito mode (Control + Shift + N).
 
