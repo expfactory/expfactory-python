@@ -46,7 +46,7 @@ def notvalid(reason):
 def dowarning(reason):
     print reason
 
-def validate(experiment_folder,warning=True):
+def validate(experiment_folder=None,warning=True):
     '''validate
     :param experiment_folder: full path to experiment folder with config.json
     :param warning: issue a warning for empty fields with level 2 (warning)
@@ -61,6 +61,8 @@ def validate(experiment_folder,warning=True):
         All fields should be defined, but for now we just care about run scripts
     
     '''
+    if experiment_folder==None:
+        experiment_folder=os.path.abspath(os.getcwd())
 
     try:
         meta = load_experiment(experiment_folder)
