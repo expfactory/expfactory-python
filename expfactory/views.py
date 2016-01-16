@@ -210,8 +210,11 @@ def get_experiment_html(experiment,url_prefix=""):
     return the html template to test a single experiment
     :param experiment: the loaded config.json for an experiment (json)
     '''
+    if "CIRCLE_BRANCH" in os.environ.keys():
+        exp_template = "%s/templates/experiment_ci.html" %get_installdir()
+    else:
+        exp_template = "%s/templates/experiment.html" %get_installdir()
     css,js = get_stylejs(experiment,url_prefix)
-    exp_template = "%s/templates/experiment.html" %get_installdir()
     exp_template = "".join(open(exp_template,"r").readlines())
     exp_template = sub_template(exp_template,"{{js}}",js)
     exp_template = sub_template(exp_template,"{{css}}",css)

@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<link rel="icon" type="image/png" href="assets/img/favicon.ico">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+        <title>The Experiment Factory: Experiments</title>
+	<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport" />
+        <link href="static/css/bootstrap.min.css" rel="stylesheet" />
+        <link href="static/css/fresh-bootstrap-table.css" rel="stylesheet" />
+        <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+        <link href='https://fonts.googleapis.com/css?family=Roboto:400,700,300' rel='stylesheet' type='text/css'>
+</head>
+<body>
+
+<div class="wrapper">
+    <div class="fresh-table toolbar-color-blue full-screen-table">
+    <!--    Available colors for the full background: full-color-blue, full-color-azure, full-color-green, full-color-red, full-color-orange                  
+            Available colors only for the toolbar: toolbar-color-blue, toolbar-color-azure, toolbar-color-green, toolbar-color-red, toolbar-color-orange
+    -->
+        
+        <div class="toolbar">
+            <button id="homeBtn" class="btn btn-default">Home</button>
+        </div>
+        [[SUB_TABLE_SUB]]        
+    </div>
+</div>
+
+
+</body>
+    <script type="text/javascript" src="static/js/jquery-1.11.2.min.js"></script>
+    <script type="text/javascript" src="static/js/bootstrap.js"></script>
+    <script type="text/javascript" src="static/js/bootstrap-table.js"></script>
+        
+    <script type="text/javascript">
+        var $table = $('#fresh-table'),
+            $homeBtn = $('#homeBtn'), 
+            full_screen = false,
+            window_height;
+            
+        $().ready(function(){
+            
+            window_height = $(window).height();
+            table_height = window_height - 20;
+            
+            $table.bootstrapTable({
+                toolbar: ".toolbar",
+
+                showRefresh: false,
+                search: true,
+                showToggle: true,
+                showColumns: true,
+                pagination: true,
+                striped: false,
+                sortable: true,
+                height: table_height,
+                pageSize: 25,
+                pageList: [25,50,100],
+                
+                formatShowingRows: function(pageFrom, pageTo, totalRows){
+                    //do nothing here, we don't want to show the text "showing x of y from..." 
+                },
+                formatRecordsPerPage: function(pageNumber){
+                    return pageNumber + " rows visible";
+                },
+                icons: {
+                    refresh: 'fa fa-refresh',
+                    toggle: 'fa fa-th-list',
+                    columns: 'fa fa-columns',
+                    detailOpen: 'fa fa-plus-circle',
+                    detailClose: 'fa fa-minus-circle'
+                }
+            });
+                        
+            $homeBtn.click(function () {
+                document.location = "/";
+            });
+        
+            
+            $(window).resize(function () {
+                $table.bootstrapTable('resetView');
+            });    
+        });
+        
+       
+    </script>
+
+<form action="https://codepen.io/pen/define" method="POST" target="_blank">
+  <input type="hidden" name="data" value='{"title": "New Pen!", "html": "<div>Hello, World!</div>"}'>
+
+  <input type="submit" value="Create New Pen with Prefilled Data">
+</form>
+
+</html>

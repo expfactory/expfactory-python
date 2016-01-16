@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    <meta charset="UTF-8">
+    <title>The Experiment Factory</title>
+    <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+    <link href='https://fonts.googleapis.com/css?family=Roboto:300' rel='stylesheet' type='text/css'>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script> 
+    <script src="static/js/tipsy.js"></script>
+    <link rel="stylesheet" href="static/css/expfactory.css">
+</head>
+<body>
+
+<h1 class="title"><img height="25px" style="padding-right:5px; padding-top:5px" src="static/images/expfactoryticketgray.png"/>The <span style="color:#CCC">Experiment</span> Factory</h1>
+
+<!-- Experiments - so many tiny pieces! -->
+<!-- Sidebar with logo -->
+<div id="littlepieces"></div>
+
+<script>
+// Tooltips
+var tip = d3.tip()
+    .attr('class', 'd3-tip')
+    .offset([-10, 0])
+    .html(function(d) {
+        return "<a href='" + d.tag + ".html' target='_blank'><strong><span style='color:black;text-decoration:none'>" + d.tag +"</span></a>";
+})
+
+// D3
+// Colors to match primary paint colors
+var colors = ["brown","#E9AB17","#1756E8"]
+
+var n = 1; // number of distinct clusters (classes)
+var m = [SUB_TOTAL_SUB]; // total objects
+
+var nodes = [[SUB_NODES_SUB]];
+
+var width = 1400,
+    height = 220,
+    padding = 20, // separation between nodes
+    maxRadius = 50;
+
+var x = d3.scale.ordinal()
+    .domain(d3.range(m))
+    .rangePoints([0, width], 1);
+
+var nodes = d3.range(m).map(function(ii) {
+  var i = nodes[ii].cluster,
+      v = (i + 1) / m * -Math.log(Math.random());
+  return {
+    radius: Math.max(10,Math.sqrt(v) * maxRadius),
+    color: nodes[ii].color,
+    tag: nodes[ii].tag,
+    cy: x(i),
+    cx: width / 2
+  };
+});
+
+var force = d3.layout.force()
+    .nodes(nodes)
+    .size([width, height])
+    .gravity(0)
+    .charge(0)
+    .on("tick", tick)
+    .start();
+
+var svg = d3.select("#littlepieces").append("svg")
+    .attr("width", width)
+    .attr("height", height);
+
+svg.call(tip);
+
+var circle = svg.selectAll("rect")
+    .data(nodes)
+  .enter().append("rect")
+    .attr("width", function(d) { return d.radius; })
+    .attr("height", function(d) { return d.radius; })
+    .style("fill", function(d) { return d.color; })
+    .on('mouseout.tip', tip.hide)
+    .on('mouseover.tip', tip.show)
+    .on('click', function(d){
+        window.location = d.tag + ".html";
+    })
+    .call(force.drag);
+
+function tick(e) {
+  circle
+      .each(gravity(.2 * e.alpha))
+      .each(collide(.5))
+      .attr("x", function(d) { return d.x = Math.max(d.radius, Math.min(width - d.radius, d.x)); })
+      .attr("y", function(d) { return d.y = Math.max(d.radius, Math.min(height - d.radius, d.y)); });
+}
+
+// Move nodes toward cluster focus.
+function gravity(alpha) {
+  return function(d) {
+    d.y += (d.cy - d.y) * alpha;
+    d.x += (d.cx - d.x) * alpha;
+  };
+}
+
+// Resolve collisions between nodes.
+function collide(alpha) {
+  var quadtree = d3.geom.quadtree(nodes);
+  return function(d) {
+    var r = d.radius + maxRadius + padding,
+        nx1 = d.x - r,
+        nx2 = d.x + r,
+        ny1 = d.y - r,
+        ny2 = d.y + r;
+    quadtree.visit(function(quad, x1, y1, x2, y2) {
+      if (quad.point && (quad.point !== d)) {
+        var x = d.x - quad.point.x,
+            y = d.y - quad.point.y,
+            l = Math.sqrt(x * x + y * y),
+            r = d.radius + quad.point.radius + (d.color !== quad.point.color) * padding;
+        if (l < r) {
+          l = (l - r) / l * alpha;
+          d.x -= x *= l;
+          d.y -= y *= l;
+          quad.point.x += x;
+          quad.point.y += y;
+        }
+      }
+      return x1 > nx2 || x2 < nx1 || y1 > ny2 || y2 < ny1;
+    });
+  };
+}
+
+</script>
+
+<!-- Centers -->
+<div class="tagline1">A million little pieces...</div>
+<div class="experiment"><h1 id="infobox"></h1></div>
+<div class="tagline2">assembled for psychological science.</div>
+
+<script>
+
+// A $( document ).ready() block.
+$( document ).ready(function() {
+    
+    // Show text description on mouseover
+    $("#newlink").mouseover(function(){
+       $("#infobox").text("Create a new experiment or battery.")
+    })
+
+    $("#codelink").mouseover(function(){
+       $("#infobox").text("Contribute to our code base.")
+    })
+
+    $("#doclink").mouseover(function(){
+       $("#infobox").text("Learn about the experiment factory.")
+    })
+
+    $("#browselink").mouseover(function(){
+       $("#infobox").text("Browse our experimental paradigms.")
+    })
+
+});
+
+</script>
+
+<nav>
+  <ul>
+    <li id="newlink"><a href="http://expfactory.readthedocs.org/en/latest/getting-started.html"><i class="fa fa-fw fa-plus"></i></a></li>
+    <li id="browselink"><a href="table.html"><i class="fa fa-fw fa-search"></i></a></li>
+    <li id="codelink"><a href="https://github.com/expfactory" target="_blank"><i class="fa fa-fw fa-code-fork"></i></a></li>
+    <li id="doclink"><a href="http://expfactory.readthedocs.org" target="_blank"><i class="fa fa-fw fa-question"></i></a></li>
+  </ul>
+</nav>
+</body>
+</html>
