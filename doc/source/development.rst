@@ -499,6 +499,15 @@ This function also works to specify a folder
       expfactory --validate --folder /home/vanessa/Desktop/simple_rt
 
 
+Continuous Integration
+......................
+
+Continuous integration is a term from software development that basically means we test as we change and modify our code - in this case "code" is referring to the different experiments. This means that when you submit a pull request (PR) to the expfactory-experiments repo, along with local testing that you might do, we also test the code on a continuous integration server called `CircleCI  <https://circleci.com/gh/expfactory/expfactory-experiments>`_. You will see a link to your PR from Github as soon as the PR is submit. Your contribution will be assessed based on the following:
+
+- validation tests passing, meaning that your config.json and experiment folder are formatted and named properly
+- experiment running: If you click on "Artifacts" tab at the top when the testing finishes, you will see a hierarchy of the machine, and you can go to ubuntu/expfactory-experiments/web/index.html to open up a browser and see the dynamically generated updated experiment set. If you click on "browse our experimental paradigms" from the box in the top right corner, you should be able to find your experiment in the table and preview it. You should open your developer console, as you would on your local machine, and run through the experiment both looking for errors and seeing that things run as expected.
+- jslint is a tool that we run over the static code to give suggestions about how to optimize it. If you see suggestions, while they will not trigger an error, you should address them before the PR is merged.
+
 Working from a psiturk battery
 ..............................
 

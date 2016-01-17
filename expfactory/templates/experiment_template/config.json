@@ -2,6 +2,7 @@
     {
         "name": "",
         "run": [
+                "static/js/jspsych/jspsych.js",
                 "experiment.js",
                 "style.css"
                ],

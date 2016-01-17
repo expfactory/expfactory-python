@@ -6,15 +6,18 @@ functions for developing experiments and batteries, viewing and testing things
 '''
 
 from expfactory.utils import copy_directory, get_installdir, sub_template, get_template, save_pretty_json
+from cognitiveatlas.datastructure import concept_node_triples
 from expfactory.experiment import load_experiment, get_experiments
 from expfactory.vm import custom_battery_download, get_stylejs
 from expfactory.battery import template_experiments
+from cognitiveatlas.api import get_concept, get_task
 from numpy.random import choice
 import SimpleHTTPServer
 import SocketServer
 import webbrowser
 import tempfile
 import json
+import numpy
 import shutil
 import pandas
 import os
@@ -220,3 +223,30 @@ def get_experiment_html(experiment,url_prefix=""):
     exp_template = sub_template(exp_template,"{{css}}",css)
     exp_template = sub_template(exp_template,"{{tag}}",experiment[0]["tag"])
     return exp_template
+
+
+def get_cognitiveatlas_hierarchy(experiment_tags=None):
+    '''get_cognitiveatlas_hierarchy
+    return 
+    :param experiment_tags: a list of experiment tags to include. If None provided, all valid experiments will be used.
+    '''
+    tmpdir = custom_battery_download()
+    experiment_folder = "%s/experiments" %tmpdir
+    experiments = get_experiments(experiment_folder,load=True)
+    if experiment_tags != None:
+        experiments = [e for e in experiments if e[0]["tag"] in experiment_tags]
+    
+    # We need a dictionary to look up experiments by task ids
+    unique_tasks = numpy.unique([e[0]["cognitive_atlas_task_id"] for e in experiments]).tolist()
+
+    experiment_lookup = dict()
+    for u in unique_tasks:
+        matching_tasks = numpy.unique([e[0]["tag"] for e in experiments if e[0]["cognitive_atlas_task_id"]==u])
+        experiment_lookup[u] = matching_tasks.tolist()
+
+    triples = concept_node_triples(image_dict=experiment_lookup,save_to_file=False,lookup_key_type="task")
+
+    # Stopped here - need to parse this data structure, and output new html page
+    tree = named_ontology_tree_from_tsv(triples,output_json=None)
+
+
