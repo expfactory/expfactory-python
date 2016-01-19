@@ -6,7 +6,6 @@ functions for developing experiments and batteries, viewing and testing things
 '''
 
 from expfactory.utils import copy_directory, get_installdir, sub_template, get_template, save_pretty_json
-from cognitiveatlas.datastructure import concept_node_triples
 from expfactory.experiment import load_experiment, get_experiments
 from expfactory.vm import custom_battery_download, get_stylejs
 from expfactory.battery import template_experiments
@@ -102,6 +101,7 @@ def generate_experiment_web(output_dir,experiment_folder=None,make_table=True,
     if experiment_folder == None:
         experiment_folder = "%s/experiments" %tmpdir
     experiments = get_experiments(experiment_folder,load=True)
+    experiment_tags = [x[0]["tag"] for x in experiments]
 
     # Fields to keep for the table
     fields = ['preview','tag',
@@ -164,13 +164,23 @@ def generate_experiment_web(output_dir,experiment_folder=None,make_table=True,
     valid_experiments = ["%s/%s" %(experiment_repo,x[0]["tag"]) for x in experiments]
     template_experiments(output_dir,battery_repo,valid_experiments)
 
-    # For each experiment, we will generate a demo page
-    for experiment in experiments:
-        demo_page = os.path.abspath("%s/%s.html" %(output_dir,experiment[0]["tag"]))
-        exp_template = get_experiment_html(experiment)
-        filey = open(demo_page,"wb")
-        filey.writelines(exp_template)
+    if make_experiments == True:
+        experiments_template = get_template("%s/templates/experiments_categories.html" %get_installdir())
+        output_exp = os.path.abspath("%s/experiments.html" %output_dir)
+        experiment_page = get_cognitiveatlas_hierarchy(experiment_tags=experiment_tags,get_html=True)
+
+        # Write the new table
+        filey = open(output_exp,"wb")
+        filey.writelines(experiment_page)
         filey.close()
+        
+        # For each experiment, we will generate a demo page
+        for experiment in experiments:
+            demo_page = os.path.abspath("%s/%s.html" %(output_dir,experiment[0]["tag"]))
+            exp_template = get_experiment_html(experiment)
+            filey = open(demo_page,"wb")
+            filey.writelines(exp_template)
+            filey.close()
 
     # If the user wants to make a table
     if make_table == True:
@@ -225,11 +235,15 @@ def get_experiment_html(experiment,url_prefix=""):
     return exp_template
 
 
-def get_cognitiveatlas_hierarchy(experiment_tags=None):
+def get_cognitiveatlas_hierarchy(experiment_tags=None,get_html=False):
     '''get_cognitiveatlas_hierarchy
     return 
     :param experiment_tags: a list of experiment tags to include. If None provided, all valid experiments will be used.
+    :param get_html: if True, returns rendered HTML template with hierarchy. False returns json data structure.
     '''
+    from cognitiveatlas.datastructure import concept_node_triples
+    from expfactory.graph import make_tree_from_triples
+
     tmpdir = custom_battery_download()
     experiment_folder = "%s/experiments" %tmpdir
     experiments = get_experiments(experiment_folder,load=True)
@@ -246,7 +260,16 @@ def get_cognitiveatlas_hierarchy(experiment_tags=None):
 
     triples = concept_node_triples(image_dict=experiment_lookup,save_to_file=False,lookup_key_type="task")
 
-    # Stopped here - need to parse this data structure, and output new html page
-    tree = named_ontology_tree_from_tsv(triples,output_json=None)
+    # We want to add meta data for the experiments
+    meta_data = dict()
+    for experiment in experiments:
+        node_ids = triples.id[triples.name==experiment[0]["tag"]].tolist()
+        for node_id in node_ids:
+            meta_data[node_id] = experiment[0]
 
-
+    # Generate a data structure with task/concept hierarchy, prune_tree default is True 
+    if get_html == True:
+        tree = make_tree_from_triples(triples,output_html=True,meta_data=meta_data)
+    else:
+        tree = make_tree_from_triples(triples,output_html=False) 
+    return tree
