@@ -27,27 +27,6 @@ def get_json(nodes):
 
     :param nodes: list of pybraincompare.ontology.graph.Node
         a list of nodes. The root node should have node.nid == 1
-
-    :param category_groups: boolean
-        if True, will further group nodes into some higher level parent
-        categories. (For example, concepts in the cognitive atlas have
-        parent categories that are not concepts themselves. Default is False
- 
-    :param category_lookup: dict
-        a dictionary with key: category ID in the node meta "category" dict
-        and value the name of the category. For example:
- 
-    .. note:: 
-                {'ctp_C1':'Perception','ctp_C10':'Motivation','ctp_C2':'Attention',
-                 'ctp_C3':'Reasoning And Decision Making',
-                 'ctp_C4':'Executive-Cognitive Control',
-                 'ctp_C5':'Learning and Memory',
-                 'ctp_C6':'Language','ctp_C7':'Action','ctp_C8': 'Emotion',
-                 'ctp_C9':'Social Function'}
-
-            If not specified and category_groups is true, the above will be used
-            (if you want cognitive atlas categories)
-
     '''
     tree = dict()
     # Make an empty node object for each node
