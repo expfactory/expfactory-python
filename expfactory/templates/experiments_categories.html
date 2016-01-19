@@ -96,16 +96,10 @@ $('.toggle').click(function(e) {
 experiment_lookup = [[SUB_LOOKUP_SUB]]
 
 // Dynamically add number of experiments to each tag
-var total = 0;
 $.each(experiment_lookup, function( key, value ) {
     var num_exps = value.length
     $("#accord_" + key).append('<span style="float:right;background-color:blue" class="badge"> '+ num_exps + '</span>') 
-    total = total + num_exps
 });
-
-// Add the total to total
-$("#show_all").append('<span style="float:right;background-color:blue" class="badge"> '+ total + '</span>') 
-
 
 $(".accord").click(function(){
     var id = $(this).attr("id").replace("accord_","")
@@ -119,7 +113,7 @@ $(".accord").click(function(){
 })
 
 // Show all experiments
-$("#show_all").click(function(){
+$("#accord_all_experiments").click(function(){
     $(".panel").show()
 })
 
@@ -142,7 +136,7 @@ $("#show_all").click(function(){
         
             <hr>
 
-            <h6><a id="show_all">ALL EXPERIMENTS</a></h6>
+            <h6><a id="accord_all_experiments">ALL EXPERIMENTS</a></h6>
 
             <hr>
 

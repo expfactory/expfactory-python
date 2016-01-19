@@ -286,6 +286,8 @@ def make_tree_from_triples(triples,output_html=False,meta_data=None,delim="\t",p
                     concept_lookup[str(parent)] = holder
                 else:
                     concept_lookup[str(parent)] = [experiment_node]
+        # All experiments
+        concept_lookup["all_experiments"] = experiment_nodes.keys()
 
         # Plug everything into the template
         template = get_template("%s/templates/experiments_categories.html" %get_installdir())
