@@ -11,14 +11,17 @@
 <script src='//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
 {{js}}
 <script>
-jsPsych.init({
-    timeline: {{tag}}_experiment,
-    on_finish: function () {
-        jsPsych.data.localSave('{{tag}}_results.csv', 'csv');
-    },
-    on_data_update: function(data) {
-        console.log(data)
-    }
+$( document ).ready(function() {
+
+    jsPsych.init({
+        timeline: {{tag}}_experiment,
+        on_finish: function () {
+            jsPsych.data.localSave('{{tag}}_results.csv', 'csv');
+        },
+        on_data_update: function(data) {
+            console.log(data)
+        }
+    });
 });
 </script>
 </body>

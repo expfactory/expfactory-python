@@ -25,7 +25,9 @@ class ExpfactoryServer(SimpleHTTPServer.SimpleHTTPRequestHandler):
                      (self.address_string(),
                       self.log_date_time_string(),
                       format%args))
-        assert_equal(re.search("code 404",format%args)==None,True)
+        # A workaround for strange div errors if we need
+        #if not re.search("div",format%args):
+        assert_equal(re.search("404",format%args)==None,True)
 
 def validate_experiment_directories(experiment_folder):
     experiments = find_directories(experiment_folder)
@@ -166,7 +168,7 @@ def experiment_robot_web(experimentweb_base,experiment_tags=None,port=None,pause
             check_errors(browser)
 
             block = structure.pop(0)
-            print "Testing block %s" %(count)
+            print "Testing block %s of %s" %(count,experiment[0]["tag"])
 
             # Pause from the last block
             sleep(float(pause_time)/1000) # convert milliseconds to seconds
@@ -189,13 +191,17 @@ def experiment_robot_web(experimentweb_base,experiment_tags=None,port=None,pause
 
             # This is for the experiment
             elif "timeline" in block:
-                choices = block["choices"]
                 timeline = block["timeline"]
                 for time in timeline:
-                    # Make a random choice
-                    random_choice = choice(choices,1)[0]
-                    continue_key = key_lookup(random_choice)
-                    browser.find_element_by_tag_name('html').send_keys(continue_key)
+                    if "choices" in block:
+                        if len(block["choices"])>0:
+                            choices = block["choices"]
+                            # Make a random choice
+                            random_choice = choice(choices,1)[0]
+                            continue_key = key_lookup(random_choice)
+                            browser.find_element_by_tag_name('html').send_keys(continue_key)
+                    elif "button_class" in time:
+                        browser.execute_script("document.querySelector('.%s').click();" %time["button_class"])
 
             elif "cont_key" in block:
                 continue_key = key_lookup(block["cont_key"][0])
@@ -206,7 +212,12 @@ def experiment_robot_web(experimentweb_base,experiment_tags=None,port=None,pause
                 random_choice = choice(choices,1)[0]
                 continue_key = key_lookup(random_choice)
                 browser.find_element_by_tag_name('html').send_keys(continue_key)
-                
+
+            # Free text response
+            elif "type" in block:
+                if re.search("survey-text",block["type"]):
+                    browser.execute_script("document.querySelector('#jspsych-survey-text-next').click();")
+                 
             # Update wait time before pressing buttons in next block
             pause_time = wait_time
             count+=1
