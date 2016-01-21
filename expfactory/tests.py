@@ -128,9 +128,7 @@ def experiment_robot_web(experimentweb_base,experiment_tags=None,port=None,pause
     '''
     experimentweb_base = os.path.abspath(experimentweb_base)
 
-    if "CIRCLE_BRANCH" in os.environ.keys():
-        port = 4444
-    elif port == None:
+    if port == None:
         port = choice(range(8000,9999),1)[0]
     Handler = ExpfactoryServer
     httpd = SocketServer.TCPServer(("", port), Handler)
@@ -222,14 +220,8 @@ def check_errors(browser):
         assert_equal(log_entry["level"] in ["WARNING","INFO"],True)
 
 def get_browser():
-    # If we are running Continuous Integration:
-    if "CIRCLE_BRANCH" in os.environ.keys():
-        browser = webdriver.Remote("http://localhost:4444/wd/hub",
-                 webdriver.DesiredCapabilities.FIREFOX.copy())
-    else:
-        browser = webdriver.Firefox()
-    return browser
-
+    return webdriver.Firefox()
+    
 def get_page(browser,url):
     browser.get(url)
 
