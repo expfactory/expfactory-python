@@ -158,7 +158,6 @@ def experiment_robot_web(experimentweb_base,experiment_tags=None,port=None,pause
         sleep(3)
 
         count=0
-        wait_time = 0
         while True:
 
             # Is the task finished?
@@ -170,6 +169,7 @@ def experiment_robot_web(experimentweb_base,experiment_tags=None,port=None,pause
 
             # Pause from the last block
             sleep(float(pause_time)/1000 + wait_time/1000) # convert milliseconds to seconds
+            wait_time = 0
 
             # Get the current trial (not defined on first page)
             block = browser.execute_script("return jsPsych.currentTrial();")
