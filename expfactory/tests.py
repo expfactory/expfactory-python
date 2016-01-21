@@ -126,6 +126,8 @@ def experiment_robot_web(experimentweb_base,experiment_tags=None,port=None,pause
     :param experiment_folders: list of experiment folders to test
     :param pause_time: time to wait between tasks, in addition to time specified in jspsych
     '''
+    experimentweb_base = os.path.abspath(experimentweb_base)
+
     if port == None:
         port = choice(range(8000,9999),1)[0]
     Handler = ExpfactoryServer
@@ -218,7 +220,13 @@ def check_errors(browser):
         assert_equal(log_entry["level"] in ["WARNING","INFO"],True)
 
 def get_browser():
-    return webdriver.Firefox()
+    # If we are running Continuous Integration:
+    if "CIRCLE_BRANCH" in os.environ.keys():
+        browser = webdriver.Remote("http://localhost:4444/wd/hub",
+                 webdriver.DesiredCapabilities.FIREFOX.copy())
+    else:
+        browser = webdriver.Firefox()
+    return browser
 
 def get_page(browser,url):
     browser.get(url)
