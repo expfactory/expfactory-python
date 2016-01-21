@@ -15,6 +15,9 @@ jsPsych.init({
     timeline: {{tag}}_experiment,
     on_finish: function () {
         jsPsych.data.localSave('{{tag}}_results.csv', 'csv');
+    },
+    on_data_update: function(data) {
+        console.log(data)
     }
 });
 </script>

@@ -14,14 +14,11 @@ jsPsych.init({
     timeline: {{tag}}_experiment,
     on_finish: function () {
         jsPsych.data.localSave('{{tag}}_results.csv', 'csv');
+    },
+    on_data_update: function(data) {
+        console.log(data)
     }
 });
-
-/* Required for error testing with selenium*/
-window.onerror=function(msg){
-    $("body").attr("JSError",msg);
-}
-</script>
 </script>
 </body>
 </html>

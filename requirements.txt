@@ -2,3 +2,4 @@ numpy
 flask
 flask-restful
 gitpython
+selenium
