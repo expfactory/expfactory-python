@@ -128,7 +128,9 @@ def experiment_robot_web(experimentweb_base,experiment_tags=None,port=None,pause
     '''
     experimentweb_base = os.path.abspath(experimentweb_base)
 
-    if port == None:
+    if "CIRCLE_BRANCH" in os.environ.keys():
+        port = 4444
+    elif port == None:
         port = choice(range(8000,9999),1)[0]
     Handler = ExpfactoryServer
     httpd = SocketServer.TCPServer(("", port), Handler)
