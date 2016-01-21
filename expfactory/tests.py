@@ -21,13 +21,14 @@ import os
 # subclass SimpleHTTPServer to capture error messages
 class ExpfactoryServer(SimpleHTTPServer.SimpleHTTPRequestHandler):
     def log_message(self, format, *args):
-        sys.stderr.write("%s - - [%s] %s\n" %
-                     (self.address_string(),
-                      self.log_date_time_string(),
-                      format%args))
-        # A workaround for strange div errors if we need
+        print("%s - - [%s] %s\n" %
+             (self.address_string(),
+             self.log_date_time_string(),
+             format%args))
+        # A workaround for strange div errors for now
         #if not re.search("div",format%args):
-        assert_equal(re.search("404",format%args)==None,True)
+        #    assert_equal(re.search("404",format%args)==None,True)
+        #    # TODO: we will need to throw an error that gets returned to other thread
 
 def validate_experiment_directories(experiment_folder):
     experiments = find_directories(experiment_folder)
@@ -122,7 +123,7 @@ def key_lookup(keyid):
              187:Keys.EQUALS}
     return lookup[keyid]
 
-def experiment_robot_web(experimentweb_base,experiment_tags=None,port=None,pause_time=2000):
+def experiment_robot_web(experimentweb_base,experiment_tags=None,port=None,pause_time=500):
     '''experiment_robot_web
     Robot to automatically run and test experiments, to work with an experiment web folder (meaning produced with views.get_experiment_web. This folder has the standard battery structure with experiment pre-generated as html files. A separate function will/should eventually be made for single experiment preview.
     :param experiment_folders: list of experiment folders to test
@@ -151,28 +152,29 @@ def experiment_robot_web(experimentweb_base,experiment_tags=None,port=None,pause
 
     for experiment in experiments:
  
-        sleep(3)
-
         print "STARTING TEST OF EXPERIMENT %s" %(experiment[0]["tag"])
         get_page(browser,"http://localhost:%s/%s.html" %(port,experiment[0]["tag"]))
         
-        # Get the initial log and look for errors
-        check_errors(browser)
-
-        # Get experiment structure
-        structure = browser.execute_script("return %s_experiment;" %experiment[0]["tag"])
+        sleep(3)
 
         count=0
-        while len(structure) > 0:
+        wait_time = 0
+        while True:
 
-            check_errors(browser)
+            # Is the task finished?
+            finished = browser.execute_script("return expfactory_finished;")
+            if finished == True:
+                break
 
-            block = structure.pop(0)
             print "Testing block %s of %s" %(count,experiment[0]["tag"])
 
             # Pause from the last block
-            sleep(float(pause_time)/1000) # convert milliseconds to seconds
-            wait_time = 1000
+            sleep(float(pause_time)/1000 + wait_time/1000) # convert milliseconds to seconds
+
+            # Get the current trial (not defined on first page)
+            block = browser.execute_script("return jsPsych.currentTrial();")
+
+            wait_time = wait_time + pause_time
             if "timing_post_trial" in block:
                 wait_time = wait_time + block["timing_post_trial"]
             if "timing_feedback_duration" in block:
@@ -188,6 +190,8 @@ def experiment_robot_web(experimentweb_base,experiment_tags=None,port=None,pause
                     elif "show_clickable_nav" in block:
                         if block["show_clickable_nav"] == True:   
                             browser.execute_script("document.querySelector('#jspsych-instructions-next').click();")
+                    # Give time for page to reload 
+                    sleep(0.01)
 
             # This is for the experiment
             elif "timeline" in block:
@@ -202,6 +206,11 @@ def experiment_robot_web(experimentweb_base,experiment_tags=None,port=None,pause
                             browser.find_element_by_tag_name('html').send_keys(continue_key)
                     elif "button_class" in time:
                         browser.execute_script("document.querySelector('.%s').click();" %time["button_class"])
+                    # Give time for page to reload 
+                    sleep(0.01)
+
+            elif "button_class" in block:
+                browser.execute_script("document.querySelector('.%s').click();" %block["button_class"])
 
             elif "cont_key" in block:
                 continue_key = key_lookup(block["cont_key"][0])
@@ -219,7 +228,6 @@ def experiment_robot_web(experimentweb_base,experiment_tags=None,port=None,pause
                     browser.execute_script("document.querySelector('#jspsych-survey-text-next').click();")
                  
             # Update wait time before pressing buttons in next block
-            pause_time = wait_time
             count+=1
 
         print "FINISHING TEST OF EXPERIMENT %s" %(experiment[0]["tag"])

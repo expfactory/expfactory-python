@@ -13,10 +13,13 @@
 <script>
 $( document ).ready(function() {
 
+    expfactory_finished = false;
+
     jsPsych.init({
         timeline: {{tag}}_experiment,
         on_finish: function () {
             jsPsych.data.localSave('{{tag}}_results.csv', 'csv');
+            expfactory_finished = true;
         },
         on_data_update: function(data) {
             console.log(data)
