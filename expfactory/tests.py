@@ -150,6 +150,8 @@ def experiment_robot_web(experimentweb_base,experiment_tags=None,port=None,pause
     for experiment in experiments:
  
         sleep(3)
+
+        print "STARTING TEST OF EXPERIMENT %s" %(experiment[0]["tag"])
         get_page(browser,"http://localhost:%s/%s.html" %(port,experiment[0]["tag"]))
         
         # Get the initial log and look for errors
@@ -164,7 +166,7 @@ def experiment_robot_web(experimentweb_base,experiment_tags=None,port=None,pause
             check_errors(browser)
 
             block = structure.pop(0)
-            print "Testing block %s, %s" %(count,block["type"])
+            print "Testing block %s" %(count)
 
             # Pause from the last block
             sleep(float(pause_time)/1000) # convert milliseconds to seconds
@@ -208,6 +210,8 @@ def experiment_robot_web(experimentweb_base,experiment_tags=None,port=None,pause
             # Update wait time before pressing buttons in next block
             pause_time = wait_time
             count+=1
+
+        print "FINISHING TEST OF EXPERIMENT %s" %(experiment[0]["tag"])
 
     # Stop the server
     httpd.server_close()
