@@ -158,6 +158,7 @@ def experiment_robot_web(experimentweb_base,experiment_tags=None,port=None,pause
         sleep(3)
 
         count=0
+        wait_time=0
         while True:
 
             # Is the task finished?
