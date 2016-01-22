@@ -6,8 +6,8 @@ functions for developing experiments and batteries, viewing and testing things
 '''
 
 from expfactory.utils import copy_directory, get_installdir, sub_template, get_template, save_pretty_json
-from expfactory.experiment import load_experiment, get_experiments
 from expfactory.vm import custom_battery_download, get_stylejs
+from expfactory.experiment import load_experiment, get_experiments
 from expfactory.battery import template_experiments
 from cognitiveatlas.api import get_concept, get_task
 from numpy.random import choice
@@ -37,36 +37,12 @@ def preview_experiment(folder=None,battery_folder=None,port=None):
     preview an experiment locally with the --preview tag
     :param folder: full path to experiment folder to preview. If none specified, PWD is used
     :param battery_folder: full path to battery folder to use as a template. If none specified, the expfactory-battery repo will be used.
-    :param PORT: the port number, default will be randomly generated between 8000 and 9999
+    :param port: the port number, default will be randomly generated between 8000 and 9999
+    :param robot: if True, a web server is started as a separate process for a robot to run
     '''
-    if folder==None:
-        folder=os.path.abspath(os.getcwd())
 
-    if battery_folder == None:
-        tmpdir = custom_battery_download(repos=["battery"])
-    # If user has supplied a local battery folder, copy to tempdir
-    else:
-        tmpdir = tempfile.mkdtemp()
-        copy_directory(battery_folder,"%s/battery" %tmpdir)
-        
-    experiment = load_experiment("%s" %folder)
-    tag = experiment[0]["tag"]
-
-    # We will copy the entire experiment into the battery folder
-    battery_folder = "%s/battery" %(tmpdir)
-    experiment_folder = "%s/static/experiments/%s" %(battery_folder,tag)
-    if os.path.exists(experiment_folder):
-        shutil.rmtree(experiment_folder)
-    copy_directory(folder,experiment_folder)
-    index_file = "%s/index.html" %(battery_folder)
-        
-    # Generate code for js and css
-    exp_template = get_experiment_html(experiment)
-    filey = open(index_file,"w")
-    filey.writelines(exp_template)
-    filey.close()
-
-    os.chdir(battery_folder)
+    # Deploy experiment with battery to temporary directory
+    tmpdir = tmp_experiment(folder,battery_folder)
     
     try:
         if port == None:
@@ -276,3 +252,37 @@ def get_cognitiveatlas_hierarchy(experiment_tags=None,get_html=False):
     else:
         tree = make_tree_from_triples(triples,output_html=False) 
     return tree
+
+def tmp_experiment(folder,battery_folder):
+    '''generate temporary directory with experiment
+    :param folder: full path to experiment folder to preview. If none specified, PWD is used
+    :param battery_folder: full path to battery folder to use as a template. If none specified, the expfactory-battery repo will be used.
+    '''
+    if folder==None:
+        folder=os.path.abspath(os.getcwd())
+
+    if battery_folder == None:
+        tmpdir = custom_battery_download(repos=["battery"])
+    # If user has supplied a local battery folder, copy to tempdir
+    else:
+        tmpdir = tempfile.mkdtemp()
+        copy_directory(battery_folder,"%s/battery" %tmpdir)
+        
+    experiment = load_experiment("%s" %folder)
+    tag = experiment[0]["tag"]
+
+    # We will copy the entire experiment into the battery folder
+    battery_folder = "%s/battery" %(tmpdir)
+    experiment_folder = "%s/static/experiments/%s" %(battery_folder,tag)
+    if os.path.exists(experiment_folder):
+        shutil.rmtree(experiment_folder)
+    copy_directory(folder,experiment_folder)
+    index_file = "%s/index.html" %(battery_folder)
+        
+    # Generate code for js and css
+    exp_template = get_experiment_html(experiment)
+    filey = open(index_file,"w")
+    filey.writelines(exp_template)
+    filey.close()
+    os.chdir(battery_folder)
+    return tmpdir

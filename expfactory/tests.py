@@ -3,19 +3,20 @@ tests.py: part of expfactory package
 tests for experiments and batteries, not for expfactory-python
 
 '''
-from selenium import webdriver
-from expfactory.experiment import validate, get_experiments
+from expfactory.experiment import validate, get_experiments, load_experiment
+from expfactory.views import generate_experiment_web, tmp_experiment
 from numpy.testing import assert_equal, assert_string_equal
 from selenium.webdriver.common.keys import Keys
 from expfactory.utils import find_directories, get_url
-from expfactory.views import generate_experiment_web
 from numpy.random import choice
+from selenium import webdriver
 from threading import Thread
 import SimpleHTTPServer
 from time import sleep
 import SocketServer
 import webbrowser
 import requests
+import shutil
 import numpy
 import json
 import re
@@ -216,80 +217,88 @@ def experiment_robot_web(experimentweb_base,experiment_tags=None,port=None,pause
         count=0
         wait_time=1000
         while True:
-
-            # Is the task finished?
-            finished = browser.execute_script("return expfactory_finished;")
+            print "Testing block %s of %s" %(count,experiment[0]["tag"])
+            wait_time,finished = test_block(browser,experiment,pause_time,wait_time)
             if finished == True:
                 break
-
-            print "Testing block %s of %s" %(count,experiment[0]["tag"])
-
-            # Pause from the last block
-            sleep(float(pause_time)/1000 + wait_time/1000) # convert milliseconds to seconds
-            wait_time = 0
-
-            # Get the current trial (not defined on first page)
-            block = browser.execute_script("return jsPsych.currentTrial();")
-
-            wait_time = wait_time + pause_time
-            if "timing_post_trial" in block:
-                wait_time = wait_time + block["timing_post_trial"]
-            if "timing_feedback_duration" in block:
-                wait_time = wait_time + block["timing_feedback_duration"]
-
-            # This is typically for instruction text, etc.
-            if "pages" in block:
-                number_pages = len(block["pages"])
-                for p in range(number_pages):
-                    if "cont_key" in block:
-                        continue_key = key_lookup(block["cont_key"][0])
-                        browser.find_element_by_tag_name('html').send_keys(continue_key)
-                    elif "show_clickable_nav" in block:
-                        if block["show_clickable_nav"] == True:   
-                            browser.execute_script("document.querySelector('#jspsych-instructions-next').click();")
-                    # Give time for page to reload 
-                    sleep(1)
-
-            # This is for the experiment
-            elif "timeline" in block:
-                timeline = block["timeline"]
-                for time in timeline:
-                    if "choices" in block:
-                        if len(block["choices"])>0:
-                            choices = block["choices"]
-                            # Make a random choice
-                            random_choice = choice(choices,1)[0]
-                            continue_key = key_lookup(random_choice)
-                            browser.find_element_by_tag_name('html').send_keys(continue_key)
-                    elif "button_class" in time:
-                        browser.execute_script("document.querySelector('.%s').click();" %time["button_class"])
-                    # Give time for page to reload 
-                    sleep(1)
-
-            elif "button_class" in block:
-                browser.execute_script("document.querySelector('.%s').click();" %block["button_class"])
-
-            elif "cont_key" in block:
-                continue_key = key_lookup(block["cont_key"][0])
-                browser.find_element_by_tag_name('html').send_keys(continue_key)
-
-            elif "choices" in block:
-                choices = block["choices"]
-                random_choice = choice(choices,1)[0]
-                continue_key = key_lookup(random_choice)
-                browser.find_element_by_tag_name('html').send_keys(continue_key)
-
-            # Free text response
-            elif "type" in block:
-                if re.search("survey-text",block["type"]):
-                    browser.execute_script("document.querySelector('#jspsych-survey-text-next').click();")
-                 
             count+=1
 
         print "FINISHING TEST OF EXPERIMENT %s" %(experiment[0]["tag"])
 
     # Stop the server
     httpd.server_close()
+
+def test_block(browser,experiment,pause_time=2000,wait_time=1000):
+    '''test_block
+    test a single experiment block, given a browser, running experiment, and pause/wait times
+    :param browser: web browser, by way of selenium
+    :param pause_time: time to wait between tasks, in addition to time specified in jspsych
+    :param wait_time: initial wait time, or previously generated wait time based on experiment
+    '''
+    # Is the task finished?
+    finished = browser.execute_script("return expfactory_finished;")
+
+    # Pause from the last block
+    sleep(float(pause_time)/1000 + wait_time/1000) # convert milliseconds to seconds
+    wait_time = 0
+
+    # Get the current trial (not defined on first page)
+    block = browser.execute_script("return jsPsych.currentTrial();")
+
+    wait_time = wait_time + pause_time
+    if "timing_post_trial" in block:
+        wait_time = wait_time + block["timing_post_trial"]
+    if "timing_feedback_duration" in block:
+        wait_time = wait_time + block["timing_feedback_duration"]
+
+    # This is typically for instruction text, etc.
+    if "pages" in block:
+        number_pages = len(block["pages"])
+        for p in range(number_pages):
+            if "cont_key" in block:
+                continue_key = key_lookup(block["cont_key"][0])
+                browser.find_element_by_tag_name('html').send_keys(continue_key)
+            elif "show_clickable_nav" in block:
+                if block["show_clickable_nav"] == True:   
+                    browser.execute_script("document.querySelector('#jspsych-instructions-next').click();")
+            # Give time for page to reload 
+            sleep(1)
+
+    # This is for the experiment
+    elif "timeline" in block:
+        timeline = block["timeline"]
+        for time in timeline:
+            if "choices" in block:
+                if len(block["choices"])>0:
+                    choices = block["choices"]
+                    # Make a random choice
+                    random_choice = choice(choices,1)[0]
+                    continue_key = key_lookup(random_choice)
+                    browser.find_element_by_tag_name('html').send_keys(continue_key)
+                elif "button_class" in time:
+                    browser.execute_script("document.querySelector('.%s').click();" %time["button_class"])
+            # Give time for page to reload 
+            sleep(1)
+
+    elif "button_class" in block:
+        browser.execute_script("document.querySelector('.%s').click();" %block["button_class"])
+
+    elif "cont_key" in block:
+        continue_key = key_lookup(block["cont_key"][0])
+        browser.find_element_by_tag_name('html').send_keys(continue_key)
+
+    elif "choices" in block:
+        choices = block["choices"]
+        random_choice = choice(choices,1)[0]
+        continue_key = key_lookup(random_choice)
+        browser.find_element_by_tag_name('html').send_keys(continue_key)
+
+    # Free text response
+    elif "type" in block:
+        if re.search("survey-text",block["type"]):
+            browser.execute_script("document.querySelector('#jspsych-survey-text-next').click();")
+
+    return wait_time,finished 
 
 def check_errors(browser):
    
@@ -307,3 +316,51 @@ def get_page(browser,url):
 # Run javascript and get output
 def run_javascript(browser,code):
     return browser.execute_script(code)
+
+def test_experiment(folder=None,battery_folder=None,port=None,pause_time=2000):
+    '''test_experiment
+    test an experiment locally with the --test tag and the expfactory robot
+    :param folder: full path to experiment folder to preview. If none specified, PWD is used
+    :param battery_folder: full path to battery folder to use as a template. If none specified, the expfactory-battery repo will be used.
+    :param port: the port number, default will be randomly generated between 8000 and 9999
+    '''
+    if folder==None:
+        folder=os.path.abspath(os.getcwd())
+
+    # Deploy experiment with battery to temporary directory
+    tmpdir = tmp_experiment(folder,battery_folder)
+    experiment = load_experiment("%s" %folder)
+
+    try:
+        if port == None:
+            port = choice(range(8000,9999),1)[0]
+            Handler = ExpfactoryServer
+            httpd = SocketServer.TCPServer(("", port), Handler)
+            server = Thread(target=httpd.serve_forever)
+            server.setDaemon(True)
+            server.start()
+
+        # Set up a web browser
+        browser = get_browser()
+        browser.implicitly_wait(3) # if error, will wait 3 seconds and retry
+        browser.set_page_load_timeout(10)
+ 
+        print "STARTING TEST OF EXPERIMENT %s" %(experiment[0]["tag"])
+        get_page(browser,"http://localhost:%s" %(port))
+        
+        sleep(3)
+
+        count=0
+        wait_time=1000
+        while True:
+            print "Testing block %s of %s" %(count,experiment[0]["tag"])
+            wait_time,finished = test_block(browser,experiment,pause_time,wait_time)
+            if finished == True:
+                break
+            count+=1
+        print "FINISHING TEST OF EXPERIMENT %s" %(experiment[0]["tag"])
+
+    except:
+        print "Stopping web server..."
+        httpd.server_close()
+        shutil.rmtree(tmpdir)

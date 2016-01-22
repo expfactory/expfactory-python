@@ -3,7 +3,7 @@ vm.py: part of expfactory package
 Functions to generate virtual machines to run expfactory batteries
 
 '''
-from expfactory.utils import get_template, sub_template, save_template, clean_fields
+from expfactory.utils import save_template, clean_fields, copy_directory, get_installdir, sub_template, get_template
 from git import Repo
 import tempfile
 import shutil
@@ -112,7 +112,6 @@ def specify_experiments(battery_dest,experiments):
     Specify experiments for a Vagrantfile in an output folder
     :param battery_dest: destination folder for battery
     :param experiments: a list of experiment tags to include
-
     '''
     experiments = [e.encode("utf-8") for e in experiments]
     vagrantfile = "%s/Vagrantfile" %(battery_dest)
