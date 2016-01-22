@@ -453,8 +453,8 @@ Testing your Experiment
 '''''''''''''''''''''''
 
 
-Working from experiments repo
-.............................
+Manual preview of folder
+........................
 It makes most sense to work directly from a folder in the expfactory-experiments repo that you have cloned. This method will work if you have an internet connection, as the expfactory executable will quickly plug your experiment into a battery, and open up the page in your browser.  To do this, you can cd into your experiment folder, and use the `--preview` command:
 
 ::
@@ -483,8 +483,9 @@ You can also specify a port:
 Your browser will open to show the experiment. You can press Control+C to shut down the server. 
 
 
+Validation of a Folder
+......................
 As stated previously, you should validate your config.json, folder structure and files, by running:
-
 
 ::
 
@@ -499,14 +500,36 @@ This function also works to specify a folder
       expfactory --validate --folder /home/vanessa/Desktop/simple_rt
 
 
+Automated Testing
+.................
+You can use the experiment robot to test your experiment locally. The same functions are used that will be run for continuous integration, and it is a good idea to make sure that no errors are output before submitting a PR.
+
+::
+
+      cd simple_experiment
+      expfactory --test
+
+
+or to specify a folder
+
+::
+
+      expfactory --test --folder /home/vanessa/Desktop/simple_rt
+
+
+
+
 Continuous Integration
 ......................
 
 Continuous integration is a term from software development that basically means we test as we change and modify our code - in this case "code" is referring to the different experiments. This means that when you submit a pull request (PR) to the expfactory-experiments repo, along with local testing that you might do, we also test the code on a continuous integration server called `CircleCI  <https://circleci.com/gh/expfactory/expfactory-experiments>`_. You will see a link to your PR from Github as soon as the PR is submit. Your contribution will be assessed based on the following:
 
 - validation tests passing, meaning that your config.json and experiment folder are formatted and named properly
-- experiment running: If you click on "Artifacts" tab at the top when the testing finishes, you will see a hierarchy of the machine, and you can go to ubuntu/expfactory-experiments/web/index.html to open up a browser and see the dynamically generated updated experiment set. If you click on "browse our experimental paradigms" from the box in the top right corner, you should be able to find your experiment in the table and preview it. You should open your developer console, as you would on your local machine, and run through the experiment both looking for errors and seeing that things run as expected.
-- jslint is a tool that we run over the static code to give suggestions about how to optimize it. If you see suggestions, while they will not trigger an error, you should address them before the PR is merged.
+- jshint: we test the static code with jshint. If there are issues for your experiment, tests will not pass.
+- robot tests: we have developed a robot that can be run locally or with continuous integration. The robot will click through the task, make random selections, and trigger an error if a 404 is found.
+- experiment running: If you click on "Artifacts" tab at the top when the testing finishes, you will see a hierarchy of the machine, and you can go to ubuntu/expfactory-experiments/web/index.html to open up a browser and see the dynamically generated updated experiment set. If you click on "browse our experimental paradigms" from the box in the top right corner, you should be able to find your experiment in the table and preview it. You should open your developer console, as you would on your local machine, and run through the experiment both looking for errors (that might have been detected by the robot) and seeing that things run as expected.
+
+Currently, we only test changes between the last successful build and your contribution, meaning experiment folders with changed files. Since the entire battery would take upwards of 10 hours, we recommend you submit PRs limited to a few experiments, otherwise the running will take a very long time.
 
 Working from a psiturk battery
 ..............................
