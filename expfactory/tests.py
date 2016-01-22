@@ -25,10 +25,14 @@ class ExpfactoryServer(SimpleHTTPServer.SimpleHTTPRequestHandler):
                      (self.address_string(),
                       self.log_date_time_string(),
                       format%args))
+        # This is a workaround for jspsych error trying to GET html
+        if not re.search("div",format%args) and not re.search("function",format%args):
+            if re.search("404",format%args):
+                # closing server will trigger error
+                raise IOError(format%args)
     def log_error(self, format, *args):
-        if not re.search("div",format%args):
-            assert_equal(re.search("404",format%args)==None,True)
-            # TODO: we will need to throw an error that gets returned to other thread
+        # We will catch errors in log_messages
+        pass
 
 def validate_experiment_directories(experiment_folder):
     experiments = find_directories(experiment_folder)

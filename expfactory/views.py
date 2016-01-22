@@ -153,6 +153,9 @@ def generate_experiment_web(output_dir,experiment_folder=None,make_table=True,
             shutil.rmtree(copy_to)
         copy_directory(copy_from,copy_to)
 
+    # Copy the favicon to web base
+    shutil.copyfile("%s/battery/static/favicon.ico" %tmpdir,output_dir)
+
     # Clear old experiments
     experiment_dir = os.path.abspath("%s/static/experiments/" %output_dir)
     if os.path.exists(experiment_dir):
