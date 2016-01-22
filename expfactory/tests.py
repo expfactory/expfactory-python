@@ -8,6 +8,7 @@ from expfactory.experiment import validate, get_experiments
 from numpy.testing import assert_equal, assert_string_equal
 from selenium.webdriver.common.keys import Keys
 from expfactory.utils import find_directories, get_url
+from expfactory.views import generate_experiment_web
 from numpy.random import choice
 from threading import Thread
 import SimpleHTTPServer
@@ -42,6 +43,50 @@ def validate_experiment_directories(experiment_folder):
     for contender in experiments:
         assert_equal(validate(contender),True)
 
+
+def circle_ci_test(experiment_tags,web_folder,delete=True):
+    '''circle_ci_test
+    Deploy experiment testing robot, requires generation of web folder, and can be deleted on finish.
+    :param experiment_tags: list of experiment folders (tags) to test
+    :param delete: delete experiment folders when finished
+    '''
+
+    if isinstance(experiment_tags,str):
+        experiment_tags = [experiment_tags]
+
+    # If we are running on circle, only test changed experiments
+    if "CIRCLE_BRANCH" in os.environ.keys():
+
+        print "DETECTED CONTINUOUS INTEGRATION ENVIRONMENT..."
+
+        current_build = int(os.environ["CIRCLE_BUILD_NUM"])
+
+        current_build_url = "https://circleci.com/api/v1/project/expfactory/expfactory-experiments/%s" %(current_build)
+        headers = {'Accept' : 'application/json'}
+        current_build = requests.get(current_build_url, headers=headers).json()
+
+        # Get the last commit id
+        last_successful_build = current_build["previous_successful_build"]["build_num"]
+        last_successful_build_url = "https://circleci.com/api/v1/project/expfactory/expfactory-experiments/%s" %(last_successful_build)
+        last_build = requests.get(last_successful_build_url, headers=headers).json()
+
+        # Compare commits
+        current_commit = current_build["all_commit_details"][-1]["commit"]
+        last_commit = last_build["all_commit_details"][-1]["commit"]
+        files_changed  = os.popen("git diff %s %s --name-only" %(current_commit,last_commit)).readlines()
+
+        # Get unique, changed folders, filter experiments again
+        changed_experiments = numpy.unique([os.path.dirname(x.strip("\n")) for x in files_changed if os.path.dirname(x.strip("\n")) != ""]).tolist()
+        changed_experiments = [e for e in experiment_tags if e in changed_experiments]
+        
+    if len(changed_experiments) > 0:
+        generate_experiment_web(web_folder) 
+        experiment_robot_web(web_folder,experiment_tags=changed_experiments)
+        if delete == True:
+            shutil.rmtree(web_folder)
+    else:
+        print "Skipping experiments %s, no changes detected." %(",".join(experiment_tags))
+        
 
 def key_lookup(keyid):
     lookup = {13:Keys.ENTER,
@@ -133,8 +178,9 @@ def key_lookup(keyid):
 def experiment_robot_web(experimentweb_base,experiment_tags=None,port=None,pause_time=2000):
     '''experiment_robot_web
     Robot to automatically run and test experiments, to work with an experiment web folder (meaning produced with views.get_experiment_web. This folder has the standard battery structure with experiment pre-generated as html files. A separate function will/should eventually be made for single experiment preview.
-    :param experiment_folders: list of experiment folders to test
+    :param experiment_tags: list of experiment folders to test
     :param pause_time: time to wait between tasks, in addition to time specified in jspsych
+    :param port: port. Randomly selected if None is selected
     '''
     experimentweb_base = os.path.abspath(experimentweb_base)
 
@@ -158,34 +204,7 @@ def experiment_robot_web(experimentweb_base,experiment_tags=None,port=None,pause
     if experiment_tags != None:
         experiments = [e for e in experiments if e[0]["tag"] in experiment_tags]
     
-    # If we are running on circle, only test changed experiments
-    if "CIRCLE_BRANCH" in os.environ.keys():
-
-        print "DETECTED CONTINUOUS INTEGRATION ENVIRONMENT..."
-
-        current_build = int(os.environ["CIRCLE_BUILD_NUM"])
-
-        current_build_url = "https://circleci.com/api/v1/project/expfactory/expfactory-experiments/%s" %(current_build)
-        headers = {'Accept' : 'application/json'}
-        current_build = requests.get(current_build_url, headers=headers).json()
-
-        # Get the last commit id
-        last_successful_build = current_build["previous_successful_build"]["build_num"]
-        last_successful_build_url = "https://circleci.com/api/v1/project/expfactory/expfactory-experiments/%s" %(last_successful_build)
-        last_build = requests.get(last_successful_build_url, headers=headers).json()
-
-        # Compare commits
-        current_commit = current_build["all_commit_details"][-1]["commit"]
-        last_commit = last_build["all_commit_details"][-1]["commit"]
-        files_changed  = os.popen("git diff %s %s --name-only" %(current_commit,last_commit)).readlines()
-
-        # Get unique, changed folders, filter experiments again
-        experiment_tags = numpy.unique([os.path.dirname(x.strip("\n")) for x in files_changed if os.path.dirname(x.strip("\n")) != ""]).tolist()
-        experiments = [e for e in experiments if e[0]["tag"] in experiment_tags]
-        print "Found %s changed experiments to test." %(len(experiments))
-
-    else:
-        print "Found %s experiments to test." %(len(experiments))
+    print "Found %s experiments to test." %(len(experiments))
 
     for experiment in experiments:
  
