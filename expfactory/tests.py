@@ -164,7 +164,7 @@ def experiment_robot_web(experimentweb_base,experiment_tags=None,port=None,pause
 
         current_build_url = "https://circleci.com/api/v1/project/expfactory/expfactory-experiments/%s" %(current_build)
         headers = {'Accept' : 'application/json'}
-        current_build = requests.get(last_build_url, headers=headers).json()
+        current_build = requests.get(current_build_url, headers=headers).json()
 
         # Get the last commit id
         last_successful_build = current_build["previous_successful_build"]["build_num"]
