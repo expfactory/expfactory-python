@@ -2,6 +2,7 @@
 utils.py: part of expfactory package
 
 '''
+from urllib2 import Request, urlopen, HTTPError
 import errno
 import collections
 import shutil
@@ -136,3 +137,12 @@ def clean_fields(mydict):
         else:
             newdict[cleanfield] = value.encode("utf-8")
     return newdict
+
+
+def get_url(url):
+    """get_url
+    return a url as string
+    """
+    request = Request(url)
+    response = urlopen(request)
+    return response.read()

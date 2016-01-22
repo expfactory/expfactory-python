@@ -7,13 +7,16 @@ from selenium import webdriver
 from expfactory.experiment import validate, get_experiments
 from numpy.testing import assert_equal, assert_string_equal
 from selenium.webdriver.common.keys import Keys
-from expfactory.utils import find_directories
+from expfactory.utils import find_directories, get_url
 from numpy.random import choice
 from threading import Thread
 import SimpleHTTPServer
 from time import sleep
 import SocketServer
 import webbrowser
+import requests
+import numpy
+import json
 import re
 import sys
 import os
@@ -151,7 +154,29 @@ def experiment_robot_web(experimentweb_base,experiment_tags=None,port=None,pause
 
     # Find experiments 
     experiments = get_experiments("%s/static/experiments" %experimentweb_base,load=True)
-    if experiment_tags != None:
+    
+    # If we are running on circle, only test changed experiments
+    if "CIRCLE_BRANCH" in os.environ.keys():
+        current_build = int(os.environ["CIRCLE_BUILD_NUM"])
+
+        current_build_url = "https://circleci.com/api/v1/project/expfactory/expfactory-experiments/%s" %(current_build)
+        headers = {'Accept' : 'application/json'}
+        current_build = requests.get(last_build_url, headers=headers).json()
+
+        # Get the last commit id
+        last_successful_build = current_build["previous_successful_build"]["build_num"]
+        last_successful_build_url = "https://circleci.com/api/v1/project/expfactory/expfactory-experiments/%s" %(last_successful_build)
+        last_build = requests.get(last_successful_build_url, headers=headers).json()
+
+        # Compare commits
+        current_commit = current_build["all_commit_details"][-1]["commit"]
+        last_commit = last_build["all_commit_details"][-1]["commit"]
+        files_changed  = os.popen("git diff %s %s --name-only" %(current_commit,last_commit)).readlines()
+
+        # Get unique, changed folders
+        experiment_tags = numpy.unique([os.path.dirname(x.strip("\n")) for x in files_changed if os.path.dirname(x.strip("\n")) != ""]).tolist()
+
+    elif experiment_tags != None:
         experiments = [e for e in experiments if e[0]["tag"] in experiment_tags]
 
     for experiment in experiments:
