@@ -21,14 +21,14 @@ import os
 # subclass SimpleHTTPServer to capture error messages
 class ExpfactoryServer(SimpleHTTPServer.SimpleHTTPRequestHandler):
     def log_message(self, format, *args):
-        print("%s - - [%s] %s\n" %
-             (self.address_string(),
-             self.log_date_time_string(),
-             format%args))
-        # A workaround for strange div errors for now
-        #if not re.search("div",format%args):
-        #    assert_equal(re.search("404",format%args)==None,True)
-        #    # TODO: we will need to throw an error that gets returned to other thread
+        sys.stderr.write("%s - - [%s] %s\n" %
+                     (self.address_string(),
+                      self.log_date_time_string(),
+                      format%args))
+    def log_error(self, format, *args):
+        if not re.search("div",format%args):
+            assert_equal(re.search("404",format%args)==None,True)
+            # TODO: we will need to throw an error that gets returned to other thread
 
 def validate_experiment_directories(experiment_folder):
     experiments = find_directories(experiment_folder)
@@ -123,7 +123,7 @@ def key_lookup(keyid):
              187:Keys.EQUALS}
     return lookup[keyid]
 
-def experiment_robot_web(experimentweb_base,experiment_tags=None,port=None,pause_time=500):
+def experiment_robot_web(experimentweb_base,experiment_tags=None,port=None,pause_time=2000):
     '''experiment_robot_web
     Robot to automatically run and test experiments, to work with an experiment web folder (meaning produced with views.get_experiment_web. This folder has the standard battery structure with experiment pre-generated as html files. A separate function will/should eventually be made for single experiment preview.
     :param experiment_folders: list of experiment folders to test
@@ -158,7 +158,7 @@ def experiment_robot_web(experimentweb_base,experiment_tags=None,port=None,pause
         sleep(3)
 
         count=0
-        wait_time=0
+        wait_time=1000
         while True:
 
             # Is the task finished?
@@ -192,7 +192,7 @@ def experiment_robot_web(experimentweb_base,experiment_tags=None,port=None,pause
                         if block["show_clickable_nav"] == True:   
                             browser.execute_script("document.querySelector('#jspsych-instructions-next').click();")
                     # Give time for page to reload 
-                    sleep(0.01)
+                    sleep(1)
 
             # This is for the experiment
             elif "timeline" in block:
@@ -208,7 +208,7 @@ def experiment_robot_web(experimentweb_base,experiment_tags=None,port=None,pause
                     elif "button_class" in time:
                         browser.execute_script("document.querySelector('.%s').click();" %time["button_class"])
                     # Give time for page to reload 
-                    sleep(0.01)
+                    sleep(1)
 
             elif "button_class" in block:
                 browser.execute_script("document.querySelector('.%s').click();" %block["button_class"])
