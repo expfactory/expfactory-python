@@ -154,6 +154,9 @@ def experiment_robot_web(experimentweb_base,experiment_tags=None,port=None,pause
 
     # Find experiments 
     experiments = get_experiments("%s/static/experiments" %experimentweb_base,load=True)
+
+    if experiment_tags != None:
+        experiments = [e for e in experiments if e[0]["tag"] in experiment_tags]
     
     # If we are running on circle, only test changed experiments
     if "CIRCLE_BRANCH" in os.environ.keys():
@@ -173,10 +176,8 @@ def experiment_robot_web(experimentweb_base,experiment_tags=None,port=None,pause
         last_commit = last_build["all_commit_details"][-1]["commit"]
         files_changed  = os.popen("git diff %s %s --name-only" %(current_commit,last_commit)).readlines()
 
-        # Get unique, changed folders
+        # Get unique, changed folders, filter experiments again
         experiment_tags = numpy.unique([os.path.dirname(x.strip("\n")) for x in files_changed if os.path.dirname(x.strip("\n")) != ""]).tolist()
-
-    elif experiment_tags != None:
         experiments = [e for e in experiments if e[0]["tag"] in experiment_tags]
 
     for experiment in experiments:
