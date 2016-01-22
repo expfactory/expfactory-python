@@ -9,7 +9,7 @@ setup(
     name="expfactory",
 
     # Version number (initial):
-    version="1.4.3",
+    version="1.4.4",
 
     # Application author details:
     author="poldracklab",

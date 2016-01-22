@@ -160,6 +160,9 @@ def experiment_robot_web(experimentweb_base,experiment_tags=None,port=None,pause
     
     # If we are running on circle, only test changed experiments
     if "CIRCLE_BRANCH" in os.environ.keys():
+
+        print "DETECTED CONTINUOUS INTEGRATION ENVIRONMENT..."
+
         current_build = int(os.environ["CIRCLE_BUILD_NUM"])
 
         current_build_url = "https://circleci.com/api/v1/project/expfactory/expfactory-experiments/%s" %(current_build)
@@ -179,6 +182,10 @@ def experiment_robot_web(experimentweb_base,experiment_tags=None,port=None,pause
         # Get unique, changed folders, filter experiments again
         experiment_tags = numpy.unique([os.path.dirname(x.strip("\n")) for x in files_changed if os.path.dirname(x.strip("\n")) != ""]).tolist()
         experiments = [e for e in experiments if e[0]["tag"] in experiment_tags]
+        print "Found %s changed experiments to test." %(len(experiments))
+
+    else:
+        print "Found %s experiments to test." %(len(experiments))
 
     for experiment in experiments:
  
