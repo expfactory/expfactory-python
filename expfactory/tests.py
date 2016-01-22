@@ -157,6 +157,7 @@ def experiment_robot_web(experimentweb_base,experiment_tags=None,port=None,pause
         
         sleep(3)
 
+        count=0
         wait_time=1000
         while True:
 
@@ -165,7 +166,7 @@ def experiment_robot_web(experimentweb_base,experiment_tags=None,port=None,pause
             if finished == True:
                 break
 
-            print ".",
+            print "Testing block %s of %s" %(count,experiment[0]["tag"])
 
             # Pause from the last block
             sleep(float(pause_time)/1000 + wait_time/1000) # convert milliseconds to seconds
@@ -226,6 +227,8 @@ def experiment_robot_web(experimentweb_base,experiment_tags=None,port=None,pause
             elif "type" in block:
                 if re.search("survey-text",block["type"]):
                     browser.execute_script("document.querySelector('#jspsych-survey-text-next').click();")
+                 
+            count+=1
 
         print "FINISHING TEST OF EXPERIMENT %s" %(experiment[0]["tag"])
 
