@@ -197,10 +197,12 @@ def generate_experiment_web(output_dir,experiment_folder=None,make_table=True,
         valid.to_pickle("%s/expfactory-experiments.pkl" %(data_folder))
 
 
-def get_experiment_html(experiment,url_prefix=""):
+def get_experiment_html(experiment,url_prefix="",deployment="local"):
     '''get_experiment_html
     return the html template to test a single experiment
     :param experiment: the loaded config.json for an experiment (json)
+    :param url_prefix: prefix to put before paths, in case of custom deployment
+    :param deployment: deployment environment, one of docker, docker-preview, or local [default]
     '''
     if "CIRCLE_BRANCH" in os.environ.keys():
         exp_template = "%s/templates/experiment_ci.html" %get_installdir()
@@ -210,6 +212,9 @@ def get_experiment_html(experiment,url_prefix=""):
     exp_template = "".join(open(exp_template,"r").readlines())
     exp_template = sub_template(exp_template,"{{js}}",js)
     exp_template = sub_template(exp_template,"{{css}}",css)
+    if experiment[0]["template"] == "jspsych":
+        jspsych_init = get_jspsych_init(experiment,deployment=deployment)
+        exp_template = sub_template(exp_template,"{{experiment}}",jspsych_init)
     exp_template = sub_template(exp_template,"{{tag}}",experiment[0]["tag"])
     return exp_template
 

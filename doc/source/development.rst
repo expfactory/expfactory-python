@@ -250,13 +250,15 @@ A recommended strategy for developing a new experiment is to `find an experiment
 ::
  
       cd my_new_experiment
-      expfactory --validate
+      expfactory --validate  # will validate config.json and experiment structure
+      expfactory --test      # will run test robot we run on continuous integreation
 
 
 Summary of Best Practices
 '''''''''''''''''''''''''
 
 * An experiment must minimally have an experiment.js and valid config.json file
+* You do not need to define fields in the config.json that are not required.
 * We use jspsych plugins for most experiments, and most are included with the battery repo, meaning you don't need to include them with your local folder, but rather specify their path in the "run" variable of your config.json (see below).
 * the folder name must correspond with the "tag" variable in the config.json
 * experiment folder names should be all lowercase, no hyphens (-), or spaces.
@@ -270,9 +272,9 @@ config.json
 
 A data structure that specifies the following:
 
- - name: the full name of the experiment, best is to use the name of the publication it is associated with.
- - tag: the tag for the experiment, typically the folder name, all lowercase with no special characters.
- - run: entry javascript and css files for the experiment. Paths here should all be relative to the experiment folder, and will be used to generate the code in `load_experiments.js` for example, for the experiment in folder `multi-source` with run variable specified as:
+ - name: [required] the full name of the experiment, best is to use the name of the publication it is associated with.
+ - tag:  [required] the tag for the experiment, typically the folder name, all lowercase with no special characters.
+ - run:  [required] entry javascript and css files for the experiment. Paths here should all be relative to the experiment folder, and will be used to generate the code in `load_experiments.js` for example, for the experiment in folder `multi-source` with run variable specified as:
 
 
 ::
@@ -297,14 +299,14 @@ will produce the following code in `load_experiment.js`:
 			break;
 
 
- - cognitive_atlas_task_id: the identifier for the experiment defined in the cognitive atlas
+ - cognitive_atlas_task_id: [required] the identifier for the experiment defined in the cognitive atlas
+ - template:  [required] the javascript template that runs the experiment. We currently support only jspsych. Please contact us to discuss adding your particular framework.
  - contributors: a list of contributors to the task code base.
  - reference: url(s) to referenced papers to develop the task. This field is to be removed, and the reference or DOI should be stored in the CognitiveAtlas.
  - experiment_variables: should be a list of dictionaries to specify one or more variables to be available for use to measure performance, allocate bonus, or receive credit. The fields of this variable include "name" "type" "label" "range" and "description."  The "label" field will determine if the Experiment Factory docker virtual machine will parse the variable as being available to use for a reward (eg, label == "reward") or for allocation of credit (eg, label == "credit"). 
- - rejection_variable: should be a dictionary to specify a variable to be used to assess if a participant does not receive credit (eg, catch trial, number missed, etc). If you do not want to specify any variables, specify as ""
  - notes: any notes about the implementation, etc.
- - publish: either "True" or "False" to determine if the experiment should be revealed to the user of the expfactory-python application.
-
+ - publish: [required] either "True" or "False" to determine if the experiment should be revealed to the user of the expfactory-python application.
+ - deployment_variables: a dictionary of customizations for the javascript template. For example, jspsych has a jspsych_init object that you may want to customize.
 
 An example of a config.json data structure is follows:
 
@@ -315,6 +317,7 @@ An example of a config.json data structure is follows:
               "name": "Model-Based Influences on Humans' Choices and Striatal Prediction Errors",
               "tag": "2-stage-decision",
               "cognitive_atlas_task_id":"trm_4aae62e4ad209",
+              "template":"jspsych",
               "contributors": [
                                "Ian Eisenberg",
                                "Zeynep Enkavi",
@@ -327,17 +330,18 @@ An example of a config.json data structure is follows:
                       "style.css",
                       "plugin.js"
                      ],
-              "experiment_variables":"",
-              "rejection_variable":"",
               "reference": "http://www.sciencedirect.com/science/article/pii/S0896627311001255",
               "notes": "Condition = ordered stims in stage 1 and stage 2 (so [0, 1] or [1, 0] for stage 1 and [2, 3], [4, 5] etc. for stage 2 and FB for the FB condition (1 for reward, 0 for no reward)",
-              "publish": "True"
+              "publish": "True",
     
          }
       ]
 
 
-Here are examples of different kinds of experiment variables. First, here is how to specify if you do not have any variable:
+experiment_variables
+....................
+
+Here are examples of different kinds of experiment variables. If you do not have any, you don't need to define this field, or you can define like this: 
 
 ::
 
@@ -380,6 +384,27 @@ A string variable that will be included as a model (we will be including other w
                                          "range":["low","average","good","very good"],
                                          "description":"The quality of the responses."
                                        }]
+
+
+deployment_variables
+....................
+
+A deployment variable is specific to the javascript template / architecture that the experiment is using. We only support jspsych, and so you can only specify "jspsych_init." You do not need to define this variable if you don't have any customizations, but here is how to define an empty variable:
+
+::
+
+              "deployment_variables":""
+      
+
+Specify a field in jspsych_init
+
+::
+
+              "deployment_variables":{"jspsych_init": 
+                                                      {
+                                                        "max_load_time":40
+                                                      }
+                                     }
 
 
 run
@@ -527,7 +552,7 @@ Continuous integration is a term from software development that basically means 
 - validation tests passing, meaning that your config.json and experiment folder are formatted and named properly
 - jshint: we test the static code with jshint. If there are issues for your experiment, tests will not pass.
 - robot tests: we have developed a robot that can be run locally or with continuous integration. The robot will click through the task, make random selections, and trigger an error if a 404 is found.
-- experiment running: If you click on "Artifacts" tab at the top when the testing finishes, you will see a hierarchy of the machine, and you can go to ubuntu/expfactory-experiments/web/index.html to open up a browser and see the dynamically generated updated experiment set. If you click on "browse our experimental paradigms" from the box in the top right corner, you should be able to find your experiment in the table and preview it. You should open your developer console, as you would on your local machine, and run through the experiment both looking for errors (that might have been detected by the robot) and seeing that things run as expected.
+- experiment running: If you click on "Artifacts" tab at the top when the testing finishes, you will see a hierarchy of the machine, and you can go to ubuntu/expfactory-experiments/web/index.html to open up a browser and see the dynamically generated updated experiment set. If you click on "browse our experimental paradigms" from the box in the top right corner, and then EXPERIMENT TABLE, you should be able to find your experiment in the table and preview it. Note that the first tree view of the experiments points to expfactory.github.io. You should open your developer console, as you would on your local machine, and run through the experiment both looking for errors (that might have been detected by the robot) and seeing that things run as expected.
 
 Currently, we only test changes between the last successful build and your contribution, meaning experiment folders with changed files. Since the entire battery would take upwards of 10 hours, we recommend you submit PRs limited to a few experiments, otherwise the running will take a very long time.
 
@@ -564,17 +589,6 @@ If you see a white screen, it usually means there is a JavaScript error. While w
 .. image:: _static/img/development/3cache.png
 
 or you can use Incognito mode (Control + Shift + N).
-
-* If you get this error:
-
-::
-
-    httpd.server_close()
-    UnboundLocalError: local variable 'httpd' referenced before assignment
-
-
-It should work if you wait a few seconds and try again, as the browser is still closing the port that was being served. If you are super impatient you can alternate ports between tests.
-
 
 * Do you have a syntax error or a missing variable? 
 * What is the scope of your variable? If you reference a variable inside a function, it will not be available outside of that function. This is called scope.

@@ -14,16 +14,8 @@ $( document ).ready(function() {
 
     expfactory_finished = false;
 
-    jsPsych.init({
-        timeline: {{tag}}_experiment,
-        on_finish: function () {
-            console.log("{{tag}} experiment complete")
-            expfactory_finished = true;
-        },
-        on_data_update: function(data) {
-            console.log(data)
-        }
-    });
+    {{experiment}}
+
 });
 </script>
 </body>

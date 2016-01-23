@@ -36,9 +36,9 @@ def get_validation_fields():
             ("tag",1,str),
             ("cognitive_atlas_task_id",1,str),
             ("experiment_variables",0,list),
-            ("publish",1,str)]#,
-            #("jspsych_init",0,str)]
-
+            ("publish",1,str)],
+            ("deployment_variables",0,str),
+            ("template",1,str)]
 
 def notvalid(reason):
     print reason
@@ -46,6 +46,21 @@ def notvalid(reason):
 
 def dowarning(reason):
     print reason
+
+def get_acceptable_values(package_name):
+    acceptable_values = dict()
+    acceptable_values["jspsych"] =["display_element",
+                                   "on_finish",
+                                   "on_trial_start",
+                                   "on_trial_finish",
+                                   "on_data_update",
+                                   "show_progress_bar",
+                                   "max_load_time",
+                                   "skip_load_check",
+                                   "fullscreen",
+                                   "default_iti"]
+    return acceptable_values[package_name]
+
 
 def validate(experiment_folder=None,warning=True):
     '''validate
@@ -77,9 +92,15 @@ def validate(experiment_folder=None,warning=True):
 
     for field,value,ftype in fields:
 
-        # Field must be in the keys
-        if field not in meta[0].keys():
-            return notvalid("%s: config.json is missing field %s" %(experiment_name,field))
+        # Field must be in the keys if required
+        if field not in meta[0].keys() and value == 1:
+            return notvalid("%s: config.json is missing required field %s" %(experiment_name,field))
+        else:
+            if value == 2:
+                if warning == True:
+                    dowarning("WARNING: config.json is missing field %s: %s" %(field,experiment_name))
+            else:
+                continue
 
         if field == "tag":
             # Tag must correspond with folder name
@@ -124,6 +145,30 @@ def validate(experiment_folder=None,warning=True):
                 if len(script.split("/")) == 1:
                     if not os.path.exists("%s/%s" %(experiment_folder,script)):
                         return notvalid("%s: %s is specified in config.json but missing." %(experiment_name,script))
+
+        # Javascript template
+        if field == "template":
+            if meta[0][field]!="jspsych":
+                return notvalid("%s: we currently only support jspsych experiments." %(experiment_name,script))
+
+        # Validation for deployment_variables
+        if field == "deployment_variables":
+            if "jspsych_init" in meta[0][field]:
+                acceptable_jspych = get_acceptable_values("jspsych")
+                for jspsych_var,jspych_val in meta[0][field]["jspsych_init"].iteritems():
+                    if jspsych_var not in acceptable_values:
+                        return notvalid("%s: %s is not an acceptable value for jspsych_init. See http://docs.jspsych.org/core_library/jspsych-core/#jspsychinit" %(experiment_name,jspsych_var))
+
+                    # Variables that must be boolean
+                    if jspsych_var in ["show_progress_bar","fullscreen","skip_load_check"]:
+                        if jspsych_val not in [True,False]:
+                            return notvalid("%s: %s is not an acceptable value for %s in jspsych_init. Must be true/false." %(experiment_name,jspsych_val,jspsych_var))
+
+                    # Variables that must be numeric
+                    if jspsych_var in ["default_iti","max_load_time"]:
+                        if isinstance(jspsych_val,str) or isinstance(jspsych_val,bool):
+                            return notvalid("%s: %s is not an acceptable value for %s in jspsych_init. Must be numeric." %(experiment_name,jspsych_val,jspsych_var))
+
     return True   
 
 

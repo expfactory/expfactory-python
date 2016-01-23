@@ -148,3 +148,50 @@ def get_stylejs(experiment,url_prefix=""):
                 css = "%s\n<link rel='stylesheet' href='%s%s'>" %(css,url_prefix,script)
 
     return css,js
+
+def get_jspsych_init(experiment,deployment="local"):
+    '''get_jspsych_init
+    return entire jspsych init structure
+    :param experiment: the loaded config.json for the experiment
+    :param deployment: specify to deploy local (default), or docker,docker-preview (expfactory-docker). If deployed with docker, the user is not allowed to customize function variables as this could compromise the experiment server.
+    '''
+    jspsych_init = "jsPsych.init({\ntimeline: %s_experiment,\n" %(experiment[0]["tag"])
+
+    default_inits = dict()
+    default_inits["local"] = {"on_finish":["jsPsych.data.localSave('%s_results.csv', 'csv');\nexpfactory_finished = true;" %(experiment[0]["tag"])]}
+
+    # The user is not allowed to customize defaults for docker deployment, as this could compomise the server.
+    default_inits["docker"] = {"on_finish":["jsPsych.data.localSave('%s_results.csv', 'csv');" %(experiment[0]["tag"])]}
+    default_inits["docker-preview"] = {"on_finish":["jsPsych.data.localSave('%s_results.csv', 'csv');" %(experiment[0]["tag"])]}
+
+    if "deployment_variables" in experiment[0]:
+        if "jspsych_init" in experiment[0]["deployment_variables"]:
+            custom_variables = experiment[0]["deployment_variables"]["jspsych_init"]
+
+            # Fill user custom variables into data structure
+            for jspsych_var,jspsych_val in custom_variables.iteritems():
+                if deployment == "local":            
+                    if jspsych_var in default_inits[deployment]:
+                         holder = default_inits[deployment][jspsych_var]
+                         holder.append(jspsych_val)
+                         default_inits[deployment][jspsych_var] = holder
+                    else:
+                         default_inits[deployment][jspsych_var] = [jspsych_val]
+                elif deployment in ["docker","docker-preview"]:
+                    if jspsych_var not in default_inits[deployment]:
+                         default_inits[deployment][jspsych_var] = [jspsych_val]
+
+    # Write rest of config
+    for v in range(len(default_inits[deployment])):
+        jspsych_var = default_inits[deployment].keys()[v]
+        jspsych_val = "\n".join(default_inits[deployment].values()[v])
+        if jspsych_var == "on_finish":
+            jspsych_init = "%s%s: function(){\n%s\n}" %(jspsych_init,
+                                                       jspsych_var,
+                                                       jspsych_val])
+        if v != len(default_inits[deployment]):
+            jspsych_init = "%s,\n" %(jspsych_init)
+        else:
+            jspsych_init = "%s\n});" %(jspsych_init)
+
+    return jspsych_init
