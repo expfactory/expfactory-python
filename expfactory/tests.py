@@ -77,8 +77,6 @@ def circle_ci_test(experiment_tags,web_folder,delete=True):
     if len(changed_experiments) > 0:
         generate_experiment_web(web_folder) 
         experiment_robot_web(web_folder,experiment_tags=changed_experiments)
-        if delete == True:
-            shutil.rmtree(web_folder)
     else:
         print "Skipping experiments %s, no changes detected." %(",".join(experiment_tags))
         
