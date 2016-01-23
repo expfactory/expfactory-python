@@ -61,20 +61,14 @@ def circle_ci_test(experiment_tags,web_folder,delete=True):
         print "DETECTED CONTINUOUS INTEGRATION ENVIRONMENT..."
 
         current_build = int(os.environ["CIRCLE_BUILD_NUM"])
-
-        current_build_url = "https://circleci.com/api/v1/project/expfactory/expfactory-experiments/%s" %(current_build)
         headers = {'Accept' : 'application/json'}
+        current_build_url = "https://circleci.com/api/v1/project/expfactory/expfactory-experiments/%s" %(current_build)
         current_build = requests.get(current_build_url, headers=headers).json()
-
-        # Get the last commit id
-        last_successful_build = current_build["previous_successful_build"]["build_num"]
-        last_successful_build_url = "https://circleci.com/api/v1/project/expfactory/expfactory-experiments/%s" %(last_successful_build)
-        last_build = requests.get(last_successful_build_url, headers=headers).json()
-
-        # Compare commits
-        current_commit = current_build["all_commit_details"][-1]["commit"]
-        last_commit = last_build["all_commit_details"][-1]["commit"]
-        files_changed  = os.popen("git diff %s %s --name-only" %(current_commit,last_commit)).readlines()
+        branch = current_build["branch"]
+        
+        # Find differences with compare
+        files_changed = os.popen("git diff %s..master --name-only" %branch).readlines()
+        print "Found files changed: %s" %(",".join(files_changed))
 
         # Get unique, changed folders, filter experiments again
         changed_experiments = numpy.unique([os.path.dirname(x.strip("\n")) for x in files_changed if os.path.dirname(x.strip("\n")) != ""]).tolist()
@@ -289,9 +283,10 @@ def test_block(browser,experiment,pause_time=2000,wait_time=1000):
 
     elif "choices" in block:
         choices = block["choices"]
-        random_choice = choice(choices,1)[0]
-        continue_key = key_lookup(random_choice)
-        browser.find_element_by_tag_name('html').send_keys(continue_key)
+        if choices != None:
+            random_choice = choice(choices,1)[0]
+            continue_key = key_lookup(random_choice)
+            browser.find_element_by_tag_name('html').send_keys(continue_key)
 
     # Free text response
     elif "type" in block:

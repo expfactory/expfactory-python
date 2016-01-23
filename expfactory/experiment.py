@@ -36,7 +36,8 @@ def get_validation_fields():
             ("tag",1,str),
             ("cognitive_atlas_task_id",1,str),
             ("experiment_variables",0,list),
-            ("publish",1,str)]
+            ("publish",1,str)]#,
+            #("jspsych_init",0,str)]
 
 
 def notvalid(reason):
