@@ -143,24 +143,6 @@ def generate_experiment_web(output_dir,experiment_folder=None,make_table=True,
     valid_experiments = ["%s/%s" %(experiment_repo,x[0]["tag"]) for x in experiments]
     template_experiments(output_dir,battery_repo,valid_experiments)
 
-    if make_experiments == True:
-        experiments_template = get_template("%s/templates/experiments_categories.html" %get_installdir())
-        output_exp = os.path.abspath("%s/experiments.html" %output_dir)
-        experiment_page = get_cognitiveatlas_hierarchy(experiment_tags=experiment_tags,get_html=True)
-
-        # Write the new table
-        filey = open(output_exp,"wb")
-        filey.writelines(experiment_page)
-        filey.close()
-        
-        # For each experiment, we will generate a demo page
-        for experiment in experiments:
-            demo_page = os.path.abspath("%s/%s.html" %(output_dir,experiment[0]["tag"]))
-            exp_template = get_experiment_html(experiment)
-            filey = open(demo_page,"wb")
-            filey.writelines(exp_template)
-            filey.close()
-
     # If the user wants to make a table
     if make_table == True:
 
@@ -186,6 +168,28 @@ def generate_experiment_web(output_dir,experiment_folder=None,make_table=True,
         filey = open("%s/table.html" %output_dir,"wb")
         filey.writelines(table_template)
         filey.close()
+
+    if make_experiments == True:
+        experiments_template = get_template("%s/templates/experiments_categories.html" %get_installdir())
+        output_exp = os.path.abspath("%s/experiments.html" %output_dir)
+
+        if "CIRCLE_BRANCH" in os.environ.keys():
+            experiment_page = table_template    
+        else:
+            experiment_page = get_cognitiveatlas_hierarchy(experiment_tags=experiment_tags,get_html=True)
+
+        # Write the new table
+        filey = open(output_exp,"wb")
+        filey.writelines(experiment_page)
+        filey.close()
+        
+        # For each experiment, we will generate a demo page
+        for experiment in experiments:
+            demo_page = os.path.abspath("%s/%s.html" %(output_dir,experiment[0]["tag"]))
+            exp_template = get_experiment_html(experiment)
+            filey = open(demo_page,"wb")
+            filey.writelines(exp_template)
+            filey.close()
 
     # If the user wants to make data
     if make_data == True:

@@ -161,8 +161,10 @@ def get_jspsych_init(experiment,deployment="local"):
     default_inits["local"] = {"on_finish":["jsPsych.data.localSave('%s_results.csv', 'csv');\nexpfactory_finished = true;" %(experiment[0]["tag"])]}
 
     # The user is not allowed to customize defaults for docker deployment, as this could compomise the server.
-    default_inits["docker"] = {"on_finish":["jsPsych.data.localSave('%s_results.csv', 'csv');" %(experiment[0]["tag"])]}
-    default_inits["docker-preview"] = {"on_finish":["jsPsych.data.localSave('%s_results.csv', 'csv');" %(experiment[0]["tag"])]}
+    default_inits["docker"] = {"on_finish":["""finished_message = '<div id="finished_message" style="margin:100px"><h1>Experiment Complete</h1><p>You have completed theexperiment. You can click "Next Experiment" to keep your result, or "Redo Experiment" to be presented with the task again at a later time.</p><button type="button" id="redo_experiment_button" class="btn btn-danger">Redo Experiment</button><button id="next_experiment_button" type="button" class="btn btn-success">Next Experiment</button></div>'\n$("body").append(finished_message)\n$("#redo_experiment_button").click( function(){\njavascript:window.location.reload();\n})\n$("#next_experiment_button").click( function(){\nexpfactory.djstatus = "FINISHED";\n// Submit to AWS first to obtain the complete assignment object\n//$("#turkey_form").submit()\n$.ajax({ type: "POST",\ncontentType: "application/json",\nurl : "/sync/{{result.id}}/",\ndata : JSON.stringify(expfactory),\ndataType: "json",\nerror: function(error){\nconsole.log(error)\n},\nsuccess: function(data){\nconsole.log(data);\nconsole.log("Finished!");\ndocument.location = {{next_page}};\n}\n});\n});\n"""],
+                               "on_data_update":["""console.log(data);\nexpfactory.recordTrialData(data);\nexpfactory.djstatus = "UPDATE";\n$.ajax({ type: "POST",\ncontentType: "application/json",\nurl : "{% url 'sync_data' uniqueId %}",\ndata : JSON.stringify(expfactory),\ndataType: "json",\nsuccess: function(data){\nconsole.log(data);\nconsole.log("data update called")\n}\n});\n"""]}
+    default_inits["docker-preview"] = {"on_data_update":["console.log(data); expfactory.recordTrialData(data);" %(experiment[0]["tag"])],
+                                        "on_finish":['console.log("Finished!");']}
 
     if "deployment_variables" in experiment[0]:
         if "jspsych_init" in experiment[0]["deployment_variables"]:
@@ -185,8 +187,8 @@ def get_jspsych_init(experiment,deployment="local"):
     for v in range(len(default_inits[deployment])):
         jspsych_var = default_inits[deployment].keys()[v]
         jspsych_val = "\n".join(default_inits[deployment].values()[v])
-        if jspsych_var == "on_finish":
-            jspsych_init = "%s%s: function(){\n%s\n}" %(jspsych_init,
+        if jspsych_var in ["on_finish","on_data_update","on_trial_start","on_trial_finish"]:
+            jspsych_init = "%s%s: function(data){\n%s\n}" %(jspsych_init,
                                                        jspsych_var,
                                                        jspsych_val)
         if v != len(default_inits[deployment])-1:
