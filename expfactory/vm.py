@@ -188,8 +188,8 @@ def get_jspsych_init(experiment,deployment="local"):
         if jspsych_var == "on_finish":
             jspsych_init = "%s%s: function(){\n%s\n}" %(jspsych_init,
                                                        jspsych_var,
-                                                       jspsych_val])
-        if v != len(default_inits[deployment]):
+                                                       jspsych_val)
+        if v != len(default_inits[deployment])-1:
             jspsych_init = "%s,\n" %(jspsych_init)
         else:
             jspsych_init = "%s\n});" %(jspsych_init)
