@@ -6,7 +6,7 @@ Functions to generate batteries
 from expfactory.experiment import get_experiments, load_experiment
 from expfactory.utils import copy_directory, get_template, \
      sub_template, get_installdir, save_template
-from expfactory.vm import custom_battery_download
+from expfactory.vm import custom_battery_download, get_jspsych_init
 import os
 import re
 
@@ -153,6 +153,24 @@ def get_load_static(valid_experiments,url_prefix=""):
     return loadstring
 
 
+def get_experiment_run(valid_experiments,deployment="local"):
+    '''get_experiment_run
+    returns a dictionary of experiment run code (right now just jspsych init objects)
+    :param valid_experiments: full path to valid experiments folders, OR a loaded config.json (dict)
+    '''
+    runs = dict()
+    for valid_experiment in valid_experiments:
+        if not isinstance(valid_experiment,dict):
+            experiment = load_experiment(valid_experiment)[0]
+        else:
+            experiment = valid_experiment
+        tag = str(experiment["tag"])
+        if experiment["template"] == "jspsych":
+            runcode = get_jspsych_init(experiment,deployment=deployment)
+        runs[tag] = runcode
+    return runs
+
+# Functions below are for psiturk battery
 def get_load_js(valid_experiments,url_prefix=""):
     '''get_load_js
     Return javascript to load list of valid experiments, based on psiturk.json

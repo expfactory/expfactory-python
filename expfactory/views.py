@@ -7,8 +7,8 @@ functions for developing experiments and batteries, viewing and testing things
 
 from expfactory.utils import copy_directory, get_installdir, sub_template, get_template, save_pretty_json
 from expfactory.vm import custom_battery_download, get_stylejs, get_jspsych_init
+from expfactory.battery import template_experiments, get_experiment_run
 from expfactory.experiment import load_experiment, get_experiments
-from expfactory.battery import template_experiments
 from cognitiveatlas.api import get_concept, get_task
 from numpy.random import choice
 import SimpleHTTPServer
@@ -216,9 +216,8 @@ def get_experiment_html(experiment,url_prefix="",deployment="local"):
     exp_template = "".join(open(exp_template,"r").readlines())
     exp_template = sub_template(exp_template,"{{js}}",js)
     exp_template = sub_template(exp_template,"{{css}}",css)
-    if experiment[0]["template"] == "jspsych":
-        jspsych_init = get_jspsych_init(experiment,deployment=deployment)
-        exp_template = sub_template(exp_template,"{{experiment}}",jspsych_init)
+    runcode = get_experiment_run(experiment,deployment=deployment)[experiment[0]["tag"]]
+    exp_template = sub_template(exp_template,"{{run}}",runcode)
     exp_template = sub_template(exp_template,"{{tag}}",experiment[0]["tag"])
     return exp_template
 
