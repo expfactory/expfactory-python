@@ -186,11 +186,29 @@ def get_jspsych_init(experiment,deployment="local"):
     # Write rest of config
     for v in range(len(default_inits[deployment])):
         jspsych_var = default_inits[deployment].keys()[v]
-        jspsych_val = "\n".join(default_inits[deployment].values()[v])
+        jspsych_val = "\n".join([str(x) for x in default_inits[deployment].values()[v]]) 
         if jspsych_var in ["on_finish","on_data_update","on_trial_start","on_trial_finish"]:
             jspsych_init = "%s%s: function(data){\n%s\n}" %(jspsych_init,
-                                                       jspsych_var,
-                                                       jspsych_val)
+                                                            jspsych_var,
+                                                            jspsych_val)
+
+        # Boolean
+        elif jspsych_var in ["show_progress_bar","fullscreen","skip_load_check"]:
+            jspsych_init = "%s%s: %s" %(jspsych_init,
+                                        jspsych_var,
+                                        jspsych_val.lower())
+
+        # Numeric (no quotes)
+        elif jspsych_var in ["default_iti","max_load_time"]:
+            jspsych_init = "%s%s: %s" %(jspsych_init,
+                                        jspsych_var,
+                                        jspsych_val)
+        # Everything else
+        else:
+            jspsych_init = '%s%s: "%s"' %(jspsych_init,
+                                        jspsych_var,
+                                        jspsych_val)
+
         if v != len(default_inits[deployment])-1:
             jspsych_init = "%s,\n" %(jspsych_init)
         else:
