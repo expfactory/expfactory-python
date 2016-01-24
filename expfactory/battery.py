@@ -3,10 +3,10 @@ battery.py: part of expfactory package
 Functions to generate batteries
 
 '''
+from expfactory.vm import custom_battery_download, get_jspsych_init, get_stylejs
 from expfactory.experiment import get_experiments, load_experiment
 from expfactory.utils import copy_directory, get_template, \
      sub_template, get_installdir, save_template
-from expfactory.vm import custom_battery_download, get_jspsych_init
 import os
 import re
 
