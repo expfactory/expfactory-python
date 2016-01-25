@@ -478,22 +478,22 @@ Testing your Experiment
 '''''''''''''''''''''''
 
 
-Manual preview of folder
+Manual run of folder
 ........................
-It makes most sense to work directly from a folder in the expfactory-experiments repo that you have cloned. This method will work if you have an internet connection, as the expfactory executable will quickly plug your experiment into a battery, and open up the page in your browser.  To do this, you can cd into your experiment folder, and use the `--preview` command:
+It makes most sense to work directly from a folder in the expfactory-experiments repo that you have cloned. This method will work if you have an internet connection, as the expfactory executable will quickly plug your experiment into a battery, and open up the page in your browser.  To do this, you can cd into your experiment folder, and use the `--run` command. This command can be used to run or preview a single experiment locally:
 
 ::
 
 
       cd simple_experiment
-      expfactory --preview
+      expfactory --run
 
 
 You can also specify the folder as an argument:
 
 ::
 
-      expfactory --preview --folder /home/vanessa/Desktop/simple_rt
+      expfactory --run --folder /home/vanessa/Desktop/simple_rt
       
 
 
@@ -502,7 +502,7 @@ You can also specify a port:
 
 ::
 
-      expfactory --preview --port=8088
+      expfactory --run --port=8088
 
 
 Your browser will open to show the experiment. You can press Control+C to shut down the server. 
@@ -639,5 +639,3 @@ This will start a local web server using python at localhost:9999.
 
  3. Open your browser to localhost:9999 to preview
 
-
-The documentation was originally served on readthedocs, but we had trouble when the name of the organization was changed, and so it is currently hosted elsewhere. You can still contribute by submitting a PR, and we will preview and update the docs.
