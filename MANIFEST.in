@@ -1,2 +1,3 @@
 recursive-include expfactory/templates *
 recursive-include expfactory/static *
+recursive-include expfactory/tests *
