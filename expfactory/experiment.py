@@ -93,7 +93,6 @@ def validate(experiment_folder=None,warning=True):
     fields = get_validation_fields()
 
     for field,value,ftype in fields:
-        print "testing field %s" %field
 
         # Field must be in the keys if required
         if field not in meta[0].keys() and value == 1:
