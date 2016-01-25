@@ -3,10 +3,10 @@ tests.py: part of expfactory package
 tests for experiments and batteries, not for expfactory-python
 
 '''
+from selenium.common.exceptions import WebDriverException, UnexpectedAlertPresentException
 from expfactory.experiment import validate, get_experiments, load_experiment
 from expfactory.views import generate_experiment_web, tmp_experiment
 from numpy.testing import assert_equal, assert_string_equal
-from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common.keys import Keys
 from expfactory.utils import find_directories, get_url
 from numpy.random import choice
@@ -46,7 +46,7 @@ def validate_experiment_directories(experiment_folder):
         assert_equal(validate(contender),True)
 
 
-def circle_ci_test(experiment_tags,web_folder,delete=True):
+def circle_ci_test(experiment_tags,web_folder,delete=True,pause_time=500):
     '''circle_ci_test
     Deploy experiment testing robot, requires generation of web folder, and can be deleted on finish.
     :param experiment_tags: list of experiment folders (tags) to test
@@ -171,7 +171,7 @@ def key_lookup(keyid):
              187:Keys.EQUALS}
     return lookup[keyid]
 
-def experiment_robot_web(experimentweb_base,experiment_tags=None,port=None,pause_time=0):
+def experiment_robot_web(experimentweb_base,experiment_tags=None,port=None,pause_time=100):
     '''experiment_robot_web
     Robot to automatically run and test experiments, to work with an experiment web folder (meaning produced with views.get_experiment_web. This folder has the standard battery structure with experiment pre-generated as html files. A separate function will/should eventually be made for single experiment preview.
     :param experiment_tags: list of experiment folders to test
@@ -280,7 +280,9 @@ def test_block(browser,experiment,pause_time=0,wait_time=0):
 
     elif "button_class" in block:
         try:
-            browser.execute_script("document.querySelector('.%s').click();" %block["button_class"])
+            buttons = browser.find_elements_by_class_name('%s' %block["button_class"])
+            choice(buttons,1)[0].click()
+            sleep(0.5)
         except WebDriverException as e:
             pass
 
@@ -291,10 +293,16 @@ def test_block(browser,experiment,pause_time=0,wait_time=0):
 
     elif "choices" in block:
         choices = block["choices"]
-        if choices != None:
-            random_choice = str(choice(choices,1)[0])
-            continue_key = key_lookup(random_choice)
-            browser.find_element_by_tag_name('html').send_keys(continue_key)
+        if choices != None and len(choices) > 0:
+            try:
+                random_choice = choice(choices,1)[0]
+                continue_key = key_lookup(random_choice)
+                browser.find_element_by_tag_name('html').send_keys(continue_key)
+            except ValueError:
+                print "ValueError, %s found as choices." %(choices)
+        elif "type" in block:
+            if "type" == "writing":
+                browser.execute_script("document.querySelector('#jspsych-writing-box').text = 'beep boop';")
 
     # Free text response
     elif "type" in block:
@@ -312,8 +320,6 @@ def test_block(browser,experiment,pause_time=0,wait_time=0):
                 browser.execute_script("document.querySelector('#jspsych-fullscreen-btn').click();")
             except WebDriverException as e:
                 pass
-
-
     return wait_time,finished 
 
 def check_errors(browser):
