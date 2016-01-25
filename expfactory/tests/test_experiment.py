@@ -9,7 +9,7 @@ import shutil
 from numpy.testing import assert_array_equal, assert_almost_equal, assert_equal
 from expfactory.experiment import validate, load_experiment, load_experiments, \
 get_experiments, make_lookup
-from expfactory.utils import copy_directory
+from expfactory.utils import copy_directory, get_installdir
 import tempfile
 import json
 import os
@@ -17,9 +17,10 @@ import os
 class TestExperiment(unittest.TestCase):
 
     def setUp(self):
-        self.battery_folder = "%s/data" %os.getcwd()
-        self.experiment = os.path.abspath("data/test_task/")
-        self.config = json.load(open("data/test_task/config.json","rb"))
+        self.pwd = get_installdir()
+        self.battery_folder = "%s/tests/data" %self.pwd
+        self.experiment = os.path.abspath("%s/tests/data/test_task/" %self.pwd)
+        self.config = json.load(open("%s/tests/data/test_task/config.json" %self.pwd,"rb"))
         self.tmpdir = tempfile.mkdtemp()
 
     def tearDown(self):
