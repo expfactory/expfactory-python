@@ -6,6 +6,7 @@ tests for experiments and batteries, not for expfactory-python
 from expfactory.experiment import validate, get_experiments, load_experiment
 from expfactory.views import generate_experiment_web, tmp_experiment
 from numpy.testing import assert_equal, assert_string_equal
+from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common.keys import Keys
 from expfactory.utils import find_directories, get_url
 from numpy.random import choice
@@ -82,6 +83,8 @@ def circle_ci_test(experiment_tags,web_folder,delete=True):
         
 
 def key_lookup(keyid):
+    if isinstance(keyid,str) or isinstance(keyid,unicode):
+        return str(keyid.lower())
     lookup = {13:Keys.ENTER,
              8:Keys.BACKSPACE,
              9:Keys.TAB,
@@ -168,7 +171,7 @@ def key_lookup(keyid):
              187:Keys.EQUALS}
     return lookup[keyid]
 
-def experiment_robot_web(experimentweb_base,experiment_tags=None,port=None,pause_time=2000):
+def experiment_robot_web(experimentweb_base,experiment_tags=None,port=None,pause_time=0):
     '''experiment_robot_web
     Robot to automatically run and test experiments, to work with an experiment web folder (meaning produced with views.get_experiment_web. This folder has the standard battery structure with experiment pre-generated as html files. A separate function will/should eventually be made for single experiment preview.
     :param experiment_tags: list of experiment folders to test
@@ -207,7 +210,7 @@ def experiment_robot_web(experimentweb_base,experiment_tags=None,port=None,pause
         sleep(3)
 
         count=0
-        wait_time=1000
+        wait_time=0
         while True:
             print "Testing block %s of %s" %(count,experiment[0]["tag"])
             wait_time,finished = test_block(browser,experiment,pause_time,wait_time)
@@ -220,7 +223,7 @@ def experiment_robot_web(experimentweb_base,experiment_tags=None,port=None,pause
     # Stop the server
     httpd.server_close()
 
-def test_block(browser,experiment,pause_time=2000,wait_time=1000):
+def test_block(browser,experiment,pause_time=0,wait_time=0):
     '''test_block
     test a single experiment block, given a browser, running experiment, and pause/wait times
     :param browser: web browser, by way of selenium
@@ -251,8 +254,11 @@ def test_block(browser,experiment,pause_time=2000,wait_time=1000):
                 continue_key = key_lookup(block["cont_key"][0])
                 browser.find_element_by_tag_name('html').send_keys(continue_key)
             elif "show_clickable_nav" in block:
-                if block["show_clickable_nav"] == True:   
-                    browser.execute_script("document.querySelector('#jspsych-instructions-next').click();")
+                if block["show_clickable_nav"] == True:  
+                    try:  
+                        browser.execute_script("document.querySelector('#jspsych-instructions-next').click();")
+                    except WebDriverException as e:
+                        pass
             # Give time for page to reload 
             sleep(1)
 
@@ -273,7 +279,11 @@ def test_block(browser,experiment,pause_time=2000,wait_time=1000):
             sleep(1)
 
     elif "button_class" in block:
-        browser.execute_script("document.querySelector('.%s').click();" %block["button_class"])
+        try:
+            browser.execute_script("document.querySelector('.%s').click();" %block["button_class"])
+        except WebDriverException as e:
+            pass
+
 
     elif "cont_key" in block:
         continue_key = key_lookup(block["cont_key"][0])
@@ -282,14 +292,27 @@ def test_block(browser,experiment,pause_time=2000,wait_time=1000):
     elif "choices" in block:
         choices = block["choices"]
         if choices != None:
-            random_choice = choice(choices,1)[0]
+            random_choice = str(choice(choices,1)[0])
             continue_key = key_lookup(random_choice)
             browser.find_element_by_tag_name('html').send_keys(continue_key)
 
     # Free text response
     elif "type" in block:
         if re.search("survey-text",block["type"]):
-            browser.execute_script("document.querySelector('#jspsych-survey-text-next').click();")
+            try:    
+                browser.execute_script("document.querySelector('#jspsych-survey-text-next').click();")
+            except WebDriverException as e:
+                pass
+
+    elif len(block) == 0:
+        # Check for fullscreen
+        fullscreen = browser.execute_script("return jsPsych.initSettings().fullscreen;")
+        if fullscreen == True:
+            try:
+                browser.execute_script("document.querySelector('#jspsych-fullscreen-btn').click();")
+            except WebDriverException as e:
+                pass
+
 
     return wait_time,finished 
 

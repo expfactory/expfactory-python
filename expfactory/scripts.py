@@ -18,7 +18,7 @@ def main():
     parser.add_argument("--folder", dest='folder', help="full path to experiment folder", type=str, default=None)
     parser.add_argument("--port", dest='port', help="port to preview experiment", type=int, default=None)
     parser.add_argument("--battery", dest='battery_folder', help="full path to local battery folder to use as template", type=str, default=None)
-    parser.add_argument('--preview', help="preview an experiment", dest='preview', default=False, action='store_true')
+    parser.add_argument('--run', help="run an experiment locally", dest='run', default=False, action='store_true')
     parser.add_argument('--validate', dest='validate', help="validate an experiment folder", default=False, action='store_true')
     parser.add_argument('--test', dest='test', help="test an experiment folder with the experiment robot", default=False, action='store_true')
 
@@ -29,7 +29,7 @@ def main():
         sys.exit(0)
     
     # Check if the person wants to preview experiment
-    if args.preview == True:
+    if args.run == True:
         preview_experiment(folder=args.folder,battery_folder=args.battery_folder,port=args.port)
     elif args.validate == True:
         validate(experiment_folder=args.folder)
