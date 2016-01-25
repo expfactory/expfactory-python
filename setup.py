@@ -22,6 +22,8 @@ setup(
     include_package_data=True,
     zip_safe=False,
 
+    package_data = {'expfactory.tests':['data/*']},
+
     # Details
     url="http://www.github.com/expfactory",
 
