@@ -156,21 +156,22 @@ def validate(experiment_folder=None,warning=True):
 
         # Validation for deployment_variables
         if field == "deployment_variables":
-            if "jspsych_init" in meta[0][field]:
-                acceptable_jspsych = get_acceptable_values("jspsych")
-                for jspsych_var,jspsych_val in meta[0][field]["jspsych_init"].iteritems():
-                    if jspsych_var not in acceptable_jspsych:
-                        return notvalid("%s: %s is not an acceptable value for jspsych_init. See http://docs.jspsych.org/core_library/jspsych-core/#jspsychinit" %(experiment_name,jspsych_var))
+            if "deployment_variables" in meta[0]:
+                if "jspsych_init" in meta[0][field]:
+                    acceptable_jspsych = get_acceptable_values("jspsych")
+                    for jspsych_var,jspsych_val in meta[0][field]["jspsych_init"].iteritems():
+                        if jspsych_var not in acceptable_jspsych:
+                            return notvalid("%s: %s is not an acceptable value for jspsych_init. See http://docs.jspsych.org/core_library/jspsych-core/#jspsychinit" %(experiment_name,jspsych_var))
 
-                    # Variables that must be boolean
-                    if jspsych_var in ["show_progress_bar","fullscreen","skip_load_check"]:
-                        if jspsych_val not in [True,False]:
-                            return notvalid("%s: %s is not an acceptable value for %s in jspsych_init. Must be true/false." %(experiment_name,jspsych_val,jspsych_var))
+                        # Variables that must be boolean
+                        if jspsych_var in ["show_progress_bar","fullscreen","skip_load_check"]:
+                            if jspsych_val not in [True,False]:
+                                return notvalid("%s: %s is not an acceptable value for %s in jspsych_init. Must be true/false." %(experiment_name,jspsych_val,jspsych_var))
 
-                    # Variables that must be numeric
-                    if jspsych_var in ["default_iti","max_load_time"]:
-                        if isinstance(jspsych_val,str) or isinstance(jspsych_val,bool):
-                            return notvalid("%s: %s is not an acceptable value for %s in jspsych_init. Must be numeric." %(experiment_name,jspsych_val,jspsych_var))
+                        # Variables that must be numeric
+                        if jspsych_var in ["default_iti","max_load_time"]:
+                            if isinstance(jspsych_val,str) or isinstance(jspsych_val,bool):
+                                return notvalid("%s: %s is not an acceptable value for %s in jspsych_init. Must be numeric." %(experiment_name,jspsych_val,jspsych_var))
 
     return True   
 
