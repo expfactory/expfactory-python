@@ -82,6 +82,8 @@ def validate(experiment_folder=None,warning=True):
 
     try:
         meta = load_experiment(experiment_folder)
+        if meta == False:
+            return notvalid("%s is not an experiment." %(experiment_folder))
         experiment_name = os.path.basename(experiment_folder)
     except:
         return notvalid("%s: config.json is not loadable." %(experiment_folder))
@@ -91,6 +93,7 @@ def validate(experiment_folder=None,warning=True):
     fields = get_validation_fields()
 
     for field,value,ftype in fields:
+        print "testing field %s" %field
 
         # Field must be in the keys if required
         if field not in meta[0].keys() and value == 1:
@@ -99,8 +102,6 @@ def validate(experiment_folder=None,warning=True):
             if value == 2:
                 if warning == True:
                     dowarning("WARNING: config.json is missing field %s: %s" %(field,experiment_name))
-            else:
-                continue
 
         if field == "tag":
             # Tag must correspond with folder name
@@ -114,7 +115,21 @@ def validate(experiment_folder=None,warning=True):
         # Check if experiment is production ready
         if field == "publish":
             if meta[0][field] == "False":
-                return notvalid("%s: config.json specifiesnot production ready." %experiment_name)
+                return notvalid("%s: config.json specifies not production ready." %experiment_name)
+
+        # Run must be a list of strings
+        if field == "run":
+            print meta[0][field]
+            # Is it a list?
+            if not isinstance(meta[0][field],ftype):
+                return notvalid("%s: field %s must be %s" %(experiment_name,field,ftype))
+            # Is each script in the list a string?
+            for script in meta[0][field]:
+                # If we have a single file, is it in the experiment folder?
+                if len(script.split("/")) == 1:
+                    if not os.path.exists("%s/%s" %(experiment_folder,script)):
+                        return notvalid("%s: %s is specified in config.json but missing." %(experiment_name,script))
+
 
         # Below is for required parameters
         if value == 1:
@@ -134,18 +149,6 @@ def validate(experiment_folder=None,warning=True):
                 if warning == True:
                     dowarning("WARNING: config.json is missing value for field %s: %s" %(field,experiment_name))
 
-        # Run must be a list of strings
-        if field == "run":
-            # Is it a list?
-            if not isinstance(meta[0][field],ftype):
-                return notvalid("%s: field %s must be %s" %(experiment_name,field,ftype))
-            # Is each script in the list a string?
-            for script in meta[0][field]:
-                # If we have a single file, is it in the experiment folder?
-                if len(script.split("/")) == 1:
-                    if not os.path.exists("%s/%s" %(experiment_folder,script)):
-                        return notvalid("%s: %s is specified in config.json but missing." %(experiment_name,script))
-
         # Javascript template
         if field == "template":
             if meta[0][field]!="jspsych":
@@ -154,9 +157,9 @@ def validate(experiment_folder=None,warning=True):
         # Validation for deployment_variables
         if field == "deployment_variables":
             if "jspsych_init" in meta[0][field]:
-                acceptable_jspych = get_acceptable_values("jspsych")
-                for jspsych_var,jspych_val in meta[0][field]["jspsych_init"].iteritems():
-                    if jspsych_var not in acceptable_values:
+                acceptable_jspsych = get_acceptable_values("jspsych")
+                for jspsych_var,jspsych_val in meta[0][field]["jspsych_init"].iteritems():
+                    if jspsych_var not in acceptable_jspsych:
                         return notvalid("%s: %s is not an acceptable value for jspsych_init. See http://docs.jspsych.org/core_library/jspsych-core/#jspsychinit" %(experiment_name,jspsych_var))
 
                     # Variables that must be boolean
@@ -177,15 +180,14 @@ def get_experiments(experiment_repo,load=False,warning=True):
     return loaded json for all valid experiments from an experiment folder
     :param experiment_repo: full path to the experiments repo
     :param load: if True, returns a list of loaded config.json objects. If False (default) returns the paths to the experiments
-
     '''
-
     experiments = find_directories(experiment_repo)
     valid_experiments = [e for e in experiments if validate(e,warning)]
     print "Found %s valid experiments" %(len(valid_experiments))
     if load == True:
         valid_experiments = load_experiments(valid_experiments)
     return valid_experiments
+
 
 def load_experiments(experiment_folders):
     '''load_experiments
@@ -199,6 +201,7 @@ def load_experiments(experiment_folders):
         exp = load_experiment(experiment_folder)
         experiments.append(exp)
     return experiments
+
 
 def load_experiment(experiment_folder):
     '''load_experiment:
