@@ -1,46 +1,50 @@
 # The Experiment Factory Python
 
+[![Circle CI](https://circleci.com/gh/expfactory/expfactory-python.svg?style=svg)](https://circleci.com/gh/expfactory/expfactory-python)
+
 Python module for managing [experiment factory javascript experiment files](https://github.com/expfactory/expfactory-experiments), a [psiturk battery](https://github.com/expfactory/expfactory-battery), and a [virtual machine](https://github.com/expfactory/expfactory-vm) to host the compilation of these things.  We currently have support for just psiturk batteries, and other integrations will come shortly. You can use the functions to control these components, or just install the module and run to create an entire experiment using a web interface.
 
-Please see our [documentation](http://expfactory.github.io/expfactory-python) for more complete details.
+Please see our [documentation](http://expfactory.github.io/) for more complete details.
 
-### Installation
+### Installation (current)
+
+      pip install expfactory
+
+### Installation (dev)
 
       pip install git+git://github.com/expfactory/expfactory-python.git
 
 
-### Running to Generate a Battery
+### Quick start
 Installation will place an executable, `expfactory` in your bin folder. To run the executable to open up a web interface to design your experiment:
 
       expfactory
 
-The web interface will take you through the following steps:
+The web interface includes the following:
 
-- collection of experiment details
-- database connection validation
-- creation of local (folder) experiment, or deployment to AWS.
+- custom generation of battery (local folder, AWS virtual machine, or virtual machine)
+- serves API (JSON) with experiment details
+- complete documentation
+
+
+#### Run a local experiment
+You can run an [expfactory-experiments](expfactory-experiments) folder as follows:
+
+      cd test_task
+      expfactory --run
+
+
+#### Validate a local experiment
+
+      cd test_task
+      expfactory --validate
+
+
+#### Test with experiment robot
+
+      cd test_task
+      expfactory --test
+
 
 ### Functions Provided
-If you want to use the library as a module, functions are provided that do the following.
-
-###### experiment.py
-
-- validator for experiment format (json, etc) to add a new experiment
-- command line generation of new experiments
-
-###### battery.py
-
-- functions to select a subset of experiments and generate a battery to run with psiturk
-
-###### vm.py
-
-- functions for generating a new vm instance
-- should use functions from battery.py to select, create output, plug into vm, deploy
-
-###### analysis.py
-
-- functions to do analyses, probably using db.py
-
-###### db.py
-
-- functions for extracting stuff / working with database(s)
+You can also use the library as a module, and import expfactory functions into your application.  Please see our [documentation](http://expfactory.github.io) for details
