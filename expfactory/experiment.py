@@ -118,7 +118,6 @@ def validate(experiment_folder=None,warning=True):
 
         # Run must be a list of strings
         if field == "run":
-            print meta[0][field]
             # Is it a list?
             if not isinstance(meta[0][field],ftype):
                 return notvalid("%s: field %s must be %s" %(experiment_name,field,ftype))
