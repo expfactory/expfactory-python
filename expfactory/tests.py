@@ -247,11 +247,13 @@ def test_block(browser,experiment,pause_time=0,wait_time=0):
         wait_time = wait_time + block["timing_feedback_duration"]
 
     # This is typically for instruction text, etc.
-    if "pages" in block:
+    if "pages" in block and not re.search("survey-multi-choice",block["type"]):
         number_pages = len(block["pages"])
         for p in range(number_pages):
             if "cont_key" in block:
                 continue_key = key_lookup(block["cont_key"][0])
+            elif 'key_forward' in block:
+                continue_key = key_lookup(block["key_forward"])
                 browser.find_element_by_tag_name('html').send_keys(continue_key)
             elif "show_clickable_nav" in block:
                 if block["show_clickable_nav"] == True:  
@@ -305,8 +307,16 @@ def test_block(browser,experiment,pause_time=0,wait_time=0):
                 browser.execute_script("document.querySelector('#jspsych-writing-box').text = 'beep boop';")
 
     # Free text response
-    elif "type" in block:
-        if re.search("survey-text",block["type"]):
+    if "type" in block:
+        if re.search("survey-multi-choice",block["type"]):
+            try:    
+                browser.execute_script("$(':radio').click();");
+                sleep(1)
+                browser.execute_script("document.querySelector('#jspsych-survey-multi-choice-next').click();")
+            except WebDriverException as e:
+                pass
+
+        elif re.search("survey-text",block["type"]):
             try:    
                 browser.execute_script("document.querySelector('#jspsych-survey-text-next').click();")
             except WebDriverException as e:
