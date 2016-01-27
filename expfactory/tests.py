@@ -306,8 +306,8 @@ def test_block(browser,experiment,pause_time=0,wait_time=0):
             if "type" == "writing":
                 browser.execute_script("document.querySelector('#jspsych-writing-box').text = 'beep boop';")
 
-    # Free text response
     if "type" in block:
+        # Radio buttons
         if re.search("survey-multi-choice",block["type"]):
             try:    
                 browser.execute_script("$(':radio').click();");
@@ -316,6 +316,16 @@ def test_block(browser,experiment,pause_time=0,wait_time=0):
             except WebDriverException as e:
                 pass
 
+
+        elif re.search("radio-buttonlist",block["type"]):
+            try:    
+                browser.execute_script("$(':radio').click();");
+                sleep(2)
+                browser.execute_script("document.querySelector('#jspsych-radio-buttonlist-next').click();")
+            except WebDriverException as e:
+                pass
+
+        # Free text response
         elif re.search("survey-text",block["type"]):
             try:    
                 browser.execute_script("document.querySelector('#jspsych-survey-text-next').click();")
