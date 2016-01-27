@@ -18,9 +18,9 @@ class TestExperiment(unittest.TestCase):
 
     def setUp(self):
         self.pwd = get_installdir()
-        self.battery_folder = "%s/tests/data" %self.pwd
-        self.experiment = os.path.abspath("%s/tests/data/test_task/" %self.pwd)
-        self.config = json.load(open("%s/tests/data/test_task/config.json" %self.pwd,"rb"))
+        self.battery_folder = "%s/testing/data" %self.pwd
+        self.experiment = os.path.abspath("%s/testing/data/test_task/" %self.pwd)
+        self.config = json.load(open("%s/testing/data/test_task/config.json" %self.pwd,"rb"))
         self.tmpdir = tempfile.mkdtemp()
 
     def tearDown(self):

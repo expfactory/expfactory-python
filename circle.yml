@@ -4,7 +4,7 @@ machine:
 
 test:
   override:
-    - bash expfactory/tests/run_tests.sh $PWD/expfactory/tests $TEST_RUN_FOLDER
+    - bash expfactory/testing/run_tests.sh $PWD/expfactory/testing $TEST_RUN_FOLDER
 
 dependencies:
   pre:
