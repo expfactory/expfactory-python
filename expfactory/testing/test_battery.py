@@ -21,7 +21,7 @@ class TestBattery(unittest.TestCase):
         self.pwd = get_installdir()
         self.tmpdir = tempfile.mkdtemp()
         self.battery = "%s/battery"%self.tmpdir
-        self.experiment = os.path.abspath("%s/tests/data/test_task/" %self.pwd)
+        self.experiment = os.path.abspath("%s/testing/data/test_task/" %self.pwd)
 
     def tearDown(self):
         shutil.rmtree(self.tmpdir)

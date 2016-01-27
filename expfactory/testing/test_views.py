@@ -20,8 +20,8 @@ class TestViews(unittest.TestCase):
     def setUp(self):
         self.pwd = get_installdir()
         self.tmpdir = tempfile.mkdtemp()
-        self.experiment = os.path.abspath("%s/tests/data/test_task/" %self.pwd)
-        self.config = json.load(open("%s/tests/data/test_task/config.json" %self.pwd,"rb"))
+        self.experiment = os.path.abspath("%s/testing/data/test_task/" %self.pwd)
+        self.config = json.load(open("%s/testing/data/test_task/config.json" %self.pwd,"rb"))
 
     def tearDown(self):
         shutil.rmtree(self.tmpdir)

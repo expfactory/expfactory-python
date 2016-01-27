@@ -23,8 +23,8 @@ class TestVm(unittest.TestCase):
         self.battery_folder = "%s/battery"%self.tmpdir
         self.experiments_folder = "%s/experiments"%self.tmpdir
         self.vm_folder = "%s/vm"%self.tmpdir        
-        self.experiment = os.path.abspath("%s/tests/data/test_task/" %self.pwd)
-        self.config = json.load(open("%s/tests/data/test_task/config.json" %self.pwd,"rb"))
+        self.experiment = os.path.abspath("%s/testing/data/test_task/" %self.pwd)
+        self.config = json.load(open("%s/testing/data/test_task/config.json" %self.pwd,"rb"))
 
     def tearDown(self):
         shutil.rmtree(self.tmpdir)
