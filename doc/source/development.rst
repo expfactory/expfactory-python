@@ -242,7 +242,7 @@ Contributing to experiments
 An experiment is just a folder with files that are expected to be a certain way. The "core" of an experiment is:
 
 * config.json: a file with a bunch of information about an experiment, meta-data
-* experiment.js: a javascript file to run the experiment
+* experiment.js: the main javascript file to run the experiment
 * style.css: (optional) custom styling
 
 A recommended strategy for developing a new experiment is to `find an experiment <https://github.com/expfactory/expfactory-experiments>`_ similar to the one you want to make, copy the folder, and edit it. We recommend using JsPsych for tutorials, help, and examples, as the `documentation <http://docs.jspsych.org/tutorials/go-nogo-task/>`_ is really great. We also provide an standard reaction time (commented) empty template `for you to download <https://github.com/expfactory/expfactory-python/raw/master/expfactory/templates/experiment_template.zip>`_, and in the future will provide a dynamic web interface for generating new templates. When you submit a PR to the expfactory-experiments repo, the experiment will be tested with continuous integration, and before doing this, we have provided a simple command line tool that can be used to validate the basics about the config.json and experiment folder.
@@ -461,7 +461,9 @@ as the entire thing will be included in the experiment's folder (under `/static/
 experiment.js
 '''''''''''''
 
-This is the main javascript file to run the experiment, typically named experiment.js. The name can change, but must be specified in the config.json as one of the "run" variables. Paths to images, sounds, and other files referenced in this file will be expected to follow the same pattern as above, e.g.: `/static/experiments/[folder-name]/images/filename.png` `(required)`.
+This is the main javascript file to run the experiment. This file should include set up of the JsPsych experiment, and the requirement is that the resulting array of blocks be named {{tag}}_experiment (for example, if the folder is called "local_global" the array that finishes the file, onto which all blocks are pushed, is called "local_global_experiment." When defining your blocks, in the "data" variable you must include "exp_id" to also specify this unique identifier (e.g., local global). Not including the unique ID with the data will trigger an error during continuous integration testing, and will possibly mean that you could have data that cannot be linked back to a task. 
+
+Paths to images, sounds, and other files referenced in this file will be expected to follow the same pattern as above, e.g.: `/static/experiments/[folder-name]/images/filename.png` `(required)`.
 
 Supplementary files
 '''''''''''''''''''

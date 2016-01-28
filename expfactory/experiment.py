@@ -121,6 +121,9 @@ def validate(experiment_folder=None,warning=True):
             # Is it a list?
             if not isinstance(meta[0][field],ftype):
                 return notvalid("%s: field %s must be %s" %(experiment_name,field,ftype))
+            # Is an experiment.js defined
+            if "experiment.js" not in meta[0][field]:
+                return notvalid("%s: experiment.js is not defined in %s" %(experiment_name,field))
             # Is each script in the list a string?
             for script in meta[0][field]:
                 # If we have a single file, is it in the experiment folder?
