@@ -50,7 +50,7 @@ var nodes = d3.range(m).map(function(ii) {
   return {
     radius: Math.max(10,Math.sqrt(v) * maxRadius),
     color: nodes[ii].color,
-    tag: nodes[ii].exp_id,
+    exp_id: nodes[ii].exp_id,
     cy: x(i),
     cx: width / 2
   };

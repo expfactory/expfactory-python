@@ -80,7 +80,7 @@ def generate_experiment_web(output_dir,experiment_folder=None,make_table=True,
     experiment_tags = [x[0]["exp_id"] for x in experiments]
 
     # Fields to keep for the table
-    fields = ['preview','tag',
+    fields = ['preview','exp_id',
               'contributors','time','notes',
               'cognitive_atlas_task_id']
 
@@ -109,7 +109,7 @@ def generate_experiment_web(output_dir,experiment_folder=None,make_table=True,
         # For each experiment, we will prepare an interactive node for the site
         nodes = []
         for experiment in experiments:
-            nodes.append('{"cluster": 1, "radius": "10", "color": colors[%s], "tag": "%s" }' %(choice([0,1,2]),experiment[0]["exp_id"]))
+            nodes.append('{"cluster": 1, "radius": "10", "color": colors[%s], "exp_id": "%s" }' %(choice([0,1,2]),experiment[0]["exp_id"]))
 
         # Generate index page
         index_template = get_template("%s/templates/expfactory_index.html" %get_installdir())        
