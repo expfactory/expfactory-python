@@ -76,7 +76,7 @@ def generate_experiment_web(output_dir,experiment_folder=None,make_table=True,
 
     if experiment_folder == None:
         experiment_folder = "%s/experiments" %tmpdir
-    experiments = get_experiments(experiment_folder,load=True)
+    experiments = get_experiments(experiment_folder,load=True, warning=False)
     experiment_tags = [x[0]["tag"] for x in experiments]
 
     # Fields to keep for the table
@@ -233,7 +233,7 @@ def get_cognitiveatlas_hierarchy(experiment_tags=None,get_html=False):
 
     tmpdir = custom_battery_download()
     experiment_folder = "%s/experiments" %tmpdir
-    experiments = get_experiments(experiment_folder,load=True)
+    experiments = get_experiments(experiment_folder,load=True,warning=False)
     if experiment_tags != None:
         experiments = [e for e in experiments if e[0]["tag"] in experiment_tags]
     

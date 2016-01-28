@@ -63,6 +63,26 @@ def validate_experiment_tag(experiment_folder):
                 assert_equal(has_exp_id,True)
               
 
+def validate_circle_yml(experiment_repo):
+    '''validate_circle_yml will make sure that all experiment folders in a repo are tested with circle_ci_test in the circle.yml
+    :param experiment_repo: the experiment repo folder that contains experiment subdirectories with config.json files
+    '''
+    if "CIRCLE_BRANCH" in os.environ.keys():
+        experiments = get_experiments(experiment_repo,load=True,warning=False)
+        circle_yml_file = "%s/circle.yml" %experiment_repo
+        assert_equal(os.path.exists(circle_yml_file),True)
+        tags = [x[0]["tag"] for x in experiments] 
+        circle_yml_file = open(circle_yml_file,"r")
+        circle_yml = "".join([x.strip("\n").replace(" ","").replace("'","").replace('"',"") for x in circle_yml_file.readlines()])
+        circle_yml = circle_yml.replace("(","").replace(")","")
+        for tag in tags:
+            print "TESTING if %s defined for circle ci testing in circle.yml..." %tag
+            assert_equal(re.search("circle_ci_test%s" %tag,circle_yml)!=None,True)
+    else:
+       print "Not in a continuous integration (CircleCI) environment, skipping test.'
+    print "All experiments found in circle.yml for testing!"
+
+
 def circle_ci_test(experiment_tags,web_folder,delete=True,pause_time=500):
     '''circle_ci_test
     Deploy experiment testing robot, requires generation of web folder, and can be deleted on finish.
@@ -212,7 +232,7 @@ def experiment_robot_web(experimentweb_base,experiment_tags=None,port=None,pause
     browser.set_page_load_timeout(10)
 
     # Find experiments 
-    experiments = get_experiments("%s/static/experiments" %experimentweb_base,load=True)
+    experiments = get_experiments("%s/static/experiments" %experimentweb_base,load=True,warning=False)
 
     if experiment_tags != None:
         experiments = [e for e in experiments if e[0]["tag"] in experiment_tags]
