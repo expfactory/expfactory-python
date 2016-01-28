@@ -79,7 +79,7 @@ def validate_circle_yml(experiment_repo):
             print "TESTING if %s defined for circle ci testing in circle.yml..." %tag
             assert_equal(re.search("circle_ci_test%s" %tag,circle_yml)!=None,True)
     else:
-       print "Not in a continuous integration (CircleCI) environment, skipping test.'
+       print "Not in a continuous integration (CircleCI) environment, skipping test."
     print "All experiments found in circle.yml for testing!"
 
 
