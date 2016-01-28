@@ -23,7 +23,7 @@ var tip = d3.tip()
     .attr('class', 'd3-tip')
     .offset([-10, 0])
     .html(function(d) {
-        return "<a href='" + d.tag + ".html' target='_blank'><strong><span style='color:black;text-decoration:none'>" + d.tag +"</span></a>";
+        return "<a href='" + d.exp_id + ".html' target='_blank'><strong><span style='color:black;text-decoration:none'>" + d.exp_id +"</span></a>";
 })
 
 // D3
@@ -50,7 +50,7 @@ var nodes = d3.range(m).map(function(ii) {
   return {
     radius: Math.max(10,Math.sqrt(v) * maxRadius),
     color: nodes[ii].color,
-    tag: nodes[ii].tag,
+    tag: nodes[ii].exp_id,
     cy: x(i),
     cx: width / 2
   };
@@ -79,7 +79,7 @@ var circle = svg.selectAll("rect")
     .on('mouseout.tip', tip.hide)
     .on('mouseover.tip', tip.show)
     .on('click', function(d){
-        window.location = d.tag + ".html";
+        window.location = d.exp_id + ".html";
     })
     .call(force.drag);
 

@@ -33,7 +33,7 @@ Retrieving all Experiments
 Retrieving a specific Experiment
 ''''''''''''''''''''''''''''''''
 
-The unique id of an experiment is its "tag," which also corresponds to the name of its folder and the "tag" variable in its config.json. You can select an experiment by this unique id:
+The unique id of an experiment is its "exp_id," which also corresponds to the name of its folder and the "exp_id" variable in its config.json. You can select an experiment by this unique id:
 
 
 ::

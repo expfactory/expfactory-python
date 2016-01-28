@@ -6,7 +6,7 @@
                 "experiment.js",
                 "style.css"
                ],
-        "tag": "experiment_template",
+        "exp_id": "experiment_template",
         "cognitive_atlas_task_id": "",
         "contributors": [
                          "Ian Eisenberg",

@@ -129,7 +129,7 @@ def get_stylejs(experiment,url_prefix=""):
     js = ""
     css = ""
     scripts = experiment[0]["run"]
-    tag = experiment[0]["tag"]
+    tag = experiment[0]["exp_id"]
     for script in scripts:
         ext = script.split(".")[-1]
 
@@ -155,10 +155,10 @@ def get_jspsych_init(experiment,deployment="local"):
     :param experiment: the loaded config.json for the experiment
     :param deployment: specify to deploy local (default), or docker,docker-preview (expfactory-docker). If deployed with docker, the user is not allowed to customize function variables as this could compromise the experiment server.
     '''
-    jspsych_init = "jsPsych.init({\ntimeline: %s_experiment,\n" %(experiment["tag"])
+    jspsych_init = "jsPsych.init({\ntimeline: %s_experiment,\n" %(experiment["exp_id"])
 
     default_inits = dict()
-    default_inits["local"] = {"on_finish":["jsPsych.data.localSave('%s_results.csv', 'csv');\nexpfactory_finished = true;" %(experiment["tag"])]}
+    default_inits["local"] = {"on_finish":["jsPsych.data.localSave('%s_results.csv', 'csv');\nexpfactory_finished = true;" %(experiment["exp_id"])]}
 
     # The user is not allowed to customize defaults for docker deployment, as this could compomise the server.
     default_inits["docker"] = {"on_finish":["""finished_message = '<div id="finished_message" style="margin:100px"><h1>Experiment Complete</h1><p>You have completed theexperiment. You can click "Next Experiment" to keep your result, or "Redo Experiment" to be presented with the task again at a later time.</p><button type="button" id="redo_experiment_button" class="btn btn-danger">Redo Experiment</button><button id="next_experiment_button" type="button" class="btn btn-success">Next Experiment</button></div>'\n$("body").append(finished_message)\n$("#redo_experiment_button").click( function(){\njavascript:window.location.reload();\n})\n$("#next_experiment_button").click( function(){\nexpfactory.djstatus = "FINISHED";\n// Submit to AWS first to obtain the complete assignment object\n//$("#turkey_form").submit()\n$.ajax({ type: "POST",\ncontentType: "application/json",\nurl : "/sync/{{result.id}}/",\ndata : JSON.stringify(expfactory),\ndataType: "json",\nerror: function(error){\nconsole.log(error)\n},\nsuccess: function(data){\nconsole.log(data);\nconsole.log("Finished!");\ndocument.location = "{{next_page}}";\n}\n});\n});\n"""],

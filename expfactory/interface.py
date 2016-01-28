@@ -22,7 +22,7 @@ class EFServer(Flask):
             self.tmpdir = tempfile.mkdtemp()
             custom_battery_download(tmpdir=self.tmpdir)
             self.experiments = get_experiments("%s/experiments" %self.tmpdir,load=True,warning=False)
-            self.experiment_lookup = make_lookup(self.experiments,"tag")
+            self.experiment_lookup = make_lookup(self.experiments,"exp_id")
 
 # API VIEWS #########################################################
 class apiExperiments(Resource):
@@ -36,15 +36,15 @@ class apiExperiments(Resource):
 class apiExperimentSingle(Resource):
     '''apiExperimentSingle
     return complete meta data for specific experiment
-    :param tag: tag for experiment to preview
+    :param exp_id: exp_id for experiment to preview
     '''
-    def get(self, tag):
-        return {tag: app.experiment_lookup[tag]}
+    def get(self, exp_id):
+        return {exp_id: app.experiment_lookup[exp_id]}
 
 app = EFServer(__name__)
 api = Api(app)    
 api.add_resource(apiExperiments,'/experiments')
-api.add_resource(apiExperimentSingle,'/experiments/<string:tag>')
+api.add_resource(apiExperimentSingle,'/experiments/<string:exp_id>')
 
 
 # WEB INTERFACE VIEWS ##############################################
@@ -145,7 +145,7 @@ def select():
 
         # Retrieve experiment folders 
         valid_experiments = app.experiments
-        experiments =  [x[0]["tag"] for x in valid_experiments]
+        experiments =  [x[0]["exp_id"] for x in valid_experiments]
         selected_experiments = [x for x in fields.values() if x in experiments]
         experiment_folders = ["%s/experiments/%s" %(app.tmpdir,x) for x in selected_experiments]
 

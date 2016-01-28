@@ -96,7 +96,7 @@
 experiments = {{ experiments | safe }}
 
 for (i=0;i<experiments.length;i++){
-    $("#experiments").append('<div class="checkbox"><label><input type="checkbox" value="' + experiments[i][0].tag +'" name="' + experiments[i][0].tag +'">' + experiments[i][0].tag +'</label></div>')
+    $("#experiments").append('<div class="checkbox"><label><input type="checkbox" value="' + experiments[i][0].exp_id +'" name="' + experiments[i][0].exp_id +'">' + experiments[i][0].exp_id +'</label></div>')
 }
 
 // Variables passed from earlier steps

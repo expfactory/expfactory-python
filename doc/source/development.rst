@@ -260,10 +260,10 @@ Summary of Best Practices
 * An experiment must minimally have an experiment.js and valid config.json file
 * You do not need to define fields in the config.json that are not required.
 * We use jspsych plugins for most experiments, and most are included with the battery repo, meaning you don't need to include them with your local folder, but rather specify their path in the "run" variable of your config.json (see below).
-* the folder name must correspond with the "tag" variable in the config.json
+* the folder name must correspond with the "exp_id" variable in the config.json
 * experiment folder names should be all lowercase, no hyphens (-), or spaces.
 * you can include any images/sounds supplementary files in your experiment folder, it will be included
-* these supplementary files specified in experiment.js should have paths relative to the battery experiment base directory, `static/experiments/[tag]/images/hello.png`
+* these supplementary files specified in experiment.js should have paths relative to the battery experiment base directory, `static/experiments/[exp_id]/images/hello.png`
 * supplementary files specified in style.css should be relative to the experiment folder.
 
 
@@ -273,7 +273,7 @@ config.json
 A data structure that specifies the following:
 
  - name: [required] the full name of the experiment, best is to use the name of the publication it is associated with.
- - tag:  [required] the tag for the experiment, typically the folder name, all lowercase with no special characters.
+ - exp_id:  [required] the experiment id (unique identifier) for the experiment, typically the folder name, all lowercase with no special characters.
  - run:  [required] entry javascript and css files for the experiment. Paths here should all be relative to the experiment folder, and will be used to generate the code in `load_experiments.js` for example, for the experiment in folder `multi-source` with run variable specified as:
 
 
@@ -315,7 +315,7 @@ An example of a config.json data structure is follows:
       [
           {
               "name": "Model-Based Influences on Humans' Choices and Striatal Prediction Errors",
-              "tag": "2-stage-decision",
+              "exp_id": "two_stage_decision",
               "cognitive_atlas_task_id":"trm_4aae62e4ad209",
               "template":"jspsych",
               "contributors": [
@@ -461,7 +461,7 @@ as the entire thing will be included in the experiment's folder (under `/static/
 experiment.js
 '''''''''''''
 
-This is the main javascript file to run the experiment. This file should include set up of the JsPsych experiment, and the requirement is that the resulting array of blocks be named {{tag}}_experiment (for example, if the folder is called "local_global" the array that finishes the file, onto which all blocks are pushed, is called "local_global_experiment." When defining your blocks, in the "data" variable you must include "exp_id" to also specify this unique identifier (e.g., local global). Not including the unique ID with the data will trigger an error during continuous integration testing, and will possibly mean that you could have data that cannot be linked back to a task. 
+This is the main javascript file to run the experiment. This file should include set up of the JsPsych experiment, and the requirement is that the resulting array of blocks be named {{exp_id}}_experiment (for example, if the folder is called "local_global" the array that finishes the file, onto which all blocks are pushed, is called "local_global_experiment." When defining your blocks, in the "data" variable you must include "exp_id" to also specify this unique identifier (e.g., local global). Not including the unique ID with the data will trigger an error during continuous integration testing, and will possibly mean that you could have data that cannot be linked back to a task. 
 
 Paths to images, sounds, and other files referenced in this file will be expected to follow the same pattern as above, e.g.: `/static/experiments/[folder-name]/images/filename.png` `(required)`.
 
@@ -579,7 +579,7 @@ Please submit an issue to our code base, or email someone in the lab, and we wil
 Debugging
 '''''''''
 
-If you see a white screen, it usually means there is a JavaScript error. While we can't provide details here for how to debug everything, generally if you right click --> Inspect Element and click the "console" tag you will see red text that indicates some JavaScript error. Questions to ask:
+If you see a white screen, it usually means there is a JavaScript error. While we can't provide details here for how to debug everything, generally if you right click --> Inspect Element and click the "console" tab you will see red text that indicates some JavaScript error. Questions to ask:
 
 * Did you specify all required jspsych scripts in your "run" variable? A script that is not specified will not be included in the page, and you will likely see a message like this:
 

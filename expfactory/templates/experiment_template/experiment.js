@@ -6,14 +6,14 @@ and jsPsych blocks. A few best practice rules:
 
 The variable for the experiment (at the end of the script) should be named like:
 
-      [tag]_experiment
+      [exp_id]_experiment
 
-where "tag" corresponds with the folder name and is specified as the "tag" variable in the config.json
+where "exp_id" corresponds with the folder name and is specified as the "exp_id" variable in the config.json
 
 
 Images / sounds / etc linked in this file should follow the format
 
-      /static/experiments/[tag]/myimage.png
+      /static/experiments/[exp_id]/myimage.png
 
 You can make any subfolders / hierarchy of files within this folder, and
 they will be included.

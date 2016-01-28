@@ -17,7 +17,7 @@ def generate(battery_dest,battery_repo=None,experiment_repo=None,experiments=Non
     :param battery_dest: [required] is the output folder for your battery. This folder MUST NOT EXIST.
     :param battery_repo: location of psiturk-battery repo to use as a template. If not specified, will be downloaded to a temporary directory
     :param experiment_repo: location of a expfactory-experiments repo to check for valid experiments. If not specified, will be downloaded to a temporary directory
-    :param experiments: a list of experiments, meaning the "tag" variable in the config.json, to include. This variable also conincides with the experiment folder name.
+    :param experiments: a list of experiments, meaning the "exp_id" variable in the config.json, to include. This variable also conincides with the experiment folder name.
     :param config: A dictionary with keys that coincide with parameters in the config.txt file for a expfactory experiment. If not provided, a dummy config will be generated.
     :param make_config: A boolean (default True) to control generation of the config. If there is a config generated before calling this function, this should be set to False.
     :param warning: Show config.json warnings when validating experiments. Default is True
@@ -154,7 +154,7 @@ def get_experiment_run(valid_experiments,deployment="local"):
             experiment = load_experiment(valid_experiment)[0]
         else:
             experiment = valid_experiment
-        tag = str(experiment["tag"])
+        tag = str(experiment["exp_id"])
         if experiment["template"] == "jspsych":
             runcode = get_jspsych_init(experiment,deployment=deployment)
         runs[tag] = runcode
@@ -185,7 +185,7 @@ def get_load_js(valid_experiments,url_prefix=""):
     loadstring = "\n"
     for valid_experiment in valid_experiments:
         experiment = load_experiment(valid_experiment)[0]
-        tag = str(experiment["tag"])
+        tag = str(experiment["exp_id"])
         loadstring = '%scase "%s":\n' %(loadstring,tag)
         for script in experiment["run"]:
             fname,ext = os.path.splitext(script)
@@ -213,13 +213,13 @@ def get_concat_js(valid_experiments):
 				experiments = experiments.concat(choice-rt_experiment)
 				break;
 
-               Format for experiment variables is [tag]_experiment
+               Format for experiment variables is [exp_id]_experiment
 
     '''
     concatjs = "\n"
     for valid_experiment in valid_experiments:
         experiment = load_experiment(valid_experiment)[0]
-        tag = str(experiment["tag"])
+        tag = str(experiment["exp_id"])
         concatjs = '%scase "%s":\n' %(concatjs,tag)
         concatjs = '%s      experiments = experiments.concat(%s_experiment)\n' %(concatjs,tag)
         concatjs = '%s      break;\n' %(concatjs)
@@ -241,5 +241,5 @@ def get_timing_js(valid_experiments):
     timingjs = []
     for valid_experiment in valid_experiments:
         experiment = load_experiment(valid_experiment)[0]
-        timingjs.append({"name":str(experiment["tag"]),"time":experiment["time"]})
+        timingjs.append({"name":str(experiment["exp_id"]),"time":experiment["time"]})
     return timingjs

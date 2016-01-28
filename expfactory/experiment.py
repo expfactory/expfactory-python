@@ -33,7 +33,7 @@ def get_validation_fields():
             ("time",1,int), 
             ("notes",0,str),
             ("reference",2,str), 
-            ("tag",1,str),
+            ("exp_id",1,str),
             ("cognitive_atlas_task_id",1,str),
             ("experiment_variables",0,list),
             ("publish",1,str),
@@ -102,14 +102,14 @@ def validate(experiment_folder=None,warning=True):
                 if warning == True:
                     dowarning("WARNING: config.json is missing field %s: %s" %(field,experiment_name))
 
-        if field == "tag":
+        if field == "exp_id":
             # Tag must correspond with folder name
             if meta[0][field] != experiment_name:
-                return notvalid("%s: tag parameter %s does not match folder name." %(experiment_name,meta[0][field]))
+                return notvalid("%s: exp_id parameter %s does not match folder name." %(experiment_name,meta[0][field]))
 
             # name cannot have special characters, only _ and letters/numbers
             if not re.match("^[a-z0-9_]*$", meta[0][field]): 
-                return notvalid("%s: tag parameter %s has invalid characters, only lowercase [a-z],[0-9], and _ allowed." %(experiment_name,meta[0][field]))
+                return notvalid("%s: exp_id parameter %s has invalid characters, only lowercase [a-z],[0-9], and _ allowed." %(experiment_name,meta[0][field]))
 
         # Check if experiment is production ready
         if field == "publish":
@@ -225,7 +225,7 @@ def load_experiment(experiment_folder):
 
 def make_lookup(experiment_list,key_field):
     '''make_lookup
-    returns dict object to quickly look up query experiment on tag
+    returns dict object to quickly look up query experiment on exp_id
     :param experiment_list: a list of query (dict objects)
     :param key_field: the key in the dictionary to base the lookup key (str)
     :returns lookup: dict (json) with key as "key_field" from query_list 

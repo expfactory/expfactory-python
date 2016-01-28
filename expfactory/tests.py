@@ -53,7 +53,7 @@ def validate_experiment_tag(experiment_folder):
     for contender in experiments:
         if validate(contender,warning=False) == True:
             experiment = load_experiment(contender)
-            tag = experiment[0]["tag"]
+            tag = experiment[0]["exp_id"]
             print "TESTING %s for exp_id in experiment.js..." %tag
             if "experiment.js" in experiment[0]["run"]:
                 experiment_js_file = open("%s/%s/experiment.js" %(experiment_folder,tag),"r") 
@@ -71,7 +71,7 @@ def validate_circle_yml(experiment_repo):
         experiments = get_experiments(experiment_repo,load=True,warning=False)
         circle_yml_file = "%s/circle.yml" %experiment_repo
         assert_equal(os.path.exists(circle_yml_file),True)
-        tags = [x[0]["tag"] for x in experiments] 
+        tags = [x[0]["exp_id"] for x in experiments] 
         circle_yml_file = open(circle_yml_file,"r")
         circle_yml = "".join([x.strip("\n").replace(" ","").replace("'","").replace('"',"") for x in circle_yml_file.readlines()])
         circle_yml = circle_yml.replace("(","").replace(")","")
@@ -86,7 +86,7 @@ def validate_circle_yml(experiment_repo):
 def circle_ci_test(experiment_tags,web_folder,delete=True,pause_time=500):
     '''circle_ci_test
     Deploy experiment testing robot, requires generation of web folder, and can be deleted on finish.
-    :param experiment_tags: list of experiment folders (tags) to test
+    :param experiment_tags: list of experiment folders (exp_id variables) to test
     :param delete: delete experiment folders when finished
     '''
 
@@ -235,27 +235,27 @@ def experiment_robot_web(experimentweb_base,experiment_tags=None,port=None,pause
     experiments = get_experiments("%s/static/experiments" %experimentweb_base,load=True,warning=False)
 
     if experiment_tags != None:
-        experiments = [e for e in experiments if e[0]["tag"] in experiment_tags]
+        experiments = [e for e in experiments if e[0]["exp_id"] in experiment_tags]
     
     print "Found %s experiments to test." %(len(experiments))
 
     for experiment in experiments:
  
-        print "STARTING TEST OF EXPERIMENT %s" %(experiment[0]["tag"])
-        get_page(browser,"http://localhost:%s/%s.html" %(port,experiment[0]["tag"]))
+        print "STARTING TEST OF EXPERIMENT %s" %(experiment[0]["exp_id"])
+        get_page(browser,"http://localhost:%s/%s.html" %(port,experiment[0]["exp_id"]))
         
         sleep(3)
 
         count=0
         wait_time=0
         while True:
-            print "Testing block %s of %s" %(count,experiment[0]["tag"])
+            print "Testing block %s of %s" %(count,experiment[0]["exp_id"])
             wait_time,finished = test_block(browser,experiment,pause_time,wait_time)
             if finished == True:
                 break
             count+=1
 
-        print "FINISHING TEST OF EXPERIMENT %s" %(experiment[0]["tag"])
+        print "FINISHING TEST OF EXPERIMENT %s" %(experiment[0]["exp_id"])
 
     # Stop the server
     httpd.server_close()
@@ -424,7 +424,7 @@ def test_experiment(folder=None,battery_folder=None,port=None,pause_time=2000):
         browser.implicitly_wait(3) # if error, will wait 3 seconds and retry
         browser.set_page_load_timeout(10)
  
-        print "STARTING TEST OF EXPERIMENT %s" %(experiment[0]["tag"])
+        print "STARTING TEST OF EXPERIMENT %s" %(experiment[0]["exp_id"])
         get_page(browser,"http://localhost:%s" %(port))
         
         sleep(3)
@@ -432,12 +432,12 @@ def test_experiment(folder=None,battery_folder=None,port=None,pause_time=2000):
         count=0
         wait_time=1000
         while True:
-            print "Testing block %s of %s" %(count,experiment[0]["tag"])
+            print "Testing block %s of %s" %(count,experiment[0]["exp_id"])
             wait_time,finished = test_block(browser,experiment,pause_time,wait_time)
             if finished == True:
                 break
             count+=1
-        print "FINISHING TEST OF EXPERIMENT %s" %(experiment[0]["tag"])
+        print "FINISHING TEST OF EXPERIMENT %s" %(experiment[0]["exp_id"])
 
     except:
         print "Stopping web server..."

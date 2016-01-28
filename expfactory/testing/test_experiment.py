@@ -41,7 +41,7 @@ class TestExperiment(unittest.TestCase):
         self.assertTrue(isinstance(loaded_experiment[0],dict))
 
     def test_make_lookup(self):
-        lookup = make_lookup([self.config],"tag")
+        lookup = make_lookup([self.config],"exp_id")
         self.assertTrue("test_task" in lookup)
 
     def test_validate(self):
@@ -66,7 +66,7 @@ class TestExperiment(unittest.TestCase):
 
         # Missing required field
         broken_config = self.config[:]
-        del broken_config[0]["tag"]
+        del broken_config[0]["exp_id"]
         self.save_config(broken_config,broken_experiment)
         self.assertFalse(validate(broken_experiment))
 

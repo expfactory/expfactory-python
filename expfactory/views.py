@@ -77,7 +77,7 @@ def generate_experiment_web(output_dir,experiment_folder=None,make_table=True,
     if experiment_folder == None:
         experiment_folder = "%s/experiments" %tmpdir
     experiments = get_experiments(experiment_folder,load=True, warning=False)
-    experiment_tags = [x[0]["tag"] for x in experiments]
+    experiment_tags = [x[0]["exp_id"] for x in experiments]
 
     # Fields to keep for the table
     fields = ['preview','tag',
@@ -97,10 +97,10 @@ def generate_experiment_web(output_dir,experiment_folder=None,make_table=True,
                         values = '<a href="%s" target="_blank">%s</a>' %(values,values)
                 if isinstance(values,list):
                     values = ",".join(values)
-                valid.loc[experiment[0]["tag"],field] = values
+                valid.loc[experiment[0]["exp_id"],field] = values
 
         # Add a preview link
-        valid.loc[experiment[0]["tag"],"preview"] = '<a href="%s.html" target="_blank">DEMO</a>' %(experiment[0]["tag"])
+        valid.loc[experiment[0]["exp_id"],"preview"] = '<a href="%s.html" target="_blank">DEMO</a>' %(experiment[0]["exp_id"])
 
     # If the user wants to create the index page
     if make_index == True:
@@ -109,7 +109,7 @@ def generate_experiment_web(output_dir,experiment_folder=None,make_table=True,
         # For each experiment, we will prepare an interactive node for the site
         nodes = []
         for experiment in experiments:
-            nodes.append('{"cluster": 1, "radius": "10", "color": colors[%s], "tag": "%s" }' %(choice([0,1,2]),experiment[0]["tag"]))
+            nodes.append('{"cluster": 1, "radius": "10", "color": colors[%s], "tag": "%s" }' %(choice([0,1,2]),experiment[0]["exp_id"]))
 
         # Generate index page
         index_template = get_template("%s/templates/expfactory_index.html" %get_installdir())        
@@ -140,7 +140,7 @@ def generate_experiment_web(output_dir,experiment_folder=None,make_table=True,
     # Copy updated valid experiments into our experiment directory
     battery_repo = "%s/battery" %(tmpdir)
     experiment_repo = "%s/experiments" %(tmpdir)
-    valid_experiments = ["%s/%s" %(experiment_repo,x[0]["tag"]) for x in experiments]
+    valid_experiments = ["%s/%s" %(experiment_repo,x[0]["exp_id"]) for x in experiments]
     template_experiments(output_dir,battery_repo,valid_experiments)
 
     # If the user wants to make a table
@@ -185,7 +185,7 @@ def generate_experiment_web(output_dir,experiment_folder=None,make_table=True,
         
         # For each experiment, we will generate a demo page
         for experiment in experiments:
-            demo_page = os.path.abspath("%s/%s.html" %(output_dir,experiment[0]["tag"]))
+            demo_page = os.path.abspath("%s/%s.html" %(output_dir,experiment[0]["exp_id"]))
             exp_template = get_experiment_html(experiment)
             filey = open(demo_page,"wb")
             filey.writelines(exp_template)
@@ -216,16 +216,16 @@ def get_experiment_html(experiment,url_prefix="",deployment="local"):
     exp_template = "".join(open(exp_template,"r").readlines())
     exp_template = sub_template(exp_template,"{{js}}",js)
     exp_template = sub_template(exp_template,"{{css}}",css)
-    runcode = get_experiment_run(experiment,deployment=deployment)[experiment[0]["tag"]]
+    runcode = get_experiment_run(experiment,deployment=deployment)[experiment[0]["exp_id"]]
     exp_template = sub_template(exp_template,"{{run}}",runcode)
-    exp_template = sub_template(exp_template,"{{tag}}",experiment[0]["tag"])
+    exp_template = sub_template(exp_template,"{{exp_id}}",experiment[0]["exp_id"])
     return exp_template
 
 
 def get_cognitiveatlas_hierarchy(experiment_tags=None,get_html=False):
     '''get_cognitiveatlas_hierarchy
     return 
-    :param experiment_tags: a list of experiment tags to include. If None provided, all valid experiments will be used.
+    :param experiment_tags: a list of experiment exp_id tags to include. If None provided, all valid experiments will be used.
     :param get_html: if True, returns rendered HTML template with hierarchy. False returns json data structure.
     '''
     from cognitiveatlas.datastructure import concept_node_triples
@@ -235,14 +235,14 @@ def get_cognitiveatlas_hierarchy(experiment_tags=None,get_html=False):
     experiment_folder = "%s/experiments" %tmpdir
     experiments = get_experiments(experiment_folder,load=True,warning=False)
     if experiment_tags != None:
-        experiments = [e for e in experiments if e[0]["tag"] in experiment_tags]
+        experiments = [e for e in experiments if e[0]["exp_id"] in experiment_tags]
     
     # We need a dictionary to look up experiments by task ids
     unique_tasks = numpy.unique([e[0]["cognitive_atlas_task_id"] for e in experiments]).tolist()
 
     experiment_lookup = dict()
     for u in unique_tasks:
-        matching_tasks = numpy.unique([e[0]["tag"] for e in experiments if e[0]["cognitive_atlas_task_id"]==u])
+        matching_tasks = numpy.unique([e[0]["exp_id"] for e in experiments if e[0]["cognitive_atlas_task_id"]==u])
         experiment_lookup[u] = matching_tasks.tolist()
 
     triples = concept_node_triples(image_dict=experiment_lookup,save_to_file=False,lookup_key_type="task")
@@ -250,7 +250,7 @@ def get_cognitiveatlas_hierarchy(experiment_tags=None,get_html=False):
     # We want to add meta data for the experiments
     meta_data = dict()
     for experiment in experiments:
-        node_ids = triples.id[triples.name==experiment[0]["tag"]].tolist()
+        node_ids = triples.id[triples.name==experiment[0]["exp_id"]].tolist()
         for node_id in node_ids:
             meta_data[node_id] = experiment[0]
 
@@ -277,7 +277,7 @@ def tmp_experiment(folder,battery_folder):
         copy_directory(battery_folder,"%s/battery" %tmpdir)
         
     experiment = load_experiment("%s" %folder)
-    tag = experiment[0]["tag"]
+    tag = experiment[0]["exp_id"]
 
     # We will copy the entire experiment into the battery folder
     battery_folder = "%s/battery" %(tmpdir)
