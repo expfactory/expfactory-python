@@ -45,6 +45,23 @@ def validate_experiment_directories(experiment_folder):
     for contender in experiments:
         assert_equal(validate(contender),True)
 
+def validate_experiment_tag(experiment_folder):
+    '''validate_experiment_tag looks for definition of exp_id as the tag somewhere in experiment.js. We are only requiring one definition for now (a more lax approach), but this standard might be changed.
+    '''
+    experiments = find_directories(experiment_folder)
+    print "Testing %s experiment for definition of exp_id in experiment.js..."
+    for contender in experiments:
+        if validate(contender,warning=False) == True:
+            experiment = load_experiment(contender)
+            tag = experiment[0]["tag"]
+            print "TESTING %s for exp_id in experiment.js..." %tag
+            if "experiment.js" in experiment[0]["run"]:
+                experiment_js_file = open("%s/%s/experiment.js" %(experiment_folder,tag),"r") 
+                experiment_js = "".join([x.strip("\n").replace("'","").replace('"',"").replace(" ","") for x in experiment_js_file.readlines()])
+                experiment_js_file.close()
+                has_exp_id = re.search("exp_id:%s" %tag,experiment_js) != None or re.search("exp_id=%s" %tag,experiment_js) != None 
+                assert_equal(has_exp_id,True)
+              
 
 def circle_ci_test(experiment_tags,web_folder,delete=True,pause_time=500):
     '''circle_ci_test
