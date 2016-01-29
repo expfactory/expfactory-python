@@ -20,7 +20,7 @@ import numpy
 import shutil
 import pandas
 import os
-
+import re
 
 def embed_experiment(folder,url_prefix=""):
     '''embed_experiment
@@ -81,7 +81,7 @@ def generate_experiment_web(output_dir,experiment_folder=None,make_table=True,
 
     # Fields to keep for the table
     fields = ['preview','exp_id',
-              'contributors','time','notes',
+              'contributors','time',
               'cognitive_atlas_task_id']
 
     valid = pandas.DataFrame(columns=fields)
@@ -246,6 +246,19 @@ def get_cognitiveatlas_hierarchy(experiment_tags=None,get_html=False):
         experiment_lookup[u] = matching_tasks.tolist()
 
     triples = concept_node_triples(image_dict=experiment_lookup,save_to_file=False,lookup_key_type="task")
+
+    # Experiments not in the tree get added to parent node 1
+    undefined_experiments = [x[0]["exp_id"] for x in experiments if x[0]["exp_id"] not in triples.name.tolist()]
+    undefined_experiments.sort()
+
+    last_defined_node = [x for x in triples.id.tolist() if re.search("node_",x)]
+    last_defined_node.sort()
+    last_defined_node = int(last_defined_node[-1].replace("node_",""))
+    idx = triples.index.tolist()[-1]+1
+    for i in range(idx,idx+len(undefined_experiments)):
+        undefined_experiment = undefined_experiments.pop(0)
+        triples.loc[i] = ["node_%s" %(last_defined_node+1),1,undefined_experiment]
+        last_defined_node+=1
 
     # We want to add meta data for the experiments
     meta_data = dict()

@@ -37,6 +37,9 @@ def get_json(nodes):
     queue = [child for child in nodes if expression.search(child.nid)]
     remainder = [child for child in nodes if child not in queue]
 
+    # We will keep a list of nodes with no parents
+    missing_parents = []
+
     while queue:
         current = queue.pop()
         # Get json of node
@@ -52,6 +55,11 @@ def get_json(nodes):
         for parent in parents:
             if parent != "None" and parent in tree:
                 tree[parent]["children"].append(node)
+            else:
+                missing_parents.append(node)
+
+    # Only keep nodes (experiments) missing parents
+    missing_parents = [x for x in missing_parents if re.search("node_",x["nid"])]
 
     while remainder:
         current = remainder.pop()        
@@ -67,8 +75,11 @@ def get_json(nodes):
     root = tree["1"]
     new_children = []
     for child in root["children"]:
-        if child["children"]:
+        if child["children"]: # remove empty concepts
             new_children.append(child)
+
+    # Add experiments on that don't have concept parents
+    new_children = new_children + missing_parents
 
     root["children"] = new_children
 
@@ -207,12 +218,16 @@ def make_tree_from_triples(triples,output_html=False,meta_data=None,delim="\t",p
         html_snippet = ''
         # We will save a dictionary of base (experiment) nodes
         experiment_nodes = dict()
+        # Save a list of nodes without concept_parents
+        orphan_experiment_nodes = dict()
         for child in graph["children"]:
             # For each child, we will tag base nodes with parent ids
             parent_ids = [child["nid"]]
             # This first level cannot be a base node, so we don't check.
             # Update the experiment_nodes lookup with experiment nodes at this level
             exp_nodes = [x for x in child["children"] if re.search("node_",x["nid"])]
+            if len(exp_nodes) == 0:
+                orphan_experiment_nodes = add_orphan_experiment_nodes(orphan_experiment_nodes,child)
             experiment_nodes = add_experiment_nodes(experiment_nodes,exp_nodes,parent_ids)
             # Do we have all base (experiment) nodes?
             if len(exp_nodes)==len(child["children"]):
@@ -228,6 +243,8 @@ def make_tree_from_triples(triples,output_html=False,meta_data=None,delim="\t",p
                     sub_parent_ids.append(other_node["nid"])
                     # Update the experiment_nodes lookup with experiment nodes at this level
                     exp_nodes = [x for x in other_node["children"] if re.search("node_",x["nid"])]
+                    if len(exp_nodes) == 0:
+                        orphan_experiment_nodes = add_orphan_experiment_nodes(orphan_experiment_nodes,other_node)
                     experiment_nodes = add_experiment_nodes(experiment_nodes,exp_nodes,sub_parent_ids)
                     # Do we have all base (experiment) nodes?
                     if len(exp_nodes)==len(other_node["children"]):
@@ -242,6 +259,8 @@ def make_tree_from_triples(triples,output_html=False,meta_data=None,delim="\t",p
                             last_parent_ids.append(last_node["nid"])
                             # One last final go to update experiment nodes
                             exp_nodes = [x for x in last_node["children"] if re.search("node_",x["nid"])]
+                            if len(exp_nodes) == 0:
+                                orphan_experiment_nodes = add_orphan_experiment_nodes(orphan_experiment_nodes,last_node)
                             experiment_nodes = add_experiment_nodes(experiment_nodes,exp_nodes,last_parent_ids)
                             if len(exp_nodes)==len(last_node["children"]):
                                 html_snippet = '%s<a><li id="accord_%s" class="accord">%s</li></a>' %(html_snippet,str(last_node["nid"]),str(last_node["name"]))
@@ -267,7 +286,8 @@ def make_tree_from_triples(triples,output_html=False,meta_data=None,delim="\t",p
         # Now we will generate html for each of the experiments, and save a lookup by concept id as we go
         concept_lookup = dict()
         html_experiments = ''
-        for experiment_node,node in experiment_nodes.iteritems():
+        #orphan_experiment_nodes.update(experiment_nodes)
+        for experiment_node,node in orphan_experiment_nodes.iteritems():
             # If we have meta data, present each as a little paragraph.
             meta_snippet=''
             if meta_data != None:
@@ -287,7 +307,7 @@ def make_tree_from_triples(triples,output_html=False,meta_data=None,delim="\t",p
                 else:
                     concept_lookup[str(parent)] = [experiment_node]
         # All experiments
-        concept_lookup["all_experiments"] = experiment_nodes.keys()
+        concept_lookup["all_experiments"] = orphan_experiment_nodes.keys()
 
         # Plug everything into the template
         template = get_template("%s/templates/experiments_categories.html" %get_installdir())
@@ -314,4 +334,15 @@ def add_experiment_nodes(experiment_node_dict,new_nodes,parent_ids):
         else:
             experiment_node_dict[new_node["name"]] = new_node
             experiment_node_dict[new_node["name"]]["parents"] = parent_ids  
+    return experiment_node_dict
+
+
+def add_orphan_experiment_nodes(experiment_node_dict,new_node):
+    '''add_experiment_nodes updates an experiment_nodes dictionary with new nodes
+    :param experiment_node_dict: dictionary to be updated, nid is key, node dictionary is value
+    :param new_node: orphan node to update dictionary
+    '''
+    if new_node["name"] not in experiment_node_dict and re.search("node_",new_node["nid"]):
+        experiment_node_dict[new_node["name"]] = new_node
+        experiment_node_dict[new_node["name"]]["parents"] = ["1"]  
     return experiment_node_dict
