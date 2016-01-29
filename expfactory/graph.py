@@ -286,7 +286,7 @@ def make_tree_from_triples(triples,output_html=False,meta_data=None,delim="\t",p
         # Now we will generate html for each of the experiments, and save a lookup by concept id as we go
         concept_lookup = dict()
         html_experiments = ''
-        #orphan_experiment_nodes.update(experiment_nodes)
+        orphan_experiment_nodes.update(experiment_nodes)
         for experiment_node,node in orphan_experiment_nodes.iteritems():
             # If we have meta data, present each as a little paragraph.
             meta_snippet=''
@@ -306,6 +306,10 @@ def make_tree_from_triples(triples,output_html=False,meta_data=None,delim="\t",p
                     concept_lookup[str(parent)] = holder
                 else:
                     concept_lookup[str(parent)] = [experiment_node]
+            # If the node is an experiment and has only root parent, add to lookup
+            if len(node["parents"])==1:
+                if node["parents"][0]=="1":
+                    concept_lookup[node["nid"]] = [experiment_node]
         # All experiments
         concept_lookup["all_experiments"] = orphan_experiment_nodes.keys()
 
