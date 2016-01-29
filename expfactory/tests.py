@@ -120,8 +120,6 @@ def circle_ci_test(experiment_tags,web_folder,delete=True,pause_time=500):
         
 
 def key_lookup(keyid):
-    if isinstance(keyid,str) or isinstance(keyid,unicode):
-        return str(keyid.lower())
     lookup = {13:Keys.ENTER,
              8:Keys.BACKSPACE,
              9:Keys.TAB,
@@ -205,7 +203,14 @@ def key_lookup(keyid):
              122:Keys.F11,
              123:Keys.F12,
              186:Keys.SEMICOLON,
-             187:Keys.EQUALS}
+             187:Keys.EQUALS,
+             "leftarrow":Keys.LEFT,
+             "rightarrow":Keys.RIGHT,
+             "uparrow":Keys.UP,
+             "downarrow":Keys.DOWN}
+    if keyid not in lookup.keys():
+        if isinstance(keyid,str) or isinstance(keyid,unicode):
+            return str(keyid.lower())
     return lookup[keyid]
 
 def experiment_robot_web(experimentweb_base,experiment_tags=None,port=None,pause_time=100):
@@ -289,15 +294,15 @@ def test_block(browser,experiment,pause_time=0,wait_time=0):
         for p in range(number_pages):
             if "cont_key" in block:
                 continue_key = key_lookup(block["cont_key"][0])
-            elif 'key_forward' in block:
-                continue_key = key_lookup(block["key_forward"])
-                browser.find_element_by_tag_name('html').send_keys(continue_key)
             elif "show_clickable_nav" in block:
                 if block["show_clickable_nav"] == True:  
                     try:  
                         browser.execute_script("document.querySelector('#jspsych-instructions-next').click();")
                     except WebDriverException as e:
                         pass
+            elif 'key_forward' in block:
+                continue_key = key_lookup(block["key_forward"])
+                browser.find_element_by_tag_name('html').send_keys(continue_key)
             # Give time for page to reload 
             sleep(1)
 
