@@ -43,7 +43,7 @@ Which will open up a view in your browser. You can then click "battery." The web
 * C. selection of local (folder) experiment, or deployment to AWS.
 * D. selection of experiments
 
-More `details are provided <http://expfactory.readthedocs.org/en/latest/deployment.rst>_` about choosing a deployment, and configuring your battery.
+More `details are provided <http://expfactory.readthedocs.org/en/latest/deployment.html>`_ about choosing a deployment, and configuring your battery.
 
 
 Expfactory-docker
