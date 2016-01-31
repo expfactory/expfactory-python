@@ -123,7 +123,7 @@ def validate():
             prepare_vm(battery_dest=app.tmpdir,fields=fields,vm_type=fields["deploychoice"])
 
         # Get valid experiments to present to user
-        valid_experiments = app.experiments
+        valid_experiments = [{"exp_id":e[0]["exp_id"],"name":e[0]["name"]} for e in app.experiments]
 
         return render_template('experiments.html',
                                 experiments=str(valid_experiments),
@@ -164,8 +164,8 @@ def select():
 
         # Option 2 or 3: Virtual machine (vagrant) or cloud (aws)
         else:
-            specify_experiments(battery_dest=tmpdir,experiments=selected_experiments)
-            battery_dest = tmpdir 
+            specify_experiments(battery_dest=app.tmpdir,experiments=selected_experiments)
+            battery_dest = app.tmpdir 
 
         # Clean up
         clean_up("%s/experiments"%(app.tmpdir))
