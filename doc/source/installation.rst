@@ -1,7 +1,7 @@
 Installation
 ============
 
-To install the latest version, use pip:
+expfactory-python is the controller of all pieces of this infrastructure. You can install it with pip, either the development version: To install the latest version, use pip:
 
 ::
 
@@ -9,7 +9,8 @@ To install the latest version, use pip:
 
 
 
-To install a (possibly older) version:
+
+To install the current release:
 
 
 ::
@@ -24,6 +25,15 @@ Please note that expfactory was developed with python 2.7 and has not been teste
 ::
 
       Installing expfactory script to /usr/local/bin
+
+
+
+You can also use the module as a standard python module, meaning importing functions into scripts, for example:
+
+::
+
+     from expfactory.battery import generate
+
 
 
 
@@ -48,21 +58,21 @@ You can also specify a port:
       expfactory --port=8088
 
 
-To preview a folder (experiment) you are working on, you can cd into that folder, and use the `--preview` command:
+To run (or preview) a folder (experiment) you are working on, you can cd into that folder, and use the `--run` command:
 
 
 ::
 
 
       cd simple_experiment
-      expfactory --preview
+      expfactory --run
 
 
 You can also specify the folder as an argument:
 
 ::
 
-      expfactory --preview --folder /home/vanessa/Desktop/simple_rt
+      expfactory --run --folder /home/vanessa/Desktop/simple_rt
       
 
 .. image:: _static/img/api/webinterface.png

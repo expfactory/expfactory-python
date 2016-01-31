@@ -544,6 +544,14 @@ or to specify a folder
       expfactory --test --folder /home/vanessa/Desktop/simple_rt
 
 
+Finally, if you add a new experiment, you will need to add a line to test it in the circle.yml. You can test the circle.yml before pushing as follows:
+
+:: 
+
+     from expfactory.tests import validate_circle_yml
+     validate_circle_yml('expfactory-experiments')
+
+
 
 
 Continuous Integration
