@@ -58,7 +58,7 @@ def compute_contrast(df, dv, iv):
     iv_vec = df[iv]
     dv_vec = df[dv]
     if (check_numeric(iv_vec) and check_numeric(dv_vec)):
-        rs = stats.stats.pearson(iv_vec,dv_vec)
+        rs = stats.stats.pearson(iv_vec,dv_vec) # most results can be computed with regression. These are stand ins
         sns.jointplot(iv,dv, data = df)
     else:
         iv_labels = pd.unique(iv_vec)
@@ -66,6 +66,6 @@ def compute_contrast(df, dv, iv):
         if (len(iv_labels) == 2):
             vals1 = df[iv_vec == iv_labels[0]][dv]
             vals2 = df[iv_vec == iv_labels[1]][dv]
-            rs = stats.ttest_ind(vals1,vals2)
+            rs = stats.ttest_ind(vals1,vals2) 
         sns.boxplot(data = df, x = iv, y = dv)
     return rs
