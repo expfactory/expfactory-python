@@ -3,7 +3,7 @@ analysis/stats.py: part of expfactory package
 stats functions
 
 '''
-
+from expfactory.analysis.maths import check_numeric
 import scipy.stats as stats
 import seaborn as sns
 import pandas
