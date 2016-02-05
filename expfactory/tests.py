@@ -54,14 +54,23 @@ def validate_experiment_tag(experiment_folder):
         if validate(contender,warning=False) == True:
             experiment = load_experiment(contender)
             tag = experiment[0]["exp_id"]
+
+            # Experiment MUST contain experiment.js to run main experiment
             print "TESTING %s for exp_id in experiment.js..." %tag
+            assert_equal("experiment.js" in experiment[0]["run"],True)
+
             if "experiment.js" in experiment[0]["run"]:
                 experiment_js_file = open("%s/%s/experiment.js" %(experiment_folder,tag),"r") 
-                experiment_js = "".join([x.strip("\n").replace("'","").replace('"',"").replace(" ","") for x in experiment_js_file.readlines()])
+                experiment_js_list = [x.strip("\n").replace("'","").replace('"',"").replace(" ","") for x in experiment_js_file.readlines()]
                 experiment_js_file.close()
+                experiment_js = "".join(experiment_js_list)
+                [x]
                 has_exp_id = re.search("exp_id:%s" %tag,experiment_js) != None or re.search("exp_id=%s" %tag,experiment_js) != None 
                 assert_equal(has_exp_id,True)
-              
+                # Ensure all are formatted correctly
+                exp_id_instances = [re.findall("exp_id[=|:].+",x) for x in experiment_js_list if len(re.findall("exp_id[=|:].+,",x)) != 0]
+                for exp_id_instance in exp_id_instances:
+                    assert_equal(re.search(tag,exp_id_instance[0])!=None,True) 
 
 def validate_circle_yml(experiment_repo):
     '''validate_circle_yml will make sure that all experiment folders in a repo are tested with circle_ci_test in the circle.yml
