@@ -31,3 +31,28 @@ def load_result(result):
             print "File extension not recognized, must be .csv (JsPsych single experiment export) or tsv (expfactory-docker) export." 
  
     return df
+
+
+def clean_df(df, drop_columns = None,drop_na=True):
+    '''clean_df returns a pandas dataset after removing a set of default generic 
+    columns. Optional variable drop_cols allows more columns to be dropped
+    while the columns in kept_cols will be kept in the final data frame
+    :df: a pandas dataframe, loaded via load_result
+    :param drop_columns: a list of columns to drop. If not specified, a default list will be used from utils.get_dropped_columns()
+    '''
+    # Drop unnecessary columns
+    if drop_columns == None:
+        drop_columns = get_drop_columns()   
+    df.drop(drop_columns, axis=1, inplace=True, errors='ignore')
+    drop_trial_ids = ['welcome', 'instruction', 'attention_check','end']
+    # Drop unnecessary columns, all null rows
+    df = df.query('trial_id not in  @drop_trial_ids')
+    if drop_na == True:
+        df = df.dropna()
+    return df
+
+
+def get_drop_columns():
+    return ['view_history', 'stimulus', 'trial_index', 'internal_node_id', 
+            'time_elapsed', 'exp_id', 'stim_duration', 'block_duration', 
+            'feedback_duration','timing_post_trial']

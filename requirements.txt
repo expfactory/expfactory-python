@@ -4,3 +4,4 @@ flask-restful
 gitpython
 selenium
 cognitiveatlas
+numexpr
