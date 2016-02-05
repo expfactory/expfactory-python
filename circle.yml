@@ -21,5 +21,5 @@ dependencies:
     - source activate condaenv
     - $HOME/miniconda2/bin/pip install setuptools
     - $HOME/miniconda2/bin/conda install --yes pip numpy nose pandas numexpr scipy
-    - $HOME/miniconda2/bin/pip install flask flask-restful gitpython selenium cognitiveatlas
+    - $HOME/miniconda2/bin/pip install flask flask-restful gitpython selenium cognitiveatlas seaborn
     - $HOME/miniconda2/bin/conda install --yes -c dan_blanchard python-coveralls
