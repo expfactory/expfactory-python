@@ -69,7 +69,11 @@ def validate_experiment_tag(experiment_folder):
                 assert_equal(has_exp_id,True)
                 # Ensure all are formatted correctly
                 exp_id_instances = [re.findall("exp_id[=|:].+",x) for x in experiment_js_list if len(re.findall("exp_id[=|:].+,",x)) != 0]
-                for exp_id_instance in exp_id_instances:
+                line_numbers = [x+1 for x in range(len(experiment_js_list)) if len(re.findall("exp_id[=|:].+,",experiment_js_list[x])) != 0]
+                for e in range(len(exp_id_instances)):
+                    exp_id_instance = exp_id_instances[e]
+                    line_number = line_numbers[e]
+                    print "Checking %s on line %s..." %(exp_id_instance[0],line_number)
                     assert_equal(re.search(tag,exp_id_instance[0])!=None,True) 
 
 def validate_circle_yml(experiment_repo):
