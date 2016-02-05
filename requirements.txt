@@ -2,6 +2,7 @@ numpy
 flask
 flask-restful
 gitpython
+scipy
 selenium
 cognitiveatlas
 numexpr
