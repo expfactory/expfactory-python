@@ -138,16 +138,17 @@ def get_stylejs(experiment,url_prefix=""):
             if ext == "js":
                 js = "%s\n<script src='%sstatic/experiments/%s/%s'></script>" %(js,url_prefix,tag,script)
             elif ext == "css":
-                css = "%s\n<link rel='stylesheet' href='%sstatic/experiments/%s/%s'>" %(css,url_prefix,tag,script)
+                css = "%s\n<link rel='stylesheet' type='text/css' href='%sstatic/experiments/%s/%s'>" %(css,url_prefix,tag,script)
 
         # Do we have a battery relative path?
         else:    
             if ext == "js":
                 js = "%s\n<script src='%s%s'></script>" %(js,url_prefix,script)
             elif ext == "css":
-                css = "%s\n<link rel='stylesheet' href='%s%s'>" %(css,url_prefix,script)
+                css = "%s\n<link rel='stylesheet' type='text/css' href='%s%s'>" %(css,url_prefix,script)
 
     return css,js
+
 
 def get_jspsych_init(experiment,deployment="local"):
     '''get_jspsych_init

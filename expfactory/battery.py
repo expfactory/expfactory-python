@@ -7,6 +7,7 @@ from expfactory.vm import custom_battery_download, get_jspsych_init, get_stylejs
 from expfactory.experiment import get_experiments, load_experiment
 from expfactory.utils import copy_directory, get_template, \
      sub_template, get_installdir, save_template
+import numpy
 import os
 import re
 
@@ -61,17 +62,27 @@ def template_experiments(battery_dest,battery_repo,valid_experiments,template_fi
     # Generate run template, make substitutions
     if template_file == None:
         template_file = "%s/static/js/load_experiments.js" %(battery_repo)
+    exp_template = "%s/templates/exp.html" %(battery_repo)
     load_template = get_template(template_file)
+    exp_template = get_template(exp_template)
     valid_experiments = move_experiments(valid_experiments,battery_dest)
-    loadjs = get_load_js(valid_experiments) 
+    loadstatic = get_load_static(valid_experiments) 
     concatjs = get_concat_js(valid_experiments) 
     timingjs = get_timing_js(valid_experiments)
     load_template = sub_template(load_template,"[SUB_EXPERIMENTCONCAT_SUB]",concatjs)
-    load_template = sub_template(load_template,"[SUB_EXPERIMENTLOAD_SUB]",loadjs)
+    exp_template = sub_template(exp_template,"[SUB_EXPERIMENTSTATIC_SUB]",loadstatic)
     load_template = sub_template(load_template,"[SUB_EXPERIMENTTIMES_SUB]",str(timingjs)) 
+
+    # load experiment scripts
     template_output = "%s/static/js/load_experiments.js" %(battery_dest)
     filey = open(template_output,'w')
     filey.writelines(load_template)
+    filey.close()    
+
+    # exp.html template
+    exp_template_output = "%s/templates/exp.html" %(battery_dest)
+    filey = open(exp_template_output,'w')
+    filey.writelines(exp_template)
     filey.close()    
 
 
@@ -131,17 +142,20 @@ def get_config():
     return config
 
 
-def get_load_static(valid_experiments,url_prefix=""):
+def get_load_static(valid_experiments,url_prefix="",unique=True):
     '''get_load_static
     return the scripts and styles as <link> and <script> to embed in a page directly
+    :param unique: return only unique scripts [default=True]
     '''
     loadstring = ""
     for valid_experiment in valid_experiments:
         experiment = load_experiment(valid_experiment)
         css,js = get_stylejs(experiment,url_prefix=url_prefix)
         loadstring = "%s%s%s" %(loadstring,js,css)        
+    if unique == True:
+        scripts = loadstring.split("\n")
+        loadstring = "\n".join(numpy.unique(scripts).tolist())
     return loadstring
-
 
 def get_experiment_run(valid_experiments,deployment="local"):
     '''get_experiment_run

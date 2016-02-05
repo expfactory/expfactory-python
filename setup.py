@@ -9,7 +9,7 @@ setup(
     name="expfactory",
 
     # Version number (initial):
-    version="1.8.7",
+    version="1.8.9",
 
     # Application author details:
     author="poldracklab",
@@ -29,7 +29,7 @@ setup(
     description="Python module for managing experiment factory experiments, for deployment to a psiturk battery or docker container.",
     keywords='psiturk behavior neuroscience experiment factory docker',
 
-    install_requires = ['numpy','Flask','gitpython','flask-restful','selenium','cognitiveatlas'],
+    install_requires = ['numpy','Flask','gitpython','flask-restful','selenium','cognitiveatlas','scipy','numexpr','seaborn'],
 
     entry_points = {
         'console_scripts': [
