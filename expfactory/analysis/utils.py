@@ -35,8 +35,7 @@ def load_result(result):
 
 def clean_df(df, drop_columns = None,drop_na=True):
     '''clean_df returns a pandas dataset after removing a set of default generic 
-    columns. Optional variable drop_cols allows more columns to be dropped
-    while the columns in kept_cols will be kept in the final data frame
+    columns. Optional variable drop_cols allows a different set of columns to be dropped
     :df: a pandas dataframe, loaded via load_result
     :param drop_columns: a list of columns to drop. If not specified, a default list will be used from utils.get_dropped_columns()
     '''
