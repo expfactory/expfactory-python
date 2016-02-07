@@ -390,6 +390,10 @@ def test_block(browser,experiment,pause_time=0,wait_time=0):
             except WebDriverException as e:
                 pass
 
+    elif "key_answer" in block:
+        continue_key = get_continue_key(block,block_tag="key_answer")
+        browser.find_element_by_tag_name('html').send_keys(continue_key)
+
     elif len(block) == 0:
         # Check for fullscreen
         fullscreen = browser.execute_script("return jsPsych.initSettings().fullscreen;")
@@ -408,12 +412,14 @@ def check_errors(browser):
         assert_equal(log_entry["level"] in ["WARNING","INFO"],True)
 
 
-def get_continue_key(block):
+def get_continue_key(block,block_tag="cont_key"):
+    if not isinstance(block[block_tag],list):
+        block[block_tag] = [block[block_tag]]
     # Not specifying a key means "any key"
-    if len(block["cont_key"]) == 0:
+    if len(block[block_tag]) == 0:
         continue_key = Keys.ENTER
     else:
-        continue_key = key_lookup(block["cont_key"][0])
+        continue_key = key_lookup(block[block_tag][0])
     return continue_key
 
 
