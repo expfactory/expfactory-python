@@ -23,6 +23,7 @@ class TestAnalysis(unittest.TestCase):
         self.tmpdir = tempfile.mkdtemp()
         self.csv = os.path.abspath("%s/testing/data/results/stroop_results.csv" %self.pwd)
         self.json = os.path.abspath("%s/testing/data/results/jsPsychData.json" %self.pwd)
+        self.tsv = os.path.abspath("%s/testing/data/results/results_df.tsv" %self.pwd)
 
     def tearDown(self):
         shutil.rmtree(self.tmpdir)
@@ -41,6 +42,8 @@ class TestAnalysis(unittest.TestCase):
         df = load_result(self.csv)
         self.assertTrue(isinstance(df,pandas.DataFrame))
         df = load_result(self.json)
+        self.assertTrue(isinstance(df,pandas.DataFrame))
+        df = load_result(self.tsv)
         self.assertTrue(isinstance(df,pandas.DataFrame))
 
     def test_clean_df(self):

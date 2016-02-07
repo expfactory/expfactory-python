@@ -96,11 +96,14 @@ def validate_circle_yml(experiment_repo):
     print "All experiments found in circle.yml for testing!"
 
 
-def circle_ci_test(experiment_tags,web_folder,delete=True,pause_time=500):
+def circle_ci_test(experiment_tags,web_folder,experiment_repo=None,delete=True,pause_time=500):
     '''circle_ci_test
     Deploy experiment testing robot, requires generation of web folder, and can be deleted on finish.
     :param experiment_tags: list of experiment folders (exp_id variables) to test
+    :param web_folder: output web folder to generate experiment web. Will be created if does not exist
+    :param experiment_repo: folder with experiments to test. If None, will pull from master branch
     :param delete: delete experiment folders when finished
+    :param pause_time: The time to pause between experiments, in addition to post trial times
     '''
 
     if isinstance(experiment_tags,str):
@@ -126,7 +129,7 @@ def circle_ci_test(experiment_tags,web_folder,delete=True,pause_time=500):
         changed_experiments = [e for e in experiment_tags if e in changed_experiments]
         
     if len(changed_experiments) > 0:
-        generate_experiment_web(web_folder) 
+        generate_experiment_web(web_folder,experiment_folder=experiment_repo) 
         experiment_robot_web(web_folder,experiment_tags=changed_experiments)
     else:
         print "Skipping experiments %s, no changes detected." %(",".join(experiment_tags))
@@ -245,7 +248,7 @@ def experiment_robot_web(experimentweb_base,experiment_tags=None,port=None,pause
 
     # Set up a web browser
     os.chdir(experimentweb_base)
-    browser = get_browser() # will need to figure out how to do this on circle
+    browser = get_browser() 
     browser.implicitly_wait(3) # if error, will wait 3 seconds and retry
     browser.set_page_load_timeout(10)
 
@@ -306,7 +309,7 @@ def test_block(browser,experiment,pause_time=0,wait_time=0):
         number_pages = len(block["pages"])
         for p in range(number_pages):
             if "cont_key" in block:
-                continue_key = key_lookup(block["cont_key"][0])
+                continue_key = get_continue_key(block)
             elif "show_clickable_nav" in block:
                 if block["show_clickable_nav"] == True:  
                     try:  
@@ -345,7 +348,7 @@ def test_block(browser,experiment,pause_time=0,wait_time=0):
 
 
     elif "cont_key" in block:
-        continue_key = key_lookup(block["cont_key"][0])
+        continue_key = get_continue_key(block)
         browser.find_element_by_tag_name('html').send_keys(continue_key)
 
     elif "choices" in block:
@@ -404,11 +407,23 @@ def check_errors(browser):
     for log_entry in log:
         assert_equal(log_entry["level"] in ["WARNING","INFO"],True)
 
+
+def get_continue_key(block):
+    # Not specifying a key means "any key"
+    if len(block["cont_key"]) == 0:
+        continue_key = Keys.ENTER
+    else:
+        continue_key = key_lookup(block["cont_key"][0])
+    return continue_key
+
+
 def get_browser():
     return webdriver.Firefox()
+
     
 def get_page(browser,url):
     browser.get(url)
+
 
 # Run javascript and get output
 def run_javascript(browser,code):
