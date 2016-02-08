@@ -154,7 +154,10 @@ def get_load_static(valid_experiments,url_prefix="",unique=True):
         loadstring = "%s%s%s" %(loadstring,js,css)        
     if unique == True:
         scripts = loadstring.split("\n")
-        loadstring = "\n".join(numpy.unique(scripts).tolist())
+        scripts_index = numpy.unique(scripts,return_index=True)[1]
+        # This ensures that scripts are loaded in same order as specified in config.json
+        unique_scripts = [scripts[idx] for idx in sorted(scripts_index)]
+        loadstring = "\n".join(unique_scripts)
     return loadstring
 
 def get_experiment_run(valid_experiments,deployment="local"):
