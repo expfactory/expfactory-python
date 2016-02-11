@@ -360,7 +360,9 @@ def test_block(browser,experiment,pause_time=0,wait_time=0):
                 browser.find_element_by_tag_name('html').send_keys(continue_key)
             except ValueError:
                 print "ValueError, %s found as choices." %(choices)
-        elif "type" in block:
+        else:
+                browser.find_element_by_tag_name('html').send_keys(Keys.ENTER)
+        if "type" in block:
             if "type" == "writing":
                 browser.execute_script("document.querySelector('#jspsych-writing-box').text = 'beep boop';")
 
