@@ -21,6 +21,7 @@
         
         <div class="toolbar">
             <button id="homeBtn" class="btn btn-default">Home</button>
+            <button id="cogatBtn" class="btn btn-default">Concept View</button>
         </div>
         [[SUB_TABLE_SUB]]        
     </div>
@@ -35,6 +36,7 @@
     <script type="text/javascript">
         var $table = $('#fresh-table'),
             $homeBtn = $('#homeBtn'), 
+            $cogatBtn = $('#cogatBtn'), 
             full_screen = false,
             window_height;
             
@@ -76,6 +78,9 @@
                 document.location = "/";
             });
         
+            $cogatBtn.click(function () {
+                document.location = "/experiments.html";
+            });
             
             $(window).resize(function () {
                 $table.bootstrapTable('resetView');
