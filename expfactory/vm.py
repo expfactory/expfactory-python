@@ -182,7 +182,7 @@ def get_jspsych_init(experiment,deployment="local"):
                          default_inits[deployment][jspsych_var] = holder
                     else:
                          default_inits[deployment][jspsych_var] = [jspsych_val]
-                elif deployment in ["docker","docker-preview"]:
+                elif deployment in ["docker","docker-preview","docker-local"]:
                     if jspsych_var not in default_inits[deployment]:
                          default_inits[deployment][jspsych_var] = [jspsych_val]
 
