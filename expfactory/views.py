@@ -57,7 +57,6 @@ def preview_experiment(folder=None,battery_folder=None,port=None):
         httpd.server_close()
         shutil.rmtree(tmpdir)
 
-
 def generate_experiment_web(output_dir,experiment_folder=None,make_table=True,
                             make_index=True,make_experiments=True,make_data=True):
     '''get_experiment_table
@@ -139,8 +138,7 @@ def generate_experiment_web(output_dir,experiment_folder=None,make_table=True,
 
     # Copy updated valid experiments into our experiment directory
     battery_repo = "%s/battery" %(tmpdir)
-    experiment_repo = "%s/experiments" %(tmpdir)
-    valid_experiments = ["%s/%s" %(experiment_repo,x[0]["exp_id"]) for x in experiments]
+    valid_experiments = ["%s/%s" %(experiment_folder,x[0]["exp_id"]) for x in experiments]
     template_experiments(output_dir,battery_repo,valid_experiments)
 
     # If the user wants to make a table
