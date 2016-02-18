@@ -4,6 +4,9 @@ Deployments
 Psiturk
 -------
 
+You should proceed with this steps after after `installation <http://expfactory.readthedocs.org/en/latest/installation.html>`_ of the Experiment Factory command line tool.
+
+
 The Experiment Factory Application Portal
 .........................................
 
@@ -16,7 +19,7 @@ To run the executable to open up a web interface to design your psiturk experime
 
 .. image:: _static/img/getting-started/0running.png
 
-This will open up your browser to the experiment factory portal. From here you can click on `battery` to start design of your psiturk experiment battery. You can also use this tool to serve a `RESTful API of current experiments <http://expfactory.readthedocs.org/en/latest/api.html>_`.
+This will open up your browser to the experiment factory portal. From here you can click on `battery` to start design of your psiturk experiment battery. You can also use this tool to serve a `RESTful API of current experiments <http://expfactory.readthedocs.org/en/latest/api.html>`_.
 
 .. image:: _static/img/api/webinterface.png
 
@@ -84,8 +87,7 @@ If you want a deployment that, for example, your lab could use to run many parti
 
 Before getting started, you should familiarize yourself with `psiturk <https://psiturk.org/quick_start/>`_. Likely you will be interested in setting up an experiment on your local machine, and so you should follow the installation instructions and go through the entire demo to make sure things are working properly.
 
-
-Choosing "folder" will generate a local experiment, and either of the virtual machine options will produce a Vagrantfile that can be run to deploy the Virtual Machine. Specific instructions for a local vagrant or vagrant-aws are provided. Note that you can use the VagrantfileLocal or VagrantfileAWS file (renamed to Vagrantfile) as is from the `virtual machine <http://www.github.com/expfactory/expfactory-vm>`_ repo to generate a battery with all available, valid experiments. We expect to add docker deployment as an option.
+Choosing "folder" will generate a local experiment, and either of the virtual machine options will produce a Vagrantfile that can be run to deploy the Virtual Machine. Specific instructions for a local vagrant or vagrant-aws are provided. Note that you can use the VagrantfileLocal or VagrantfileAWS file (renamed to Vagrantfile) as is from the `virtual machine <http://www.github.com/expfactory/expfactory-vm>`_ repo to generate a battery with all available, valid experiments.
 
 
 D. Experiment selection
@@ -215,4 +217,4 @@ A few important notes:
 Expfactory-docker
 -----------------
 
-More details coming soon.
+The Experiment Factory docker is a set of containers that can be run locally, or again on the cloud. The entire application comes packaged in a Docker image, meaning that installation and deployment of experiments happens in a web interface deployed by the image. We plan to offer experiment deployment as a service at `expfactory.org <http://www.expfactory.org>`_ and encourage you to `sign up <http://www.expfactory.org/signup>`_ to express interest. You can also `deploy our Docker infrastructure <http://www.expfactory.org/signup>`_ on your own server, however experience with docker and cloud computing is required.

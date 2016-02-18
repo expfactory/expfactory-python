@@ -473,7 +473,6 @@ style.css
 '''''''''
 Is the main style file for the experiment, which will be copied into the battery style folder and linked appropriately. Images that are defined in this file should have paths relative to the images folder. `(required)`.
 
-We will be added interactive functions and documentation to generate a new experiment shortly.
 
 
 Testing your Experiment
