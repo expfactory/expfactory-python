@@ -272,7 +272,7 @@ def get_cognitiveatlas_hierarchy(experiment_tags=None,get_html=False):
         tree = make_tree_from_triples(triples,output_html=False) 
     return tree
 
-def tmp_experiment(folder,battery_folder):
+def tmp_experiment(folder=None,battery_folder=None):
     '''generate temporary directory with experiment
     :param folder: full path to experiment folder to preview. If none specified, PWD is used
     :param battery_folder: full path to battery folder to use as a template. If none specified, the expfactory-battery repo will be used.
