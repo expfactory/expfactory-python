@@ -47,6 +47,9 @@ def notvalid(reason):
 def dowarning(reason):
     print reason
 
+def get_valid_templates():
+    return ['jspsych','survey']
+
 def get_acceptable_values(package_name):
     acceptable_values = dict()
     acceptable_values["jspsych"] =["display_element",
@@ -91,6 +94,7 @@ def validate(experiment_folder=None,warning=True):
     if len(meta)>1:
         return notvalid("%s: config.json has length > 1, not valid." %(experiment_folder))
     fields = get_validation_fields()
+    valid_templates = get_valid_templates()
 
     for field,value,ftype in fields:
 
@@ -122,8 +126,6 @@ def validate(experiment_folder=None,warning=True):
             if not isinstance(meta[0][field],ftype):
                 return notvalid("%s: field %s must be %s" %(experiment_name,field,ftype))
             # Is an experiment.js defined
-            if "experiment.js" not in meta[0][field]:
-                return notvalid("%s: experiment.js is not defined in %s" %(experiment_name,field))
             # Is each script in the list a string?
             for script in meta[0][field]:
                 # If we have a single file, is it in the experiment folder?
@@ -150,10 +152,24 @@ def validate(experiment_folder=None,warning=True):
                 if warning == True:
                     dowarning("WARNING: config.json is missing value for field %s: %s" %(field,experiment_name))
 
-        # Javascript template
+        # Check the experiment template, currently valid are jspsych and survey
         if field == "template":
-            if meta[0][field]!="jspsych":
-                return notvalid("%s: we currently only support jspsych experiments." %(experiment_name,script))
+            if meta[0][field] not in valid_templates:
+                return notvalid("%s: we currently only support %s experiments." %(experiment_name,",".join(valid_templates)))
+
+            # Jspsych javascript experiment
+            if meta[0][field] == "jspsych":
+                if "run" in meta[0]:
+                    if "experiment.js" not in meta[0]["run"]:
+                        return notvalid("%s: experiment.js is not defined in run" %(experiment_name))
+                else:
+                    return notvalid("%s: config.json is missing required field run" %(experiment_name))
+
+            # Material Design light survey
+            elif meta[0][field] == "survey":
+                if not os.path.exists("%s/survey.tsv" %(experiment_folder)):
+                    return notvalid("%s: required survey.tsv for template survey not found." %(experiment_name))
+
 
         # Validation for deployment_variables
         if field == "deployment_variables":
