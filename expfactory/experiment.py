@@ -132,7 +132,10 @@ def validate(experiment_folder=None,warning=True):
                 if len(script.split("/")) == 1:
                     if not os.path.exists("%s/%s" %(experiment_folder,script)):
                         return notvalid("%s: %s is specified in config.json but missing." %(experiment_name,script))
-
+                # Do we have an external script? It must be https
+                if re.search("http",script) and not re.search("https",script):
+                    return notvalid("%s: external script %s must be https." %(experiment_name,script))
+                
 
         # Below is for required parameters
         if value == 1:
