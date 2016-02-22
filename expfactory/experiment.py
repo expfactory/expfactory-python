@@ -47,6 +47,9 @@ def notvalid(reason):
 def dowarning(reason):
     print reason
 
+def get_valid_templates():
+    return ['jspsych','survey']
+
 def get_acceptable_values(package_name):
     acceptable_values = dict()
     acceptable_values["jspsych"] =["display_element",
@@ -59,6 +62,8 @@ def get_acceptable_values(package_name):
                                    "skip_load_check",
                                    "fullscreen",
                                    "default_iti"]
+    acceptable_values["survey"] = ["fullscreen"]
+
     return acceptable_values[package_name]
 
 
@@ -91,6 +96,7 @@ def validate(experiment_folder=None,warning=True):
     if len(meta)>1:
         return notvalid("%s: config.json has length > 1, not valid." %(experiment_folder))
     fields = get_validation_fields()
+    valid_templates = get_valid_templates()
 
     for field,value,ftype in fields:
 
@@ -122,15 +128,16 @@ def validate(experiment_folder=None,warning=True):
             if not isinstance(meta[0][field],ftype):
                 return notvalid("%s: field %s must be %s" %(experiment_name,field,ftype))
             # Is an experiment.js defined
-            if "experiment.js" not in meta[0][field]:
-                return notvalid("%s: experiment.js is not defined in %s" %(experiment_name,field))
             # Is each script in the list a string?
             for script in meta[0][field]:
                 # If we have a single file, is it in the experiment folder?
                 if len(script.split("/")) == 1:
                     if not os.path.exists("%s/%s" %(experiment_folder,script)):
                         return notvalid("%s: %s is specified in config.json but missing." %(experiment_name,script))
-
+                # Do we have an external script? It must be https
+                if re.search("http",script) and not re.search("https",script):
+                    return notvalid("%s: external script %s must be https." %(experiment_name,script))
+                
 
         # Below is for required parameters
         if value == 1:
@@ -150,31 +157,73 @@ def validate(experiment_folder=None,warning=True):
                 if warning == True:
                     dowarning("WARNING: config.json is missing value for field %s: %s" %(field,experiment_name))
 
-        # Javascript template
+        # Check the experiment template, currently valid are jspsych and survey
         if field == "template":
-            if meta[0][field]!="jspsych":
-                return notvalid("%s: we currently only support jspsych experiments." %(experiment_name,script))
+            if meta[0][field] not in valid_templates:
+                return notvalid("%s: we currently only support %s experiments." %(experiment_name,",".join(valid_templates)))
+
+            # Jspsych javascript experiment
+            if meta[0][field] == "jspsych":
+                if "run" in meta[0]:
+                    if "experiment.js" not in meta[0]["run"]:
+                        return notvalid("%s: experiment.js is not defined in run" %(experiment_name))
+                else:
+                    return notvalid("%s: config.json is missing required field run" %(experiment_name))
+
+            # Material Design light survey
+            elif meta[0][field] == "survey":
+                if not os.path.exists("%s/survey.tsv" %(experiment_folder)):
+                    return notvalid("%s: required survey.tsv for template survey not found." %(experiment_name))
+
 
         # Validation for deployment_variables
         if field == "deployment_variables":
             if "deployment_variables" in meta[0]:
                 if "jspsych_init" in meta[0][field]:
-                    acceptable_jspsych = get_acceptable_values("jspsych")
-                    for jspsych_var,jspsych_val in meta[0][field]["jspsych_init"].iteritems():
-                        if jspsych_var not in acceptable_jspsych:
-                            return notvalid("%s: %s is not an acceptable value for jspsych_init. See http://docs.jspsych.org/core_library/jspsych-core/#jspsychinit" %(experiment_name,jspsych_var))
+                    check_acceptable_variables(experiment_name,meta[0][field],"jspsych","jspsych_init")
+                    
+                elif "survey" in meta[0][field]:
+                    check_acceptable_variables(experiment_name,meta[0][field],"survey","material_design")
 
-                        # Variables that must be boolean
-                        if jspsych_var in ["show_progress_bar","fullscreen","skip_load_check"]:
-                            if jspsych_val not in [True,False]:
-                                return notvalid("%s: %s is not an acceptable value for %s in jspsych_init. Must be true/false." %(experiment_name,jspsych_val,jspsych_var))
+    return True
 
-                        # Variables that must be numeric
-                        if jspsych_var in ["default_iti","max_load_time"]:
-                            if isinstance(jspsych_val,str) or isinstance(jspsych_val,bool):
-                                return notvalid("%s: %s is not an acceptable value for %s in jspsych_init. Must be numeric." %(experiment_name,jspsych_val,jspsych_var))
 
-    return True   
+def check_acceptable_variables(experiment_name,field_dict,template,field_dict_key):
+    '''check_acceptable_variables takes a field (eg, meta[0][field]) that has a dictionary, and some template key (eg, jspsych) and makes sure the keys of the dictionary are within the allowable for the template type (the key).
+    :param experiment_name: the name of the experiment
+    :param field_dict: the field value from the config.json, a dictionary
+    :param field_dict_key: a key to look up in the field_dict, which should contain a dictionary of {"key":"value"} variables
+    :param template: the key name, for looking up acceptable values using get_acceptable_values
+    '''
+    acceptable_values = get_acceptable_values(template)
+    for acceptable_var,acceptable_val in field_dict[field_dict_key].iteritems():
+        if acceptable_var not in acceptable_values:
+            return notvalid("%s: %s is not an acceptable value for %s." %(experiment_name,acceptable_var,field_dict_key))
+
+        # Jspsych specific validation
+        if template == "jspsych":
+            # Variables that must be boolean
+            if acceptable_var in ["show_progress_bar","fullscreen","skip_load_check"]:
+                check_boolean(experiment_name,acceptable_val,acceptable_var)      
+
+            # Variables that must be numeric
+            if acceptable_var in ["default_iti","max_load_time"]:
+                if isinstance(acceptable_val,str) or isinstance(acceptable_val,bool):
+                    return notvalid("%s: %s is not an acceptable value for %s in %s. Must be numeric." %(experiment_name,acceptable_val,acceptable_var,field_dict_key))
+
+        elif template == "survey":
+            # Variables that must be boolean
+            if acceptable_var in ["show_progress_bar","fullscreen","skip_load_check"]:
+                check_boolean(experiment_name,acceptable_val,acceptable_var)         
+
+def check_boolean(experiment_name,value,variable_name):
+    '''check_boolean checks if a value is boolean
+    :param experiment_name: the name of the experiment
+    :param value: the value to check
+    :param variable_name: the name of the variable (the key being indexed in the dictionary)
+    '''
+    if value not in [True,False]:
+        return notvalid("%s: %s is not an acceptable value for %s. Must be true/false." %(experiment_name,value,varialbe_name))
 
 
 def get_experiments(experiment_repo,load=False,warning=True):

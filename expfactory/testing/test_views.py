@@ -44,7 +44,7 @@ class TestViews(unittest.TestCase):
 
     def test_get_experiment_html(self):
 
-        html_snippet = get_experiment_html(self.config)
+        html_snippet = get_experiment_html(self.config,self.experiment)
         self.assertTrue(re.search("<!DOCTYPE html>",html_snippet)!=None)
         self.assertTrue(re.search("style.css",html_snippet)!=None)
         self.assertTrue(re.search("experiment.js",html_snippet)!=None)

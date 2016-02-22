@@ -10,6 +10,7 @@ from expfactory.vm import custom_battery_download, get_stylejs, get_jspsych_init
 from expfactory.battery import template_experiments, get_experiment_run
 from expfactory.experiment import load_experiment, get_experiments
 from cognitiveatlas.api import get_concept, get_task
+from expfactory.survey import generate_survey
 from numpy.random import choice
 import SimpleHTTPServer
 import SocketServer
@@ -29,7 +30,7 @@ def embed_experiment(folder,url_prefix=""):
     '''
     folder = os.path.abspath(folder)
     experiment = load_experiment("%s" %folder)
-    return get_experiment_html(experiment,url_prefix=url_prefix)
+    return get_experiment_html(experiment,folder,url_prefix=url_prefix)
     
 
 def preview_experiment(folder=None,battery_folder=None,port=None):
@@ -184,7 +185,7 @@ def generate_experiment_web(output_dir,experiment_folder=None,make_table=True,
         # For each experiment, we will generate a demo page
         for experiment in experiments:
             demo_page = os.path.abspath("%s/%s.html" %(output_dir,experiment[0]["exp_id"]))
-            exp_template = get_experiment_html(experiment)
+            exp_template = get_experiment_html(experiment,"%s/%s" %(experiment_folder,experiment[0]["exp_id"]))
             filey = open(demo_page,"wb")
             filey.writelines(exp_template)
             filey.close()
@@ -199,10 +200,11 @@ def generate_experiment_web(output_dir,experiment_folder=None,make_table=True,
         valid.to_pickle("%s/expfactory-experiments.pkl" %(data_folder))
 
 
-def get_experiment_html(experiment,url_prefix="",deployment="local"):
+def get_experiment_html(experiment,experiment_folder,url_prefix="",deployment="local"):
     '''get_experiment_html
     return the html template to test a single experiment
     :param experiment: the loaded config.json for an experiment (json)
+    :param experiment_folder: the experiment folder, needed for reading in a survey
     :param url_prefix: prefix to put before paths, in case of custom deployment
     :param deployment: deployment environment, one of docker, docker-preview, or local [default]
     '''
@@ -214,8 +216,19 @@ def get_experiment_html(experiment,url_prefix="",deployment="local"):
     exp_template = "".join(open(exp_template,"r").readlines())
     exp_template = sub_template(exp_template,"{{js}}",js)
     exp_template = sub_template(exp_template,"{{css}}",css)
-    runcode = get_experiment_run(experiment,deployment=deployment)[experiment[0]["exp_id"]]
+
+    # Javascript experiment
+    if experiment[0]["template"] in ["jspsych"]:
+        runcode = get_experiment_run(experiment,deployment=deployment)[experiment[0]["exp_id"]]
+        html = ""
+
+    # HTML experiment
+    elif experiment[0]["template"] in ["survey"]:
+        html = generate_survey(experiment,experiment_folder)
+        runcode = ""
+
     exp_template = sub_template(exp_template,"{{run}}",runcode)
+    exp_template = sub_template(exp_template,"{{html}}",html)
     exp_template = sub_template(exp_template,"{{exp_id}}",experiment[0]["exp_id"])
     return exp_template
 
@@ -299,7 +312,7 @@ def tmp_experiment(folder=None,battery_folder=None):
     index_file = "%s/index.html" %(battery_folder)
         
     # Generate code for js and css
-    exp_template = get_experiment_html(experiment)
+    exp_template = get_experiment_html(experiment,experiment_folder)
     filey = open(index_file,"w")
     filey.writelines(exp_template)
     filey.close()
