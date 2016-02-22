@@ -196,7 +196,7 @@ def check_acceptable_variables(experiment_name,field_dict,template,field_dict_ke
     :param template: the key name, for looking up acceptable values using get_acceptable_values
     '''
     acceptable_values = get_acceptable_values(template)
-    for acceptable_var,acceptable_val in meta[0][field][field_dict_key].iteritems():
+    for acceptable_var,acceptable_val in field_dict[field_dict_key].iteritems():
         if acceptable_var not in acceptable_values:
             return notvalid("%s: %s is not an acceptable value for %s." %(experiment_name,acceptable_var,field_dict_key))
 
