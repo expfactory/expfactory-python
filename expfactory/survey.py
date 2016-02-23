@@ -23,7 +23,7 @@ def create_instruction(text,id_attribute,tag="h2"):
     :param id_attribute: the unique id for the question
     :param tag: the html tag for the instruction (eg, p or h2)
     '''
-    return "<%s>%s</%s><br><br><br>" %(tag,text,tag)
+    return "<%s>%s</%s><br><br><br><br>" %(tag,text,tag)
 
 
 def format_options_values(options,values):
@@ -33,45 +33,55 @@ def format_options_values(options,values):
         values = [values]
     return options,values
 
-def create_radio(text,id_attribute,options,values,classes=None):
+def get_required_string(required_boolean):
+    required = ""
+    if required == 1:
+        required = "required"
+    return required
+
+def create_radio(text,id_attribute,options,values,classes=None,required=0):
     '''create_radio generate a material lite radio button given a text field, and a set of options.
     :param text: The text (content) of the question to ask
     :param id_attribute: the unique id for the question
     :param options: a list of text options for the user to select from (not the value of the field)
     :param values: a list of values for corresponding options
     :param classes: the classes to apply to the label. If none, default will be used.
+    :param required: is the question required? 0=False,1=True, default 0
     '''        
     if classes == None:
         classes = "mdl-radio mdl-js-radio mdl-js-ripple-effect"
 
     options,values = format_options_values(options,values)
     
+    required = get_required_string(required)
+
     if len(options) == len(values):
         radio_html = "<p>%s</p>" %(text)
-        checked = "checked"
         for n in range(len(options)):
             option_id = "%s_%s" %(id_attribute,n)
-            radio_html = '%s\n<label class="%s" for="option-%s">\n<input type="radio" id="option-%s" class="mdl-radio__button" name="%s_options" value="%s" %s>\n<span class="mdl-radio__label">%s</span>\n</label>' %(radio_html,classes,option_id,option_id,id_attribute,values[n],checked,options[n])
-            checked = ""
-        return "%s<br><br><br>" %(radio_html)
+            radio_html = '%s\n<label class="%s" for="option-%s">\n<input type="radio" id="option-%s" class="mdl-radio__button %s" name="%s_options" value="%s">\n<span class="mdl-radio__label">%s</span>\n</label>' %(radio_html,classes,option_id,option_id,required,id_attribute,values[n],options[n])
+        return "%s<br><br><br><br>" %(radio_html)
         
     print "ERROR: %s options provided, and only %s values. Must define one option per value." %(len(options),len(values))
     return ""
 
-def create_checkbox(text,id_attribute,options,classes=None):
+def create_checkbox(text,id_attribute,options,classes=None,required=0):
     '''create_checkbox generate a material lite checkbox field given a text field, and a set of options.
     :param text: The text (content) of the question to ask
     :param options: a list of text options for the user to select from
     :param id_attribute: the unique id for the question
     :param classes: the classes to apply to the label. If none, default will be used.
+    :param required: is the question required? 0=False,1=True, default 0
     '''        
     if classes == None:
         classes = "mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect"
 
+    required = get_required_string(required)
+
     checkbox_html = "<p>%s</p>" %(text)
     for n in range(len(options)):
         option_id = "%s_%s" %(id_attribute,n)
-        checkbox_html = '%s\n<label class="%s" for="checkbox-%s">\n<input type="checkbox" id="checkbox-%s" class="mdl-checkbox__input">\n<span class="mdl-checkbox__label">%s</span>\n</label>' %(checkbox_html,classes,option_id,option_id,options[n])
+        checkbox_html = '%s\n<label class="%s" for="checkbox-%s">\n<input type="checkbox" id="checkbox-%s" class="mdl-checkbox__input %s">\n<span class="mdl-checkbox__label">%s</span>\n</label>' %(checkbox_html,classes,option_id,option_id,required,options[n])
     return "%s<br><br><br>" %(checkbox_html)
     
 def base_textfield(text,box_text=None,classes=None):
@@ -96,13 +106,15 @@ def create_textfield(text,id_attribute,box_text=None,classes=None):
     :param id_attribute: the unique id for the question
     :param box_text: text content to go inside the box (default is None)
     :param classes: the classes to apply to the input. If none, default will be used.
+    :param required: is the question required? 0=False,1=True, default 0
     '''        
     if classes == None:
         classes = "mdl-textfield mdl-js-textfield"
 
     textfield_html,box_text = base_textfield(text,box_text)
-    
-    return '%s\n<div class="%s">\n<input class="mdl-textfield__input" type="text" id="%s">\n<label class="mdl-textfield__label" for="%s">%s</label>\n</div><br><br><br>' %(textfield_html,classes,id_attribute,id_attribute,box_text)
+    required = get_required_string(required)
+
+    return '%s\n<div class="%s">\n<input class="mdl-textfield__input %s" type="text" id="%s">\n<label class="mdl-textfield__label" for="%s">%s</label>\n</div><br><br><br>' %(textfield_html,classes,required,id_attribute,id_attribute,box_text)
 
 
 def create_numeric_textfield(text,id_attribute,box_text=None,classes=None):
@@ -112,27 +124,31 @@ def create_numeric_textfield(text,id_attribute,box_text=None,classes=None):
     :param box_text: text content to go inside the box (default is None)
     :param id_attribute: an id to match to the text field
     :param classes: the classes to apply to the input. If none, default will be used.
+    :param required: is the question required? 0=False,1=True, default 0
     '''        
     if classes == None:
         classes = "mdl-textfield mdl-js-textfield"
 
+    required = get_required_string(required)
     textfield_html,box_text = base_textfield(text,box_text)
 
-    return '%s\n<div class="%s">\n<input class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?" id="%s">\n<label class="mdl-textfield__label" for="%s">%s</label>\n<span class="mdl-textfield__error">Input is not a number!</span>\n</div><br><br><br>' %(textfield_html,classes,id_attribute,id_attribute,box_text)
+    return '%s\n<div class="%s">\n<input class="mdl-textfield__input required" type="text" pattern="-?[0-9]*(\.[0-9]+)?" id="%s">\n<label class="mdl-textfield__label" for="%s">%s</label>\n<span class="mdl-textfield__error">Input is not a number!</span>\n</div><br><br><br>' %(textfield_html,classes,required,id_attribute,id_attribute,box_text)
 
 
-def create_select_table(text,id_attribute,df,classes=None):
+def create_select_table(text,id_attribute,df,classes=None,required=0):
     '''create_select_table generates a material lite table from a pandas data frame.
     :param df: A pandas data frame, with column names corresponding to columns, and rows
     :param id_attribute: the unique id for the question
     :param text: A text prompt to put before the table
     :param classes: the classes to apply to the input. If none, default will be used.
+    :param required: is the question required? 0=False,1=True, default 0
     '''        
     if isinstance(df,pandas.DataFrame):
     
         if classes == None:
-            classes = "mdl-data-table mdl-js-data-table mdl-data-table--selectable mdl-shadow--2dp"
+            classes = "mdl-data-table mdl-js-data-table mdl-data-table--selectable mdl-shadow--2dp %s" %(required)
 
+        required = get_required_string(required)
         table_html = '<p>%s</p>\n<table id="%s" class="%s">\n<thead>\n<tr>' %(text,id_attribute,classes)
 
         # Parse column names
@@ -157,18 +173,19 @@ def create_select_table(text,id_attribute,df,classes=None):
     print "ERROR: DataFrame (df) must be a pandas.DataFrame"
 
 
-def create_textarea(text,id_attribute,classes=None,rows=3):
+def create_textarea(text,id_attribute,classes=None,rows=3,required=0):
     '''create_textarea generates a material lite multi line text field with a text prompt.
     :param text: A text prompt to put before the text field
     :param id_attribute: the unique id for the question
     :param classes: the classes to apply to the textfield div. If none, default will be used.
     :param rows: number of rows to include in text field (default 3)
+    :param required: is the question required? 0=False,1=True, default 0
     '''        
     textfield_html,box_text = base_textfield(text,box_text)
 
     if classes == None:
         classes = "mdl-textfield mdl-js-textfield"
-    return '%s\n<div class="%s"><textarea class="mdl-textfield__input" type="text" rows= "%s" id="%s" ></textarea>\n<label class="mdl-textfield__label" for="%s">%s</label></div><br><br><br>' %(textfield_html,classes,rows,id_attribute,id_attribute)
+    return '%s\n<div class="%s"><textarea class="mdl-textfield__input %s" type="text" rows= "%s" id="%s" ></textarea>\n<label class="mdl-textfield__label" for="%s">%s</label></div><br><br><br>' %(textfield_html,classes,required,rows,id_attribute,id_attribute)
 
 
 def parse_questions(question_file,exp_id,delim="\t"):
@@ -177,7 +194,7 @@ def parse_questions(question_file,exp_id,delim="\t"):
     :param exp_id: the experiment unique id, to be used to generate question ids
     '''
     df = pandas.read_csv(question_file,sep=delim)
-    required_columns = ["question_type","question_text","page_number","option_text","option_values"]
+    required_columns = ["question_type","question_text","page_number","option_text","option_values","required"]
     optional_columns = ["variables"]
     acceptable_types = get_question_types()
 
@@ -195,48 +212,61 @@ def parse_questions(question_file,exp_id,delim="\t"):
         question_count = 0
         df.columns = acceptable_columns
         questions = []
+        current_page_number = 1
+        current_page = '<div class="step">'
         for question in df.iterrows():
 
             question_type = question[1].question_type
             question_text = question[1].question_text
+            page_number = question[1].page_number
             options = question[1].option_text
             values = question[1].option_values
+            required = question[1].required
             unique_id = "%s_%s" %(exp_id,question_count)
+            new_question = None
 
             if question_type in acceptable_types:
 
                 # Instruction block / text
                 if question_type == "instruction":
-                    questions.append(create_instruction(question_text,tag="h3",id_attribute=unique_id))
+                    new_question = create_instruction(question_text,tag="h3",id_attribute=unique_id)
                 
                 # Radio button
                 elif question_type == "radio":
                     if not str(options) == "nan" and not str(values) == "nan":
-                        questions.append(create_radio(text=question_text,
+                        new_question = create_radio(text=question_text,
                                                       options=options.split(","),
                                                       values = values.split(","),
-                                                      id_attribute=unique_id))
+                                                      required=required,
+                                                      id_attribute=unique_id)
                     else:
                         print "Radio question %s found null for options or values, skipping." %(question_text)
  
                 # Checkbox
                 elif question_type == "checkbox":
                     if not str(options) == "nan":
-                        questions.append(create_checkbox(text=question_text,
-                                                         options=options,
-                                                         id_attribute=unique_id))
+                        new_question = create_checkbox(text=question_text,
+                                                       options=options,
+                                                       required=required,
+                                                       id_attribute=unique_id)
                     else:
                         print "Checkbox question %s found null for options, skipping." %(question_text)
 
                 # Textareas and Textfields, regular and numeric
                 elif question_type == "textarea":
-                    questions.append(create_textarea(question_text,id_attribute=unique_id))
+                    new_question = create_textarea(question_text,
+                                                   required=required,
+                                                   id_attribute=unique_id)
 
                 elif question_type == "textfield":
-                    questions.append(create_textfield(question_text,id_attribute=unique_id))
+                    new_question = create_textfield(question_text,
+                                                    required=required,
+                                                    id_attribute=unique_id)
 
                 elif question_type == "numeric":
-                    questions.append(create_numeric_textfield(question_text,id_attribute=unique_id))
+                    new_question = create_numeric_textfield(question_text,
+                                                            required=required,
+                                                            id_attribute=unique_id)
 
 
                 # Table
@@ -244,7 +274,19 @@ def parse_questions(question_file,exp_id,delim="\t"):
                     print "Table option not yet supported! Coming soon."
  
                 question_count+=1
+            
+            if new_question != None:
+                # Add the new question to the current page
+                if page_number == current_page_number:                 
+                    current_page = "%s\n%s" %(current_page,new_question)
+                # Save the current page, add the current question to the next page
+                else:
+                    questions.append("%s</div>" %current_page)
+                    current_page = '<div class="step">\n%s' %new_question
+                    current_page_number = page_number
 
+        # Add the last page
+        questions.append("%s</div>" %current_page)
         return questions
     else:
         return None
@@ -269,11 +311,10 @@ def generate_survey(experiment,experiment_folder,form_action="#",classes=None,su
     questions = parse_questions(question_file,exp_id=exp_id)
 
     if questions != None:
-        survey = '<form action="%s">\n<div class="%s">\n<div class="experiment-ribbon"></div>\n<main class="experiment-main mdl-layout__content">\n<div class="experiment-container mdl-grid">\n<div class="mdl-cell mdl-cell--2-col mdl-cell--hide-tablet mdl-cell--hide-phone"></div>\n<div class="experiment-content mdl-color--white mdl-shadow--4dp content mdl-color-text--grey-800 mdl-cell mdl-cell--8-col">' %(form_action,classes)
+        survey = '<div class="%s">\n<div class="experiment-ribbon"></div>\n<main class="experiment-main mdl-layout__content">\n<div class="experiment-container mdl-grid">\n<div class="mdl-cell mdl-cell--2-col mdl-cell--hide-tablet mdl-cell--hide-phone">\n</div>\n<div class="experiment-content mdl-color--white mdl-shadow--4dp content mdl-color-text--grey-800 mdl-cell mdl-cell--8-col">\n\n<div id="questions">\n\n<form name="questions" action="%s">' %(classes,form_action)
 
         for question in questions:
             survey = "%s\n%s" %(survey,question)       
-        survey = "%s</form>" %(survey)    
         return survey
     else:
         print "ERROR: parsing input text file survey.tsv. Will not generate survey HTML"

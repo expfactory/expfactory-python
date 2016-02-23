@@ -208,25 +208,27 @@ def get_experiment_html(experiment,experiment_folder,url_prefix="",deployment="l
     :param url_prefix: prefix to put before paths, in case of custom deployment
     :param deployment: deployment environment, one of docker, docker-preview, or local [default]
     '''
-    if "CIRCLE_BRANCH" in os.environ.keys():
-        exp_template = "%s/templates/experiment_ci.html" %get_installdir()
-    else:
-        exp_template = "%s/templates/experiment.html" %get_installdir()
+
     css,js = get_stylejs(experiment,url_prefix)
-    exp_template = "".join(open(exp_template,"r").readlines())
-    exp_template = sub_template(exp_template,"{{js}}",js)
-    exp_template = sub_template(exp_template,"{{css}}",css)
 
     # Javascript experiment
     if experiment[0]["template"] in ["jspsych"]:
         runcode = get_experiment_run(experiment,deployment=deployment)[experiment[0]["exp_id"]]
         html = ""
+        template_base = "experiment"
 
     # HTML experiment
     elif experiment[0]["template"] in ["survey"]:
         html = generate_survey(experiment,experiment_folder)
         runcode = ""
+        template_base = "survey"
 
+    exp_template = "%s/templates/%s.html" %(get_installdir(),template_base)
+
+    # Make substitutions
+    exp_template = "".join(open(exp_template,"r").readlines())
+    exp_template = sub_template(exp_template,"{{js}}",js)
+    exp_template = sub_template(exp_template,"{{css}}",css)
     exp_template = sub_template(exp_template,"{{run}}",runcode)
     exp_template = sub_template(exp_template,"{{html}}",html)
     exp_template = sub_template(exp_template,"{{exp_id}}",experiment[0]["exp_id"])
