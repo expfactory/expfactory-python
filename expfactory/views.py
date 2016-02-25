@@ -6,8 +6,8 @@ functions for developing experiments and batteries, viewing and testing things
 '''
 
 from expfactory.utils import copy_directory, get_installdir, sub_template, get_template, save_pretty_json
+from expfactory.battery import template_experiments, get_experiment_run, generate_local
 from expfactory.vm import custom_battery_download, get_stylejs, get_jspsych_init
-from expfactory.battery import template_experiments, get_experiment_run
 from expfactory.experiment import load_experiment, get_experiments
 from cognitiveatlas.api import get_concept, get_task
 from expfactory.survey import generate_survey
@@ -31,11 +31,50 @@ def embed_experiment(folder,url_prefix=""):
     folder = os.path.abspath(folder)
     experiment = load_experiment("%s" %folder)
     return get_experiment_html(experiment,folder,url_prefix=url_prefix)
-    
 
+def run_battery(destination=None,experiments=None,experiment_folder=None,subject_id=None,battery_folder=None,port=None,time=30):
+    '''run_battery runs or previews an entire battery locally with the --runbat tag. If no experiment_folder is provided, the PWD will be used. If no experiments are provided, all will be used.
+    :param destination: destination folder for battery. If none provided, tmp directory is used
+    :param experiments: list of experiment tags to add to battery
+    :param experiment_folder: the folder of experiments to deploy the battery from.
+    :param subject_id: subject id to embed into battery. If none, will be randomly generated
+    :param battery_folder: full path to battery folder to use as a template. If none specified, the expfactory-battery repo will be used.
+    :param port: the port number, default will be randomly generated between 8000 and 9999
+    :param time: total number of minutes for experiments to add to battery
+    '''
+    print "Generating custom battery selecting from experiments for maximum of %s minutes, please wait..." %(time)
+
+    if destination == None:
+        destination = tempfile.mkdtemp()
+        shutil.rmtree(destination)
+
+    # Deploy experiment with battery to temporary directory   
+    tmpdir = generate_local(battery_dest=destination,
+                            subject_id=subject_id,
+                            battery_repo=battery_folder,
+                            experiment_repo=experiment_folder,
+                            experiments=experiments,
+                            warning=False,
+                            time=time)
+    os.chdir(tmpdir)
+    
+    try:
+        if port == None:
+            port = choice(range(8000,9999),1)[0]
+        Handler = SimpleHTTPServer.SimpleHTTPRequestHandler
+        httpd = SocketServer.TCPServer(("", port), Handler)
+        print "Preview experiment at localhost:%s" %port
+        webbrowser.open("http://localhost:%s" %(port))
+        httpd.serve_forever()
+    except:
+        print "Stopping web server..."
+        httpd.server_close()
+        shutil.rmtree(tmpdir)
+
+    
 def preview_experiment(folder=None,battery_folder=None,port=None):
     '''preview_experiment
-    preview an experiment locally with the --preview tag
+    preview an experiment locally with the --run tag
     :param folder: full path to experiment folder to preview. If none specified, PWD is used
     :param battery_folder: full path to battery folder to use as a template. If none specified, the expfactory-battery repo will be used.
     :param port: the port number, default will be randomly generated between 8000 and 9999
