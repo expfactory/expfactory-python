@@ -40,7 +40,6 @@ def main():
     elif args.runbat == True:
         if args.experiments != None:
             experiments = args.experiments.split(",")
-            print experiments
             run_battery(experiments=experiments,
                         experiment_folder=args.folder,
                         subject_id=args.subid,

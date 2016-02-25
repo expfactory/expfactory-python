@@ -1,10 +1,49 @@
 Deployments
 ===========
 
+You should proceed with this steps after after `installation <http://expfactory.readthedocs.org/en/latest/installation.html>`_ of the Experiment Factory command line tool.
+
+Local Battery
+-------------
+
+You can deploy a battery of experiments (meaning one or more experiments presented in a row) simply by using the expfactory command line tool. The basic function to generate a battery is the following:
+
+:: 
+
+       expfactory --runbat --experiments local_global_shape,test_task
+
+The command "--runbat" will tell the application that you want to run a local battery. The "experiments" variable is required, and should be a comma separated list of experiment unique ids (exp_id), meaning folder names in the experiment repo. If the experiment id is not found it will not trigger an error, but the experiment will not be added to your battery.  You can also specify a subject id that will be embedded in the output data, and give a name for the data file (please don't use spaces):
+
+::
+
+       expfactory --runbat --experiments local_global_shape,test_task --subid id_123
+
+
+You can also specify a maximum running time (in minutes), in the case that you want to randomly select from experiments up to some time:
+
+::
+
+       expfactory --runbat --experiments local_global_shape,test_task --time 30
+
+
+The default is a very large number that (we hope) a battery would never go over. Finally, it could be the case that you want to use modified experiments, and in this case you can provide a folder of experiments as an argument:
+
+
+::
+
+       expfactory --runbat --experiments local_global_shape,test_task --folder /path/to/your/expfactory-experiments
+
+
+or a battery folder as an argument:
+
+::
+
+       expfactory --runbat --experiments local_global_shape,test_task --battery /path/to/your/expfactory-battery
+
+
+
 Psiturk
 -------
-
-You should proceed with this steps after after `installation <http://expfactory.readthedocs.org/en/latest/installation.html>`_ of the Experiment Factory command line tool.
 
 
 The Experiment Factory Application Portal
