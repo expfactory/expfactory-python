@@ -1,0 +1,62 @@
+<html>
+  <head>
+    <title>Experiment Factory Battery</title>
+    <script src="static/lib/jquery-min.js" type="text/javascript"> </script> 
+   
+    [SUB_EXPERIMENTSTATIC_SUB]    
+    <script src="static/js/load_experiments.js" type="text/javascript"></script>
+    <link rel='stylesheet' href='static/css/default_style.css' type="text/css">  
+  
+  </head>
+  <body>
+	  
+	  <script> 
+	   
+		var task_list = '<ul list-text>'
+		for (i=0; i<experiment_names.length; i++) {
+			task_list += '<li>' + experiment_names[i] + '</li>'
+		}
+      
+		
+		var task_list_block = {
+		  type: 'text',
+		  text: '<div class = centerbox><p class = block-text>In this assessment you will be completing the following tasks: </p>' + task_list + '</ul><p class = block-text>Press <strong>enter</strong> to continue.</p></div>',
+		  cont_key: [13],
+		};
+
+		var end_block = {
+		  type: 'text',
+		  text: '<div class = centerbox><p class = block-text>Please wait for the experimenter to complete your assessment.</p></div>',
+		  cont_key: [13],
+		};
+
+				
+		var experiments = []
+		experiments.push(task_list_block)
+
+		// concatenate on the experimental blocks defined for each of the constituent experiments
+		cat_experiments(experiments)
+                experiments.push(end_block);
+
+            $( document ).ready(function() {
+
+                // Add the subject id to the data
+                jsPsych.data.addProperties({subject: "[SUB_SUBJECT_ID_SUB]"});
+
+		// start the experiment -->
+		jsPsych.init({
+	
+ 	            timeline: experiments,
+                    display_element: "getDisplayElement",
+                    fullscreen: true,
+
+                    on_finish: function(data) {
+                        jsPsych.data.localSave('[SUB_SUBJECT_ID_SUB].csv', 'csv');
+                        expfactory_finished = true;
+                    }
+		});
+
+          });		
+	  </script>
+  </body>
+</html>
