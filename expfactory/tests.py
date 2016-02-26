@@ -270,11 +270,16 @@ def experiment_robot_web(experimentweb_base,experiment_tags=None,port=None,pause
         count=0
         wait_time=0
         while True:
-            print "Testing block %s of %s" %(count,experiment[0]["exp_id"])
-            wait_time,finished = test_block(browser,experiment,pause_time,wait_time)
-            if finished == True:
-                break
-            count+=1
+            print "Testing command %s of %s" %(count,experiment[0]["exp_id"])
+            try:
+                wait_time,finished = test_block(browser,experiment,pause_time,wait_time)
+                if finished == True:
+                    break
+                count+=1
+            except UnexpectedAlertPresentException:
+                print "Found alert: closing."
+                alert = browser.switch_to_alert()
+                alert.accept()
 
         print "FINISHING TEST OF EXPERIMENT %s" %(experiment[0]["exp_id"])
 
