@@ -278,8 +278,11 @@ def experiment_robot_web(experimentweb_base,experiment_tags=None,port=None,pause
                 count+=1
             except UnexpectedAlertPresentException:
                 print "Found alert: closing."
-                alert = browser.switch_to_alert()
-                alert.accept()
+                try:
+                    alert = browser.switch_to_alert()
+                    alert.accept()
+                except:
+                    pass
 
         print "FINISHING TEST OF EXPERIMENT %s" %(experiment[0]["exp_id"])
 
