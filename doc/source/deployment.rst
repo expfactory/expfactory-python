@@ -10,20 +10,20 @@ You can deploy a battery of experiments (meaning one or more experiments present
 
 :: 
 
-       expfactory --runbat --experiments local_global_shape,test_task
+       expfactory --run --experiments local_global_shape,test_task
 
-The command "--runbat" will tell the application that you want to run a local battery. The "experiments" variable is required, and should be a comma separated list of experiment unique ids (exp_id), meaning folder names in the experiment repo. If the experiment id is not found it will not trigger an error, but the experiment will not be added to your battery.  You can also specify a subject id that will be embedded in the output data, and give a name for the data file (please don't use spaces):
+The command "--run" will tell the application that you want to run a local battery. The "experiments" variable is required, and should be a comma separated list of experiment unique ids (exp_id), meaning folder names in the experiment repo. If the experiment id is not found it will not trigger an error, but the experiment will not be added to your battery.  You can also specify a subject id that will be embedded in the output data, and give a name for the data file (please don't use spaces):
 
 ::
 
-       expfactory --runbat --experiments local_global_shape,test_task --subid id_123
+       expfactory --run --experiments local_global_shape,test_task --subid id_123
 
 
 You can also specify a maximum running time (in minutes), in the case that you want to randomly select from experiments up to some time:
 
 ::
 
-       expfactory --runbat --experiments local_global_shape,test_task --time 30
+       expfactory --run --experiments local_global_shape,test_task --time 30
 
 
 The default is a very large number that (we hope) a battery would never go over. Finally, it could be the case that you want to use modified experiments, and in this case you can provide a folder of experiments as an argument:
@@ -31,15 +31,23 @@ The default is a very large number that (we hope) a battery would never go over.
 
 ::
 
-       expfactory --runbat --experiments local_global_shape,test_task --folder /path/to/your/expfactory-experiments
+       expfactory --run --experiments local_global_shape,test_task --folder /path/to/your/expfactory-experiments
 
 
 or a battery folder as an argument:
 
 ::
 
-       expfactory --runbat --experiments local_global_shape,test_task --battery /path/to/your/expfactory-battery
+       expfactory --run --experiments local_global_shape,test_task --battery /path/to/your/expfactory-battery
 
+
+WARNING: Not specifying either the battery or experiments folder will always pull the latest from the repos. If you intend to run many subjects over time and want ensured consistency in the experiments, we reccommend that you clone both the battery and experiments repos, and specify them in the command:
+
+::
+
+       git clone https://github.com/expfactory/expfactory-experiments
+       git clone https://github.com/expfactory/expfactory-battery
+       expfactory --run --experiments local_global_shape,test_task --battery expfactory-battery  --folder expfactory-experiments
 
 
 Psiturk

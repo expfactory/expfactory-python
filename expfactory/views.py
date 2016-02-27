@@ -33,7 +33,7 @@ def embed_experiment(folder,url_prefix=""):
     return get_experiment_html(experiment,folder,url_prefix=url_prefix)
 
 def run_battery(destination=None,experiments=None,experiment_folder=None,subject_id=None,battery_folder=None,port=None,time=30):
-    '''run_battery runs or previews an entire battery locally with the --runbat tag. If no experiment_folder is provided, the PWD will be used. If no experiments are provided, all will be used.
+    '''run_battery runs or previews an entire battery locally with the --run tag. If no experiments are provided, all in the folder will be used.
     :param destination: destination folder for battery. If none provided, tmp directory is used
     :param experiments: list of experiment tags to add to battery
     :param experiment_folder: the folder of experiments to deploy the battery from.
@@ -74,7 +74,7 @@ def run_battery(destination=None,experiments=None,experiment_folder=None,subject
     
 def preview_experiment(folder=None,battery_folder=None,port=None):
     '''preview_experiment
-    preview an experiment locally with the --run tag
+    preview an experiment locally with the --preview tag (for development)
     :param folder: full path to experiment folder to preview. If none specified, PWD is used
     :param battery_folder: full path to battery folder to use as a template. If none specified, the expfactory-battery repo will be used.
     :param port: the port number, default will be randomly generated between 8000 and 9999
