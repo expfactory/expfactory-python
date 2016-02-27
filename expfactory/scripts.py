@@ -21,8 +21,8 @@ def main():
     parser.add_argument("--port", dest='port', help="port to preview experiment", type=int, default=None)
     parser.add_argument("--battery", dest='battery_folder', help="full path to local battery folder to use as template", type=str, default=None)
     parser.add_argument("--time", dest='time', help="maximum number of minutes for battery to endure, to select experiments", type=int, default=99999)
-    parser.add_argument('--run', help="run an experiment locally", dest='run', default=False, action='store_true')
-    parser.add_argument('--runbat', help="run a battery locally", dest='runbat', default=False, action='store_true')
+    parser.add_argument('--preview', help="preview an experiment locally (development function)", dest='preview', default=False, action='store_true')
+    parser.add_argument('--run', help="run a single experiment or battery locally", dest='run', default=False, action='store_true')
     parser.add_argument('--validate', dest='validate', help="validate an experiment folder", default=False, action='store_true')
     parser.add_argument('--test', dest='test', help="test an experiment folder with the experiment robot", default=False, action='store_true')
 
@@ -33,11 +33,19 @@ def main():
         sys.exit(0)
 
     # Check if the person wants to preview experiment or battery
-    if args.run == True:
+    if args.preview == True:
         preview_experiment(folder=args.folder,battery_folder=args.battery_folder,port=args.port)
 
     # Run a local battery
-    elif args.runbat == True:
+    elif args.run == True:
+
+        # Warn the user about using repos for experiments and battery
+        if args.battery_folder == None:
+            print "No battery folder specified. Will pull latest battery from expfactory-battery repo"
+
+        if args.folder == None:
+            print "No experiments folder specified. Will pull latest experiments from expfactory-experiments repo"
+
         if args.experiments != None:
             experiments = args.experiments.split(",")
             run_battery(experiments=experiments,
