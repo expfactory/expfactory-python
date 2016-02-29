@@ -229,14 +229,15 @@ def key_lookup(keyid):
             return str(keyid.lower())
     return lookup[keyid]
 
-def experiment_robot_web(experimentweb_base,experiment_tags=None,port=None,pause_time=100):
+def experiment_robot_web(web_folder,experiment_tags=None,port=None,pause_time=100):
     '''experiment_robot_web
     Robot to automatically run and test experiments, to work with an experiment web folder (meaning produced with views.get_experiment_web. This folder has the standard battery structure with experiment pre-generated as html files. A separate function will/should eventually be made for single experiment preview.
+    :param experiment_tags: experimentweb generated folder with generate_experiment_web
     :param experiment_tags: list of experiment folders to test
     :param pause_time: time to wait between tasks, in addition to time specified in jspsych
     :param port: port. Randomly selected if None is selected
     '''
-    experimentweb_base = os.path.abspath(experimentweb_base)
+    experimentweb_base = os.path.abspath(web_folder)
 
     if port == None:
         port = choice(range(8000,9999),1)[0]
@@ -349,7 +350,10 @@ def test_block(browser,experiment,pause_time=0,wait_time=0):
     elif "button_class" in block:
         try:
             buttons = browser.find_elements_by_class_name('%s' %block["button_class"])
-            choice(buttons,1)[0].click()
+            button = choice(buttons,1)[0]
+            if button.is_enabled() == False:
+                browser.execute_script('document.getElementsByClassName("%s")[0].disabled = false' %block["button_class"])
+            browser.execute_script('$(".%s").click()' %block["button_class"])
             sleep(0.5)
         except WebDriverException as e:
             pass
@@ -444,6 +448,7 @@ def get_page(browser,url):
 # Run javascript and get output
 def run_javascript(browser,code):
     return browser.execute_script(code)
+
 
 def test_experiment(folder=None,battery_folder=None,port=None,pause_time=2000):
     '''test_experiment
