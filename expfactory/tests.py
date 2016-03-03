@@ -119,10 +119,9 @@ def circle_ci_test(experiment_tags,web_folder,experiment_repo=None,delete=True,p
         master_folder = os.path.abspath(os.path.join(os.getcwd(),"master"))
         if not os.path.exists(master_folder):
             os.mkdir(master_folder)
-        download_repo("experiments",master_folder)
+            download_repo("experiments",master_folder)
         changed_experiments = [os.path.split(x)[-1] for x in find_changed(os.getcwd(),master_folder)]    
         changed_experiments = [e for e in experiment_tags if e in changed_experiments]
-        os.system("rmdir -r -f %s" %(master_folder))
         
     if len(changed_experiments) > 0:
         generate_experiment_web(web_folder,experiment_folder=os.path.abspath(experiment_repo)) 
