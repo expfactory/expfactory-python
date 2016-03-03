@@ -6,9 +6,10 @@ tests for experiments and batteries, not for expfactory-python
 from selenium.common.exceptions import WebDriverException, UnexpectedAlertPresentException
 from expfactory.experiment import validate, get_experiments, load_experiment
 from expfactory.views import generate_experiment_web, tmp_experiment
+from expfactory.utils import find_directories, get_url, find_changed
 from numpy.testing import assert_equal, assert_string_equal
 from selenium.webdriver.common.keys import Keys
-from expfactory.utils import find_directories, get_url
+from expfactory.vm import download_repo
 from numpy.random import choice
 from selenium import webdriver
 from threading import Thread
@@ -17,6 +18,7 @@ from time import sleep
 import SocketServer
 import webbrowser
 import requests
+import fnmatch
 import shutil
 import numpy
 import json
@@ -114,19 +116,12 @@ def circle_ci_test(experiment_tags,web_folder,experiment_repo=None,delete=True,p
 
         print "DETECTED CONTINUOUS INTEGRATION ENVIRONMENT..."
 
-        current_build = int(os.environ["CIRCLE_BUILD_NUM"])
-        headers = {'Accept' : 'application/json'}
-        current_build_url = "https://circleci.com/api/v1/project/expfactory/expfactory-experiments/%s" %(current_build)
-        current_build = requests.get(current_build_url, headers=headers).json()
-        branch = current_build["branch"]
-        
-        # Find differences with compare
-        files_changed = os.popen("git diff %s..master --name-only" %branch).readlines()
-        print "Found files changed: %s" %(",".join(files_changed))
-
-        # Get unique, changed folders, filter experiments again
-        changed_experiments = numpy.unique([os.path.dirname(x.strip("\n")) for x in files_changed if os.path.dirname(x.strip("\n")) != ""]).tolist()
+        os.system("mkdir master")
+        master_folder = os.path.abspath(os.path.join(os.getcwd(),"master"))
+        download_repo("experiments",master_folder)
+        changed_experiments = [os.path.split(x)[-1] for x in find_changed(os.getcwd(),master_folder)]    
         changed_experiments = [e for e in experiment_tags if e in changed_experiments]
+        os.system("rmdir -r -f %s" %(master_folder))
         
     if len(changed_experiments) > 0:
         generate_experiment_web(web_folder,experiment_folder=os.path.abspath(experiment_repo)) 
