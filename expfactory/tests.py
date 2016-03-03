@@ -4,10 +4,10 @@ tests for experiments and batteries, not for expfactory-python
 
 '''
 from selenium.common.exceptions import WebDriverException, UnexpectedAlertPresentException
-from expfactory.experiment import validate, get_experiments, load_experiment
+from expfactory.experiment import validate, get_experiments, load_experiment, find_changed
 from expfactory.views import generate_experiment_web, tmp_experiment
-from expfactory.utils import find_directories, get_url, find_changed
 from numpy.testing import assert_equal, assert_string_equal
+from expfactory.utils import find_directories, get_url
 from selenium.webdriver.common.keys import Keys
 from expfactory.vm import download_repo
 from numpy.random import choice

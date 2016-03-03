@@ -6,6 +6,8 @@ Functions to work with javascript experiments
 
 from expfactory.utils import find_directories, remove_unicode_dict
 from glob import glob
+import filecmp
+import numpy
 import json
 import re
 import os
@@ -270,6 +272,40 @@ def load_experiment(experiment_folder):
     except ValueError as e:
         print "Problem reading config.json, %s" %(e)
         raise
+
+def find_changed(new_repo,comparison_repo,return_experiments=True):
+    '''find_changed returns a list of changed files or experiments between two repos
+    :param new_repo: the updated repo - any new files, or changed files, will be returned
+    :param comparison_repo: the old repo to compare against. A file changed or missing in this repo in the new_repo indicates it should be tested
+    :param return_experiments: return experiment folders. Default is True. If False, will return complete file list
+    ''' 
+    # First find all experiment folders in current repo
+    experiment_folders = get_experiments(new_repo,load=False,warning=False)
+    file_list = []
+    # Find all files
+    for experiment_folder in experiment_folders:
+        for root, dirnames, filenames in os.walk(experiment_folder):
+            for filename in filenames:
+                file_list.append(os.path.join(root, filename))
+    # Compare against master
+    changed_files = []
+    for contender_file in file_list:
+        old_file = contender_file.replace("%s/expfactory-experiments" %(os.environ["HOME"]),comparison_repo)
+        # If the old file exists, check if it's changed
+        if os.path.exists(old_file):
+            if not filecmp.cmp(old_file,contender_file):
+                changed_files.append(contender_file)
+        # If it doesn't exist, we check
+        else:
+            changed_files.append(contender_file)
+
+    # Find differences with compare
+    print "Found files changed: %s" %(",".join(changed_files))
+
+    if return_experiments == True:
+        return numpy.unique([os.path.dirname(x.strip("\n")) for x in changed_files if os.path.dirname(x.strip("\n")) != ""]).tolist()
+        
+    return changed_files
 
 
 def make_lookup(experiment_list,key_field):
