@@ -7,6 +7,8 @@ from expfactory.vm import custom_battery_download, get_jspsych_init, get_stylejs
 from expfactory.experiment import get_experiments, load_experiment
 from expfactory.utils import copy_directory, get_template, \
      sub_template, get_installdir, save_template
+import tempfile
+import shutil
 import numpy
 import uuid
 import os
@@ -39,16 +41,20 @@ def generate_base(battery_dest,experiments=None,experiment_repo=None,battery_rep
 
     return battery_repo,experiment_repo,valid_experiments
 
-def generate_local(battery_dest,subject_id=None,battery_repo=None,experiment_repo=None,experiments=None,warning=True,time=30):
+def generate_local(battery_dest=None,subject_id=None,battery_repo=None,experiment_repo=None,experiments=None,warning=True,time=30):
     '''generate_local deploys a local battery
     will create a battery from a template and list of experiments
-    :param battery_dest: [required] is the output folder for your battery. This folder MUST NOT EXIST.
+    :param battery_dest: is the output folder for your battery. This folder MUST NOT EXIST. If not specified, a temp directory will be used
     :param battery_repo: location of psiturk-battery repo to use as a template. If not specified, will be downloaded to a temporary directory
     :param experiment_repo: location of a expfactory-experiments repo to check for valid experiments. If not specified, will be downloaded to a temporary directory
     :param experiments: a list of experiments, meaning the "exp_id" variable in the config.json, to include. This variable also conincides with the experiment folder name.
     :param subject_id: The subject id to embed in the experiment, and the name of the results file. If none is provided, a unique ID will be generated.
     :param time: Maximum amount of time for battery to endure, to select experiments
     '''
+    if battery_dest == None:
+        battery_dest = tempfile.mkdtemp()
+        shutil.rmtree(battery_dest)
+
     # We can only generate a battery to a folder that does not exist, to be safe
     if not os.path.exists(battery_dest):
 
@@ -83,10 +89,10 @@ def generate_local(battery_dest,subject_id=None,battery_repo=None,experiment_rep
         print "Folder exists at %s, cannot generate." %(battery_dest)
 
 
-def generate(battery_dest,battery_repo=None,experiment_repo=None,experiments=None,config=None,make_config=True,warning=True,time=30):
+def generate(battery_dest=None,battery_repo=None,experiment_repo=None,experiments=None,config=None,make_config=True,warning=True,time=30):
     '''generate
     will create a battery from a template and list of experiments
-    :param battery_dest: [required] is the output folder for your battery. This folder MUST NOT EXIST.
+    :param battery_dest: is the output folder for your battery. This folder MUST NOT EXIST. If not specified, a temp folder is created
     :param battery_repo: location of psiturk-battery repo to use as a template. If not specified, will be downloaded to a temporary directory
     :param experiment_repo: location of a expfactory-experiments repo to check for valid experiments. If not specified, will be downloaded to a temporary directory
     :param experiments: a list of experiments, meaning the "exp_id" variable in the config.json, to include. This variable also conincides with the experiment folder name.
@@ -95,6 +101,10 @@ def generate(battery_dest,battery_repo=None,experiment_repo=None,experiments=Non
     :param warning: Show config.json warnings when validating experiments. Default is True
     :param time: maximum amount of time for battery to endure (default 30 minutes) to select experiments
     '''
+    if battery_dest == None:
+        battery_dest = tempfile.mkdtemp()
+        shutil.rmtree(battery_dest)
+
     # We can only generate a battery to a folder that does not exist, to be safe
     if not os.path.exists(battery_dest):
 
@@ -117,6 +127,8 @@ def generate(battery_dest,battery_repo=None,experiment_repo=None,experiments=Non
             if config == None:
                 config = dict()
             generate_config(battery_dest,config)
+
+        return battery_dest
     else:
         print "Folder exists at %s, cannot generate." %(battery_dest)
 

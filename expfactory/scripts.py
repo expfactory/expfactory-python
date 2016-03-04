@@ -6,6 +6,7 @@ Runtime executable
 
 '''
 from expfactory.views import preview_experiment, run_battery
+from expfactory.battery import generate, generate_local
 from expfactory.experiment import validate
 from glob import glob
 import argparse
@@ -15,8 +16,8 @@ import os
 def main():
     parser = argparse.ArgumentParser(
     description="generate experiments and infrastructure to serve them.")
-    parser.add_argument("--folder", dest='folder', help="full path to single experiment folder (for single experiment run with --run) or folder with many experiments (for battery run with --runbat)", type=str, default=None)
-    parser.add_argument("--subid", dest='subid', help="subject id to embed in experiments data in the case of a battery run with --runbat", type=str, default=None)
+    parser.add_argument("--folder", dest='folder', help="full path to single experiment folder (for single experiment run with --run) or folder with many experiments (for battery run with --run)", type=str, default=None)
+    parser.add_argument("--subid", dest='subid', help="subject id to embed in experiments data in the case of a battery run with --run", type=str, default=None)
     parser.add_argument("--experiments", dest='experiments', help="comma separated list of experiments for a local battery", type=str, default=None)
     parser.add_argument("--port", dest='port', help="port to preview experiment", type=int, default=None)
     parser.add_argument("--battery", dest='battery_folder', help="full path to local battery folder to use as template", type=str, default=None)
@@ -24,6 +25,9 @@ def main():
     parser.add_argument('--preview', help="preview an experiment locally (development function)", dest='preview', default=False, action='store_true')
     parser.add_argument('--run', help="run a single experiment or battery locally", dest='run', default=False, action='store_true')
     parser.add_argument('--validate', dest='validate', help="validate an experiment folder", default=False, action='store_true')
+    parser.add_argument('--psiturk', dest='psiturk', help="to be used with the --generate command, to generate a psiturk battery instead of local folder deployment", default=False, action='store_true')
+    parser.add_argument('--generate', dest='generate', help="generate (and don't run) a battery with --experiments to a --folder", default=False, action='store_true')
+    parser.add_argument("--output", dest='output', help="output folder for --generate command, if a temporary directory is not desired. Must not exist.", type=str, default=None)
     parser.add_argument('--test', dest='test', help="test an experiment folder with the experiment robot", default=False, action='store_true')
 
     try:
@@ -35,6 +39,36 @@ def main():
     # Check if the person wants to preview experiment or battery
     if args.preview == True:
         preview_experiment(folder=args.folder,battery_folder=args.battery_folder,port=args.port)
+
+    # Generate a local battery folder (static)
+    elif args.generate == True:
+
+        if args.experiments != None:
+
+            # Deploy a psiturk battery folder
+            experiments = args.experiments.split(",")
+            if args.psiturk == True:
+                outdir = generate(battery_dest=args.output,
+                                  battery_repo=args.battery_folder,
+                                  experiment_repo=args.folder,
+                                  experiments=experiments,
+                                  make_config=True,
+                                  warning=False)
+
+            # Deploy a regular battery folder
+            else:
+                outdir = generate_local(battery_dest=args.output,
+                                        subject_id="expfactory_battery_result",
+                                        battery_repo=args.battery_folder,
+                                        experiment_repo=args.folder,
+                                        experiments=experiments,
+                                        warning=False,
+                                        time=args.time)
+
+            print "Battery generation complete: static files are in %s" %(outdir)
+
+        else:
+            print "Please specify list of comma separated experiments with --experiments"
 
     # Run a local battery
     elif args.run == True:

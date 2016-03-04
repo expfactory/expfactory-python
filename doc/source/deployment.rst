@@ -12,7 +12,7 @@ You can deploy a battery of experiments (meaning one or more experiments present
 
        expfactory --run --experiments local_global_shape,test_task
 
-The command "--run" will tell the application that you want to run a local battery. The "experiments" variable is required, and should be a comma separated list of experiment unique ids (exp_id), meaning folder names in the experiment repo. If the experiment id is not found it will not trigger an error, but the experiment will not be added to your battery.  You can also specify a subject id that will be embedded in the output data, and give a name for the data file (please don't use spaces):
+The command "--run" will tell the application that you want to run a local battery. The "experiments" variable is required, and should be a comma separated list of experiment unique ids (exp_id), meaning folder names in the experiment repo. You can also specify a subject id that will be embedded in the output data, and give a name for the data file (please don't use spaces):
 
 ::
 
@@ -50,8 +50,30 @@ WARNING: Not specifying either the battery or experiments folder will always pul
        expfactory --run --experiments local_global_shape,test_task --battery expfactory-battery  --folder expfactory-experiments
 
 
-Psiturk
--------
+Generate Static
+---------------
+The above instructions will open up a web browser to run experiments on demand. If you want to generate a folder, either to be run locally or with psiturk, you can do the following:
+
+::
+
+      expfactory --generate --experiments stroop,nback
+
+
+Or to generate a Psiturk battery folder:
+
+::
+
+      expfactory --generate --experiments stroop,nback --psiturk
+
+
+If you don't specify an output folder, a temporary directory will be created. For each of the above, you can specify the --output command, a full path to a folder (that does not exist) that you want the battery generated in.
+
+
+
+Interactive Battery Generation for Psiturk or Virtual Machine
+-------------------------------------------------------------
+
+Note that the interactive portal is a Flask application, and has not been tested on Windows systems.
 
 
 The Experiment Factory Application Portal
