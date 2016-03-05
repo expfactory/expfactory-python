@@ -348,7 +348,7 @@ def test_block(browser,experiment,pause_time=0,wait_time=0):
             button = choice(buttons,1)[0]
             if button.is_enabled() == False:
                 browser.execute_script('document.getElementsByClassName("%s")[0].disabled = false' %block["button_class"])
-            browser.execute_script('$(".%s").click()' %block["button_class"])
+            button.click()
             sleep(0.5)
         except WebDriverException as e:
             pass
