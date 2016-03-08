@@ -49,17 +49,21 @@ $( document ).ready(function() {
     // Form submission
     }).wizard( "form" ).submit(function( event ) {
 	event.preventDefault();
-
+        
         // Save data to browser
         var form = $(document.questions);
-        var data = JSON.stringify(form.serializeArray());
+        var data = "text/json;charset=utf-8," + JSON.stringify(form.serializeArray());
         var a = document.createElement('a');
-        a.href = 'data:' + data;
         a.title = "Download"
         a.id = "download"
         a.type = "button"
         a.download = 'expfactory_result.json';
-        a.click()
+        a.href = 'data:' + data;
+        $(".submit").html("Download")
+        $(".submit").click(function(){
+            $("body").append(a)
+            a.click()
+        })
 
      // Validation
      }).validate({
