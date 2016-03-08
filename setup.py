@@ -9,10 +9,10 @@ setup(
     name="expfactory",
 
     # Version number (initial):
-    version="2.1.5",
+    version="2.1.7",
 
     # Application author details:
-    author="poldracklab",
+    author="Vanessa Sochat",
     author_email="vsochat@stanford.edu",
 
     # Packages

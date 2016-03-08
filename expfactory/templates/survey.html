@@ -32,7 +32,8 @@ $( document ).ready(function() {
 
     expfactory_finished = false;
 
-    // Example 2: Basic wizard with progress bar
+    // Basic wizard with progress bar
+    $(".submit").enable() // no validation for now
     $( "#progressbar" ).progressbar();
     $( "#questions" ).wizard({
         stepsWrapper: "#wrapped",
@@ -42,21 +43,32 @@ $( document ).ready(function() {
         },
 	afterSelect: function( event, state ) {
 	    $( "#progressbar" ).progressbar( "value", state.percentComplete );
+            $(".submit").enable()
         }
 
     // Form submission
     }).wizard( "form" ).submit(function( event ) {
 	event.preventDefault();
-	alert( "Form submitted!" );
+
+        // Save data to browser
+        var form = $(document.questions);
+        var data = JSON.stringify(form.serializeArray());
+        var a = document.createElement('a');
+        a.href = 'data:' + data;
+        a.title = "Download"
+        a.id = "download"
+        a.type = "button"
+        a.download = 'expfactory_result.json';
+        a.click()
 
      // Validation
      }).validate({
 	errorPlacement: function( error, element ) {
 	    if ( element.is( ":radio" ) || element.is( ":checkbox" ) ) {
 		error.insertBefore( element.next() );
-        } else {
+            } else {
 	        error.insertAfter( element );
-	}
+	 }
       }
   });
 });
