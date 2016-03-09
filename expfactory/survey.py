@@ -100,7 +100,7 @@ def base_textfield(text,box_text=None,classes=None):
     return textfield_html,box_text
 
 
-def create_textfield(text,id_attribute,box_text=None,classes=None):
+def create_textfield(text,id_attribute,box_text=None,classes=None,required=0):
     '''create_textfield generates a material lite text field given a text prompt.
     :param text: Any text content to precede the question field (default is None)
     :param id_attribute: the unique id for the question
@@ -117,7 +117,7 @@ def create_textfield(text,id_attribute,box_text=None,classes=None):
     return '%s\n<div class="%s">\n<input class="mdl-textfield__input %s" type="text" id="%s">\n<label class="mdl-textfield__label" for="%s">%s</label>\n</div><br><br><br>' %(textfield_html,classes,required,id_attribute,id_attribute,box_text)
 
 
-def create_numeric_textfield(text,id_attribute,box_text=None,classes=None):
+def create_numeric_textfield(text,id_attribute,box_text=None,classes=None,required=0):
     '''create_numeric generates a material lite numeric text field given a text prompt.
     :param text: Any text content to precede the question field (default is None)
     :param id_attribute: the unique id for the question
@@ -132,7 +132,7 @@ def create_numeric_textfield(text,id_attribute,box_text=None,classes=None):
     required = get_required_string(required)
     textfield_html,box_text = base_textfield(text,box_text)
 
-    return '%s\n<div class="%s">\n<input class="mdl-textfield__input required" type="text" pattern="-?[0-9]*(\.[0-9]+)?" id="%s">\n<label class="mdl-textfield__label" for="%s">%s</label>\n<span class="mdl-textfield__error">Input is not a number!</span>\n</div><br><br><br>' %(textfield_html,classes,required,id_attribute,id_attribute,box_text)
+    return '%s\n<div class="%s">\n<input class="mdl-textfield__input %s" type="text" pattern="-?[0-9]*(\.[0-9]+)?" id="%s">\n<label class="mdl-textfield__label" for="%s">%s</label>\n<span class="mdl-textfield__error">Input is not a number!</span>\n</div><br><br><br>' %(textfield_html,classes,required,id_attribute,id_attribute,box_text)
 
 
 def create_select_table(text,id_attribute,df,classes=None,required=0):
@@ -246,7 +246,7 @@ def parse_questions(question_file,exp_id,delim="\t"):
                 elif question_type == "checkbox":
                     if not str(options) == "nan":
                         new_question = create_checkbox(text=question_text,
-                                                       options=options,
+                                                       options=options.split(","),
                                                        required=required,
                                                        id_attribute=unique_id)
                     else:
