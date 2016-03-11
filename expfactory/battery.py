@@ -78,7 +78,7 @@ def generate_local(battery_dest=None,subject_id=None,battery_repo=None,experimen
                              experiment_repo=experiment_repo,
                              battery_repo=battery_repo,
                              warning=warning,
-                             get_surveys=False)
+                             add_surveys=False)
 
         # We will output a local battery template (without psiturk) 
         template_exp = "%s/templates/localbattery.html" %get_installdir()
@@ -129,7 +129,7 @@ def generate(battery_dest=None,battery_repo=None,experiment_repo=None,experiment
                              experiment_repo=experiment_repo,
                              battery_repo=battery_repo,
                              warning=warning,
-                             get_surveys=False)
+                             add_surveys=False)
 
         custom_variables = dict()
         custom_variables["load"] = [("[SUB_TOTALTIME_SUB]",time)]
