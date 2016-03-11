@@ -6,7 +6,7 @@ functions for developing experiments and batteries, viewing and testing things
 '''
 
 from expfactory.utils import copy_directory, get_installdir, sub_template, get_template, save_pretty_json
-from expfactory.battery import get_experiment_run, generate_local, move_experiments
+from expfactory.battery import get_experiment_run, generate_local, move_experiments, generate_base
 from expfactory.vm import custom_battery_download, get_stylejs, get_jspsych_init
 from expfactory.experiment import load_experiment, get_experiments
 from cognitiveatlas.api import get_concept, get_task
@@ -31,6 +31,46 @@ def embed_experiment(folder,url_prefix=""):
     folder = os.path.abspath(folder)
     experiment = load_experiment("%s" %folder)
     return get_experiment_html(experiment,folder,url_prefix=url_prefix)
+
+
+def run_survey(survey,destination=None,surveys_repo=None,battery_repo=None,port=None,subject_id=None):
+    '''run_survey runs or previews an entire battery locally with the --run tag. If no experiments are provided, all in the folder will be used.
+    :param destination: destination folder for battery. If none provided, tmp directory is used
+    :param survey: single survey to run (unique ID)
+    :param survey_folder: the folder of experiments to deploy the battery from.
+    :param subject_id: subject id to embed into survey. If none, will be randomly generated
+    :param battery_folder: full path to battery folder to use as a template. If none specified, the expfactory-battery repo will be used.
+    :param port: the port number, default will be randomly generated between 8000 and 9999
+    '''
+    print "Deploying survey %s" %(survey)
+
+    if destination == None:
+        destination = tempfile.mkdtemp()
+        shutil.rmtree(destination)
+
+    # We can only generate a battery to a folder that does not exist, to be safe
+    if not os.path.exists(destination):
+
+        base = generate_base(battery_dest=destination,
+                             tasks=[survey],
+                             survey_repo=surveys_repo,
+                             add_experiments = False,
+                             battery_repo=battery_repo,
+                             warning=False)
+
+        if port == None:
+            port = choice(range(8000,9999),1)[0]
+
+        # Currently only support one survey
+        survey_folder = "%s/%s" %(base["survey_repo"],survey)
+        if survey_folder in base["surveys"]:
+            preview_experiment(folder=survey_folder,battery_folder=base["battery_repo"],port=port)
+        else:
+            print "Invalid survey %s not found in surveys repo!" %(survey)
+
+    else:
+        print "Folder exists at %s, cannot generate." %(destination)
+
 
 def run_battery(destination=None,experiments=None,experiment_folder=None,subject_id=None,battery_folder=None,port=None,time=30):
     '''run_battery runs or previews an entire battery locally with the --run tag. If no experiments are provided, all in the folder will be used.

@@ -5,7 +5,7 @@ script.py: part of expfactory api
 Runtime executable
 
 '''
-from expfactory.views import preview_experiment, run_battery
+from expfactory.views import preview_experiment, run_battery, run_survey
 from expfactory.battery import generate, generate_local
 from expfactory.experiment import validate
 from glob import glob
@@ -23,7 +23,8 @@ def main():
     parser.add_argument("--battery", dest='battery_folder', help="full path to local battery folder to use as template", type=str, default=None)
     parser.add_argument("--time", dest='time', help="maximum number of minutes for battery to endure, to select experiments", type=int, default=99999)
     parser.add_argument('--preview', help="preview an experiment locally (development function)", dest='preview', default=False, action='store_true')
-    parser.add_argument('--run', help="run a single experiment or battery locally", dest='run', default=False, action='store_true')
+    parser.add_argument('--run', help="run a single experiment/survey or battery locally", dest='run', default=False, action='store_true')
+    parser.add_argument("--survey", dest='survey', help="survey to run for a local assessment", type=str, default=None)
     parser.add_argument('--validate', dest='validate', help="validate an experiment folder", default=False, action='store_true')
     parser.add_argument('--psiturk', dest='psiturk', help="to be used with the --generate command, to generate a psiturk battery instead of local folder deployment", default=False, action='store_true')
     parser.add_argument('--generate', dest='generate', help="generate (and don't run) a battery with --experiments to a --folder", default=False, action='store_true')
@@ -78,7 +79,18 @@ def main():
             print "No battery folder specified. Will pull latest battery from expfactory-battery repo"
 
         if args.folder == None:
-            print "No experiments folder specified. Will pull latest experiments from expfactory-experiments repo"
+            print "No experiments or surveys folder specified. Will pull latest from expfactory-experiments repo"
+
+        if args.survey != None:
+            survey = args.survey.split(",")
+            if len(survey) > 0:
+                print "Currently only support running one survey, will run first in list."
+                survey = survey[0]
+            run_survey(survey=survey,
+                       surveys_repo=args.folder,
+                       battery_repo=args.battery_folder,
+                       port=args.port,
+                       subject_id=args.subid)
 
         if args.experiments != None:
             experiments = args.experiments.split(",")
