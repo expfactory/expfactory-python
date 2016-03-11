@@ -228,15 +228,16 @@ def check_boolean(experiment_name,value,variable_name):
         return notvalid("%s: %s is not an acceptable value for %s. Must be true/false." %(experiment_name,value,varialbe_name))
 
 
-def get_experiments(experiment_repo,load=False,warning=True):
+def get_experiments(experiment_repo,load=False,warning=True,repo_type="experiments"):
     '''get_experiments
     return loaded json for all valid experiments from an experiment folder
     :param experiment_repo: full path to the experiments repo
     :param load: if True, returns a list of loaded config.json objects. If False (default) returns the paths to the experiments
+    :param repo_type: tells the user what kind of task is being parsed, default is "experiments," but can also be "surveys" when called by get_surveys
     '''
     experiments = find_directories(experiment_repo)
     valid_experiments = [e for e in experiments if validate(e,warning)]
-    print "Found %s valid experiments" %(len(valid_experiments))
+    print "Found %s valid %s" %(len(valid_experiments),repo_type)
     if load == True:
         valid_experiments = load_experiments(valid_experiments)
     return valid_experiments

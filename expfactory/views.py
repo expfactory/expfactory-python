@@ -6,7 +6,7 @@ functions for developing experiments and batteries, viewing and testing things
 '''
 
 from expfactory.utils import copy_directory, get_installdir, sub_template, get_template, save_pretty_json
-from expfactory.battery import template_experiments, get_experiment_run, generate_local
+from expfactory.battery import get_experiment_run, generate_local, move_experiments
 from expfactory.vm import custom_battery_download, get_stylejs, get_jspsych_init
 from expfactory.experiment import load_experiment, get_experiments
 from cognitiveatlas.api import get_concept, get_task
@@ -97,18 +97,28 @@ def preview_experiment(folder=None,battery_folder=None,port=None):
         httpd.server_close()
         shutil.rmtree(tmpdir)
 
-def generate_experiment_web(output_dir,experiment_folder=None,make_table=True,
-                            make_index=True,make_experiments=True,make_data=True):
+def generate_experiment_web(output_dir,experiment_folder=None,survey_folder=None,make_table=True,
+                            make_index=True,make_experiments=True,make_data=True,
+                            make_surveys=True):
     '''get_experiment_table
     Generate a table with links to preview all experiments
     :param experiment_folder: folder with experiments inside
+    :param survey_folder: folder with surveys inside
     :param output_dir: output folder for experiment and table html, and battery files 
     :param make_table: generate table.html 
     :param make_index: generate d3 visualization index  
     :param make_experiments: generate experiment preview files (linked from table and index) 
     :param make_data: generate json/tsv data to download 
+    :param make_surveys: generate static files for surveys repos 
     '''
-    tmpdir = custom_battery_download()
+    if make_surveys == True:
+        # Default downloads battery, experiments, surveys
+        tmpdir = custom_battery_download()
+        if survey_folder == None:
+            survey_folder = "%s/surveys" %tmpdir
+
+    else:
+        tmpdir = custom_battery_download(repos=["experiments","battery"])
 
     if not os.path.exists(output_dir):
         os.mkdir(output_dir)
@@ -117,16 +127,24 @@ def generate_experiment_web(output_dir,experiment_folder=None,make_table=True,
         experiment_folder = "%s/experiments" %tmpdir
     experiments = get_experiments(experiment_folder,load=True, warning=False)
     experiment_tags = [x[0]["exp_id"] for x in experiments]
+    battery_repo = "%s/battery" %(tmpdir)
+
+    # If the user wants surveys, add them on to tasks
+    tasks = experiments
+    if make_surveys == True:
+        surveys = get_experiments(survey_folder,load=True,warning=False,repo_type="surveys")
+        survey_tags = [x[0]["exp_id"] for x in surveys]
+        tasks = experiments + surveys
 
     # Fields to keep for the table
-    fields = ['preview','exp_id',
+    fields = ['preview','exp_id','template',
               'contributors','time',
               'cognitive_atlas_task_id']
 
     valid = pandas.DataFrame(columns=fields)
-
+   
     # Make a table of experiment information
-    for experiment in experiments:
+    for experiment in tasks:
         for field in experiment[0].keys():
             if field in fields:
                 values = experiment[0][field]
@@ -140,14 +158,14 @@ def generate_experiment_web(output_dir,experiment_folder=None,make_table=True,
 
         # Add a preview link
         valid.loc[experiment[0]["exp_id"],"preview"] = '<a href="%s.html" target="_blank">DEMO</a>' %(experiment[0]["exp_id"])
-
+        
     # If the user wants to create the index page
     if make_index == True:
         output_index = os.path.abspath("%s/index.html" %output_dir)
 
         # For each experiment, we will prepare an interactive node for the site
         nodes = []
-        for experiment in experiments:
+        for experiment in tasks:
             nodes.append('{"cluster": 1, "radius": "10", "color": colors[%s], "exp_id": "%s" }' %(choice([0,1,2]),experiment[0]["exp_id"]))
 
         # Generate index page
@@ -176,10 +194,17 @@ def generate_experiment_web(output_dir,experiment_folder=None,make_table=True,
     if os.path.exists(experiment_dir):
         shutil.rmtree(experiment_dir)
 
+    # Clear old surveys, copy updated valid surveys into survey directory
+    if make_surveys == True:
+        survey_dir = os.path.abspath("%s/static/surveys/" %output_dir)
+        if os.path.exists(survey_dir):
+            shutil.rmtree(survey_dir)
+        valid_surveys = ["%s/%s" %(survey_folder,x[0]["exp_id"]) for x in surveys]
+        move_experiments(valid_surveys,battery_dest=output_dir,repo_type="surveys")
+
     # Copy updated valid experiments into our experiment directory
-    battery_repo = "%s/battery" %(tmpdir)
     valid_experiments = ["%s/%s" %(experiment_folder,x[0]["exp_id"]) for x in experiments]
-    template_experiments(output_dir,battery_repo,valid_experiments)
+    move_experiments(valid_experiments,battery_dest=output_dir)
 
     # If the user wants to make a table
     if make_table == True:
@@ -225,6 +250,15 @@ def generate_experiment_web(output_dir,experiment_folder=None,make_table=True,
         for experiment in experiments:
             demo_page = os.path.abspath("%s/%s.html" %(output_dir,experiment[0]["exp_id"]))
             exp_template = get_experiment_html(experiment,"%s/%s" %(experiment_folder,experiment[0]["exp_id"]))
+            filey = open(demo_page,"wb")
+            filey.writelines(exp_template)
+            filey.close()
+
+    # if the user wants to make surveys
+    if make_surveys == True:
+        for experiment in surveys:
+            demo_page = os.path.abspath("%s/%s.html" %(output_dir,experiment[0]["exp_id"]))
+            exp_template = get_experiment_html(experiment,"%s/%s" %(survey_folder,experiment[0]["exp_id"]))
             filey = open(demo_page,"wb")
             filey.writelines(exp_template)
             filey.close()

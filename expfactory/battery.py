@@ -190,18 +190,19 @@ def add_custom_variables(custom_variables,template):
         template = sub_template(template,custom_var[0],str(custom_var[1]))
     return template
 
-def move_experiments(valid_experiments,battery_dest):
+def move_experiments(valid_experiments,battery_dest,repo_type="experiments"):
     '''move_experiments
     Moves valid experiments into the experiments folder in battery repo
     :param valid_experiments: a list of full paths to valid experiments
     :param battery_dest: full path to battery destination folder
+    :param repo_type: the kind of task to move (default is experiments)
     '''
 
     moved_experiments = []
     for valid_experiment in valid_experiments:
         try:
             experiment_folder = os.path.basename(valid_experiment)
-            copy_directory(valid_experiment,"%s/static/experiments/%s" %(battery_dest,experiment_folder))
+            copy_directory(valid_experiment,"%s/static/%s/%s" %(battery_dest,repo_type,experiment_folder))
             moved_experiments.append(valid_experiment)
         except:
            print "Cannot move %s, will not be added." %(valid_experiment)
