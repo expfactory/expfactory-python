@@ -15,14 +15,14 @@ def download_repo(repo_type,destination):
     :param repo_type: can be one of "experiments" "battery" "vm"
     :param destination: the full path to the destination for the repo
     '''
-    acceptable_types = ["experiments","battery","vm"]
+    acceptable_types = ["experiments","battery","vm","surveys"]
     if repo_type not in acceptable_types:
         print "repo_type must be in %s" %(",".join(acceptable_types))
     else:
         return Repo.clone_from("https://github.com/expfactory/expfactory-%s" %(repo_type), destination)
 
 
-def custom_battery_download(tmpdir=None,repos=["experiments","battery"]):
+def custom_battery_download(tmpdir=None,repos=["experiments","battery","surveys"]):
     '''custom_battery_download
     Download battery and experiment repos to a temporary folder to build a custom battery, return the path to the tmp folders
     :param tmpdir: The directory to download to. If none, a temporary directory will be made

@@ -4,12 +4,22 @@ Functions to work with javascript surveys
 
 '''
 
+from expfactory.experiment import get_experiments
 from glob import glob
 import pandas
 import json
 import uuid
 import re
 import os
+
+def get_surveys(survey_repo=None,load=False,warning=True,repo_type="surveys"):
+    '''get_surveys is a wrapper for "get_experiments" - the functionality is the same, but provided for users: return loaded json for all valid survyes from an surveys folder
+    :param survey_repo: full path to the surveys repo
+    :param load: if True, returns a list of loaded config.json objects. If False (default) returns the paths to the experiments
+    :param repo_type: tells the user what kind of task is being parsed, default is "experiments," but can also be "surveys" when called by get_surveys
+    '''
+    return get_experiments(experiment_repo=survey_repo,load=load,warning=warning,repo_type=repo_type)
+
 
 def get_question_types():
    '''get_question_types returns a list of possible question types
