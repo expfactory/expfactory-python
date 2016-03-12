@@ -154,8 +154,8 @@ def get_jspsych_init(experiment,deployment="local",finished_message=None):
     '''get_jspsych_init
     return entire jspsych init structure
     :param experiment: the loaded config.json for the experiment
-    :param deployment: specify to deploy local (default), or docker,docker-preview (expfactory-docker). If deployed with docker, the user is not allowed to customize function variables as this could compromise the experiment server.
-    :param finished_message: cutstom message to show at the end of the experiment with Redo and Next Experiment Buttons
+    :param deployment: specify to deploy local (default), or docker-mturk,docker-local (expfactory-docker). 
+    :param finished_message: custom message to show at the end of the experiment with Redo and Next Experiment Buttons
     '''
     jspsych_init = "jsPsych.init({\ntimeline: %s_experiment,\n" %(experiment["exp_id"])
 
@@ -165,13 +165,10 @@ def get_jspsych_init(experiment,deployment="local",finished_message=None):
     default_inits = dict()
     default_inits["local"] = {"on_finish":["jsPsych.data.localSave('%s_results.csv', 'csv');\nexpfactory_finished = true;" %(experiment["exp_id"])]}
 
-    # The user is not allowed to customize defaults for docker deployment, as this could compomise the server.
-    default_inits["docker"] = {"on_finish":["""finished_message = '<div id="finished_message" style="margin:100px"><h1>Experiment Complete</h1><p>%s</p><button id="next_experiment_button" type="button" class="btn btn-success">Next Experiment</button><button type="button" id="redo_experiment_button" class="btn btn-danger">Redo Experiment</button></div>'\n$("body").append(finished_message)\n$(".display_stage").hide()\n$(".display_stage_background").hide()\n$("#redo_experiment_button").click( function(){\njavascript:window.location.reload();\n})\n$("#next_experiment_button").click( function(){\nexpfactory.djstatus = "FINISHED";\n// Submit to AWS first to obtain the complete assignment object\n//$("#turkey_form").submit()\n$.ajax({ type: "POST",\ncontentType: "application/json",\nurl : "/sync/{{result.id}}/",\ndata : JSON.stringify(expfactory),\ndataType: "json",\nerror: function(error){\nconsole.log(error)\n},\nsuccess: function(data){\nconsole.log(data);\nconsole.log("Finished!");\ndocument.location = "{{next_page}}";\n}\n});\n});\n""" %finished_message],
+    default_inits["docker-mturk"] = {"on_finish":["""finished_message = '<div id="finished_message" style="margin:100px"><h1>Experiment Complete</h1><p>%s</p><button id="next_experiment_button" type="button" class="btn btn-success">Next Experiment</button><button type="button" id="redo_experiment_button" class="btn btn-danger">Redo Experiment</button></div>'\n$("body").append(finished_message)\n$(".display_stage").hide()\n$(".display_stage_background").hide()\n$("#redo_experiment_button").click( function(){\njavascript:window.location.reload();\n})\n$("#next_experiment_button").click( function(){\nexpfactory.djstatus = "FINISHED";\n// Submit to AWS first to obtain the complete assignment object\n//$("#turkey_form").submit()\n$.ajax({ type: "POST",\ncontentType: "application/json",\nurl : "/sync/{{result.id}}/",\ndata : JSON.stringify(expfactory),\ndataType: "json",\nerror: function(error){\nconsole.log(error)\n},\nsuccess: function(data){\nconsole.log(data);\nconsole.log("Finished!");\ndocument.location = "{{next_page}}";\n}\n});\n});\n""" %finished_message],
                                "on_data_update":["""console.log(data);\nexpfactory.recordTrialData(data);\nexpfactory.djstatus = "UPDATE";\n$.ajax({ type: "POST",\ncontentType: "application/json",\nurl : "/sync/{{result.id}}/",\ndata : JSON.stringify(expfactory),\ndataType: "json",\nsuccess: function(data){\nconsole.log(data);\nconsole.log("data update called")\n}\n});\n"""]}
     default_inits["docker-local"] = {"on_finish":["""finished_message = '<div id="finished_message" style="margin:100px"><h1>Experiment Complete</h1><p>%s</p><button id="next_experiment_button" type="button" class="btn btn-success">Next Experiment</button><button type="button" id="redo_experiment_button" class="btn btn-danger">Redo Experiment</button></div>'\n$("body").append(finished_message)\n$(".display_stage").hide()\n$(".display_stage_background").hide()\n$("#redo_experiment_button").click( function(){\njavascript:window.location.reload();\n})\n$("#next_experiment_button").click( function(){\nexpfactory.djstatus = "FINISHED";\n$.ajax({ type: "POST",\ncontentType: "application/json",\nurl : "/local/{{result.id}}/",\ndata : JSON.stringify(expfactory),\ndataType: "json",\nerror: function(error){\nconsole.log(error)\n},\nsuccess: function(data){\nconsole.log(data);\nconsole.log("Finished!");\ndocument.location = "{{next_page}}";\n}\n});\n});\n""" %finished_message],
                                "on_data_update":["""console.log(data);\nexpfactory.recordTrialData(data);\nexpfactory.djstatus = "UPDATE";\n$.ajax({ type: "POST",\ncontentType: "application/json",\nurl : "/local/{{result.id}}/",\ndata : JSON.stringify(expfactory),\ndataType: "json",\nsuccess: function(data){\nconsole.log(data);\nconsole.log("data update called")\n}\n});\n"""]}
-    default_inits["docker-preview"] = {"on_data_update":["console.log(data); expfactory.recordTrialData(data);"],
-                                       "on_finish":['console.log("Finished!");']}
 
     if "deployment_variables" in experiment:
         if "jspsych_init" in experiment["deployment_variables"]:
@@ -186,7 +183,7 @@ def get_jspsych_init(experiment,deployment="local",finished_message=None):
                          default_inits[deployment][jspsych_var] = holder
                     else:
                          default_inits[deployment][jspsych_var] = [jspsych_val]
-                elif deployment in ["docker","docker-preview","docker-local"]:
+                elif deployment in ["docker-mturk","docker-local"]:
                     if jspsych_var not in default_inits[deployment]:
                          default_inits[deployment][jspsych_var] = [jspsych_val]
 
