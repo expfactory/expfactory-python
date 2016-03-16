@@ -174,11 +174,7 @@ def get_jspsych_init(experiment,deployment="local",finished_message=None):
                                "on_data_update":["""expfactory.recordTrialData(data);\nexpfactory.djstatus = "UPDATE";\n$.ajax({ type: "POST",\ncontentType: "application/json",\nurl : "/local/{{result.id}}/",\ndata : JSON.stringify(expfactory),\ndataType: "json",\nsuccess: function(data){\nconsole.log("data update called")\n}\n});\n"""]}
     
     # Docker Preview, no saving of data
-    default_inits["docker-preview"] = {"on_finish":["""finished_message = '<div id="finished_message" style="margin:100px"><h1>Experiment Compl
-ete</h1><p>%s</p><button id="next_experiment_button" type="button" class="btn btn-success">Next Experiment</button><button type="button" id="re
-do_experiment_button" class="btn btn-danger">Redo Experiment</button></div>'\n$("body").append(finished_message)\n$(".display_stage").hide()\n$
-(".display_stage_background").hide()\n$("#redo_experiment_button").click( function(){\njavascript:window.location.reload();\n})\n$("#next_exper
-iment_button").click( function(){\nconsole.log("Finished!");\ndocument.location = "{{next_page}}";\n});\n""" %finished_message],
+    default_inits["docker-preview"] = {"on_finish":["""finished_message = '<div id="finished_message" style="margin:100px"><h1>Experiment Complete</h1><p>%s</p><button id="next_experiment_button" type="button" class="btn btn-success">Next Experiment</button><button type="button" id="redo_experiment_button" class="btn btn-danger">Redo Experiment</button></div>'\n$("body").append(finished_message)\n$(".display_stage").hide()\n$(".display_stage_background").hide()\n$("#redo_experiment_button").click( function(){\njavascript:window.location.reload();\n})\n$("#next_experiment_button").click( function(){\nconsole.log("Finished!");\ndocument.location = "{{next_page}}";\n});\n""" %finished_message],
                                "on_data_update":["""console.log(data);\n"""]}
 
 
