@@ -179,6 +179,8 @@ def validate(experiment_folder=None,warning=True):
 
             # Phaser game
             elif meta[0][field] == "phaser":
+                if not os.path.exists("%s/Run.js" %(experiment_folder)):
+                    return notvalid("%s: required Run.js main game file not found." %(experiment_name))
                 if "run" not in meta[0]["deployment_variables"]:
                     return notvalid("%s: 'run' (code) is required in deployment_variables" %(experiment_name))
 
