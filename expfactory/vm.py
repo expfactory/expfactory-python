@@ -15,14 +15,14 @@ def download_repo(repo_type,destination):
     :param repo_type: can be one of "experiments" "battery" "vm"
     :param destination: the full path to the destination for the repo
     '''
-    acceptable_types = ["experiments","battery","vm","surveys"]
+    acceptable_types = ["experiments","battery","vm","surveys","games"]
     if repo_type not in acceptable_types:
         print "repo_type must be in %s" %(",".join(acceptable_types))
     else:
         return Repo.clone_from("https://github.com/expfactory/expfactory-%s" %(repo_type), destination)
 
 
-def custom_battery_download(tmpdir=None,repos=["experiments","battery","surveys"]):
+def custom_battery_download(tmpdir=None,repos=["experiments","battery","surveys","games"]):
     '''custom_battery_download
     Download battery and experiment repos to a temporary folder to build a custom battery, return the path to the tmp folders
     :param tmpdir: The directory to download to. If none, a temporary directory will be made
@@ -130,15 +130,21 @@ def get_stylejs(experiment,url_prefix=""):
     css = ""
     scripts = experiment[0]["run"]
     tag = experiment[0]["exp_id"]
+    repo_type = "experiments"
+    if experiment[0]["template"] == "survey":
+        repo_type = "surveys"
+    elif experiment[0]["template"] == "phaser":
+        repo_type = "games"
+
     for script in scripts:
         ext = script.split(".")[-1]
 
         # Do we have a relative experiment path?
         if len(script.split("/")) == 1:
             if ext == "js":
-                js = "%s\n<script src='%sstatic/experiments/%s/%s'></script>" %(js,url_prefix,tag,script)
+                js = "%s\n<script src='%sstatic/%s/%s/%s'></script>" %(js,url_prefix,repo_type,tag,script)
             elif ext == "css":
-                css = "%s\n<link rel='stylesheet' type='text/css' href='%sstatic/experiments/%s/%s'>" %(css,url_prefix,tag,script)
+                css = "%s\n<link rel='stylesheet' type='text/css' href='%sstatic/%s/%s/%s'>" %(css,url_prefix,repo_type,tag,script)
 
         # Do we have a battery relative path?
         else:    

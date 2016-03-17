@@ -15,8 +15,8 @@ import os
 import re
 
 
-def generate_base(battery_dest,tasks=None,experiment_repo=None,survey_repo=None,
-                  add_experiments=True,add_surveys=True,battery_repo=None,warning=True):
+def generate_base(battery_dest,tasks=None,experiment_repo=None,survey_repo=None,game_repo=None,
+                  add_experiments=True,add_surveys=True,add_games=True,battery_repo=None,warning=True):
     '''generate_base returns a folder with downloaded experiments, surveys, and battery, either specified by the user or a temporary directory, to be used by generate_local and generate (for psiturk)
     :param battery_dest: [required] is the output folder for your battery. This folder MUST NOT EXIST.
     :param battery_repo: location of psiturk-battery repo to use as a template. If not specified, will be downloaded to a temporary directory
@@ -25,7 +25,7 @@ def generate_base(battery_dest,tasks=None,experiment_repo=None,survey_repo=None,
     :param tasks: a list of experiments and surveys, meaning the "exp_id" variable in the config.json, to include. This variable also conincides with the tasks folder name.
     :param warning: show warnings when validating experiments (default True)
     '''
-    if experiment_repo == None or battery_repo == None or survey_repo == None:
+    if experiment_repo == None or battery_repo == None or survey_repo == None or game_repo == None:
         tmpdir = custom_battery_download()
         if experiment_repo == None:
             experiment_repo = "%s/experiments" %(tmpdir)     
@@ -33,6 +33,9 @@ def generate_base(battery_dest,tasks=None,experiment_repo=None,survey_repo=None,
             battery_repo = "%s/battery" %(tmpdir)     
         if survey_repo == None:
             survey_repo = "%s/surveys" %(tmpdir)     
+        if game_repo == None:
+            game_repo = "%s/games" %(tmpdir)     
+
 
     # Copy battery skeleton to destination
     copy_directory(battery_repo,battery_dest)
@@ -42,17 +45,22 @@ def generate_base(battery_dest,tasks=None,experiment_repo=None,survey_repo=None,
         valid_experiments = get_experiments(experiment_repo,warning=warning)
     if add_surveys == True:
         valid_surveys = get_experiments(survey_repo,warning=warning,repo_type="surveys")
+    if add_games == True:
+        valid_games = get_experiments(game_repo,warning=warning,repo_type="games")
 
     # If the user wants to select a subset
     if tasks != None:
         valid_experiments = [x for x in valid_experiments if os.path.basename(x) in [os.path.basename(e) for e in tasks]]
         valid_surveys = [x for x in valid_surveys if os.path.basename(x) in [os.path.basename(e) for e in tasks]]
+        valid_games = [x for x in valid_games if os.path.basename(x) in [os.path.basename(e) for e in tasks]]
 
     base = {"battery_repo":battery_repo,
            "experiment_repo":experiment_repo,
            "survey_repo":survey_repo,
+           "game_repo":game_repo,
            "experiments":valid_experiments,
-           "surveys":valid_surveys}        
+           "surveys":valid_surveys,
+           "games":valid_games}        
 
     return base
 

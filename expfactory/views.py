@@ -33,16 +33,34 @@ def embed_experiment(folder,url_prefix=""):
     return get_experiment_html(experiment,folder,url_prefix=url_prefix)
 
 
-def run_survey(survey,destination=None,surveys_repo=None,battery_repo=None,port=None,subject_id=None):
+def run_single(exp_id,repo_type,destination=None,source_repo=None,battery_repo=None,port=None,subject_id=None):
     '''run_survey runs or previews an entire battery locally with the --run tag. If no experiments are provided, all in the folder will be used.
     :param destination: destination folder for battery. If none provided, tmp directory is used
-    :param survey: single survey to run (unique ID)
-    :param survey_folder: the folder of experiments to deploy the battery from.
-    :param subject_id: subject id to embed into survey. If none, will be randomly generated
+    :param exp_id: exp_id for survey, experiment, or game to run (unique ID)
+    :param repo_type: must be within experiments,surveys, or games
+    :param source_repo: a source repo for the experiment, survey, or game
+    :param subject_id: subject id to embed into result. If none, will be randomly generated
     :param battery_folder: full path to battery folder to use as a template. If none specified, the expfactory-battery repo will be used.
     :param port: the port number, default will be randomly generated between 8000 and 9999
     '''
-    print "Deploying survey %s" %(survey)
+    valid_repos = ["experiments","games","surveys"]
+    if repo_type not in valid_repos:
+        print "Repo type must be in %s" %(",".join(valid_repos))   
+
+    print "Deploying %s %s" %(repo_type[:-1],exp_id)
+
+    # Default uses downloaded repos
+    experiment_repo = None
+    survey_repo = None
+    game_repo = None
+
+    if source_repo != None:
+        if repo_type == "experiments":
+            experiment_repo = source_repo
+        elif repo_type == "surveys":
+            survey_repo = source_repo
+        elif repo_type == "games":
+            game_repo = source_repo
 
     if destination == None:
         destination = tempfile.mkdtemp()
@@ -52,8 +70,10 @@ def run_survey(survey,destination=None,surveys_repo=None,battery_repo=None,port=
     if not os.path.exists(destination):
 
         base = generate_base(battery_dest=destination,
-                             tasks=[survey],
-                             survey_repo=surveys_repo,
+                             tasks=[exp_id],
+                             survey_repo=survey_repo,
+                             experiment_repo=experiment_repo,
+                             game_repo=game_repo,
                              add_experiments = False,
                              battery_repo=battery_repo,
                              warning=False)
@@ -62,11 +82,11 @@ def run_survey(survey,destination=None,surveys_repo=None,battery_repo=None,port=
             port = choice(range(8000,9999),1)[0]
 
         # Currently only support one survey
-        survey_folder = "%s/%s" %(base["survey_repo"],survey)
-        if survey_folder in base["surveys"]:
-            preview_experiment(folder=survey_folder,battery_folder=base["battery_repo"],port=port)
+        output_folder = "%s/%s" %(base["%s_repo" %(repo_type[:-1])],exp_id)
+        if output_folder in base[repo_type]:
+            preview_experiment(folder=output_folder,battery_folder=base["battery_repo"],port=port)
         else:
-            print "Invalid survey %s not found in surveys repo!" %(survey)
+            print "Invalid %s %s not found in surveys repo!" %(repo_type[:-1],exp_id)
 
     else:
         print "Folder exists at %s, cannot generate." %(destination)
@@ -137,28 +157,30 @@ def preview_experiment(folder=None,battery_folder=None,port=None):
         httpd.server_close()
         shutil.rmtree(tmpdir)
 
-def generate_experiment_web(output_dir,experiment_folder=None,survey_folder=None,make_table=True,
-                            make_index=True,make_experiments=True,make_data=True,
-                            make_surveys=True):
+def generate_experiment_web(output_dir,experiment_folder=None,survey_folder=None,games_folder=None,
+                            make_table=True,make_index=True,make_experiments=True,make_data=True,
+                            make_surveys=True,make_games=True):
     '''get_experiment_table
     Generate a table with links to preview all experiments
     :param experiment_folder: folder with experiments inside
     :param survey_folder: folder with surveys inside
+    :param games_folder: folder with games inside
     :param output_dir: output folder for experiment and table html, and battery files 
     :param make_table: generate table.html 
     :param make_index: generate d3 visualization index  
     :param make_experiments: generate experiment preview files (linked from table and index) 
     :param make_data: generate json/tsv data to download 
     :param make_surveys: generate static files for surveys repos 
+    :param make_games: generate static files for games repos 
     '''
+    repos=["experiments","battery"]
     if make_surveys == True:
-        # Default downloads battery, experiments, surveys
-        tmpdir = custom_battery_download()
-        if survey_folder == None:
-            survey_folder = "%s/surveys" %tmpdir
+        repos.append("surveys")
 
-    else:
-        tmpdir = custom_battery_download(repos=["experiments","battery"])
+    if make_games == True:
+        repos.append("games")     
+
+    tmpdir = custom_battery_download(repos=repos)
 
     if not os.path.exists(output_dir):
         os.mkdir(output_dir)
@@ -168,13 +190,22 @@ def generate_experiment_web(output_dir,experiment_folder=None,survey_folder=None
     experiments = get_experiments(experiment_folder,load=True, warning=False)
     experiment_tags = [x[0]["exp_id"] for x in experiments]
     battery_repo = "%s/battery" %(tmpdir)
+    if survey_folder == None:
+        survey_folder = "%s/surveys" %tmpdir
+    if games_folder == None:
+        games_folder = "%s/games" %tmpdir
 
-    # If the user wants surveys, add them on to tasks
+    # If the user wants surveys and/or games, add them on to tasks
     tasks = experiments
     if make_surveys == True:
         surveys = get_experiments(survey_folder,load=True,warning=False,repo_type="surveys")
         survey_tags = [x[0]["exp_id"] for x in surveys]
         tasks = experiments + surveys
+
+    if make_games == True:
+        games = get_experiments(games_folder,load=True,warning=False,repo_type="games")
+        games_tags = [x[0]["exp_id"] for x in games]
+        tasks = tasks + games
 
     # Fields to keep for the table
     fields = ['preview','exp_id','template',
@@ -242,6 +273,14 @@ def generate_experiment_web(output_dir,experiment_folder=None,survey_folder=None
         valid_surveys = ["%s/%s" %(survey_folder,x[0]["exp_id"]) for x in surveys]
         move_experiments(valid_surveys,battery_dest=output_dir,repo_type="surveys")
 
+    # Clear old surveys, copy updated valid surveys into survey directory
+    if make_games == True:
+        games_dir = os.path.abspath("%s/static/games/" %output_dir)
+        if os.path.exists(games_dir):
+            shutil.rmtree(games_dir)
+        valid_games = ["%s/%s" %(games_folder,x[0]["exp_id"]) for x in games]
+        move_experiments(valid_games,battery_dest=output_dir,repo_type="games")
+
     # Copy updated valid experiments into our experiment directory
     valid_experiments = ["%s/%s" %(experiment_folder,x[0]["exp_id"]) for x in experiments]
     move_experiments(valid_experiments,battery_dest=output_dir)
@@ -303,6 +342,16 @@ def generate_experiment_web(output_dir,experiment_folder=None,survey_folder=None
             filey.writelines(exp_template)
             filey.close()
 
+
+    # if the user wants to make surveys
+    if make_games == True:
+        for experiment in games:
+            demo_page = os.path.abspath("%s/%s.html" %(output_dir,experiment[0]["exp_id"]))
+            exp_template = get_experiment_html(experiment,"%s/%s" %(games_folder,experiment[0]["exp_id"]))
+            filey = open(demo_page,"wb")
+            filey.writelines(exp_template)
+            filey.close()
+
     # If the user wants to make data
     if make_data == True:
         data_folder = os.path.abspath("%s/data" %output_dir)
@@ -324,17 +373,24 @@ def get_experiment_html(experiment,experiment_folder,url_prefix="",deployment="l
 
     css,js = get_stylejs(experiment,url_prefix)
 
-    # Javascript experiment
+    # JsPsych experiment
     if experiment[0]["template"] in ["jspsych"]:
-        runcode = get_experiment_run(experiment,deployment=deployment)[experiment[0]["exp_id"]]
         html = ""
+        runcode = get_experiment_run(experiment,deployment=deployment)[experiment[0]["exp_id"]]
         template_base = "experiment"
 
-    # HTML experiment
+    # HTML survey
     elif experiment[0]["template"] in ["survey"]:
         html = generate_survey(experiment,experiment_folder)
         runcode = ""
         template_base = "survey"
+
+    # Phaser game
+    elif experiment[0]["template"] in ["phaser"]:
+        html = ""
+        runcode = experiment[0]["deployment_variables"]["run"]
+        template_base = "phaser"
+
 
     exp_template = "%s/templates/%s.html" %(get_installdir(),template_base)
 
@@ -402,7 +458,7 @@ def get_cognitiveatlas_hierarchy(experiment_tags=None,get_html=False):
 
 def tmp_experiment(folder=None,battery_folder=None):
     '''generate temporary directory with experiment
-    :param folder: full path to experiment folder to preview. If none specified, PWD is used
+    :param folder: full path to experiment folder to preview (experiment, survey, or game). If none specified, PWD is used
     :param battery_folder: full path to battery folder to use as a template. If none specified, the expfactory-battery repo will be used.
     '''
     if folder==None:
@@ -418,9 +474,16 @@ def tmp_experiment(folder=None,battery_folder=None):
     experiment = load_experiment("%s" %folder)
     tag = experiment[0]["exp_id"]
 
+    # Determine experiment template
+    experiment_type = "experiments"
+    if experiment[0]["template"] == "survey":
+        experiment_type = "surveys"
+    elif experiment[0]["template"] == "phaser":
+        experiment_type = "games"
+
     # We will copy the entire experiment into the battery folder
     battery_folder = "%s/battery" %(tmpdir)
-    experiment_folder = "%s/static/experiments/%s" %(battery_folder,tag)
+    experiment_folder = "%s/static/%s/%s" %(battery_folder,experiment_type,tag)
     if os.path.exists(experiment_folder):
         shutil.rmtree(experiment_folder)
     copy_directory(folder,experiment_folder)

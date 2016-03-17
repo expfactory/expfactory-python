@@ -50,7 +50,7 @@ def dowarning(reason):
     print reason
 
 def get_valid_templates():
-    return ['jspsych','survey']
+    return ['jspsych','survey','phaser']
 
 def get_acceptable_values(package_name):
     acceptable_values = dict()
@@ -177,6 +177,10 @@ def validate(experiment_folder=None,warning=True):
                 if not os.path.exists("%s/survey.tsv" %(experiment_folder)):
                     return notvalid("%s: required survey.tsv for template survey not found." %(experiment_name))
 
+            # Phaser game
+            elif meta[0][field] == "phaser":
+                if "run" not in meta[0]["deployment_variables"]:
+                    return notvalid("%s: 'run' (code) is required in deployment_variables" %(experiment_name))
 
         # Validation for deployment_variables
         if field == "deployment_variables":

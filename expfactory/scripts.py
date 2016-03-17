@@ -5,7 +5,7 @@ script.py: part of expfactory api
 Runtime executable
 
 '''
-from expfactory.views import preview_experiment, run_battery, run_survey
+from expfactory.views import preview_experiment, run_battery, run_single
 from expfactory.battery import generate, generate_local
 from expfactory.experiment import validate
 from glob import glob
@@ -25,6 +25,7 @@ def main():
     parser.add_argument('--preview', help="preview an experiment locally (development function)", dest='preview', default=False, action='store_true')
     parser.add_argument('--run', help="run a single experiment/survey or battery locally", dest='run', default=False, action='store_true')
     parser.add_argument("--survey", dest='survey', help="survey to run for a local assessment", type=str, default=None)
+    parser.add_argument("--game", dest='game', help="game to run for a local assessment", type=str, default=None)
     parser.add_argument('--validate', dest='validate', help="validate an experiment folder", default=False, action='store_true')
     parser.add_argument('--psiturk', dest='psiturk', help="to be used with the --generate command, to generate a psiturk battery instead of local folder deployment", default=False, action='store_true')
     parser.add_argument('--generate', dest='generate', help="generate (and don't run) a battery with --experiments to a --folder", default=False, action='store_true')
@@ -79,15 +80,28 @@ def main():
             print "No battery folder specified. Will pull latest battery from expfactory-battery repo"
 
         if args.folder == None:
-            print "No experiments or surveys folder specified. Will pull latest from expfactory-experiments repo"
+            print "No experiments, games, or surveys folder specified. Will pull latest from expfactory-experiments repo"
 
         if args.survey != None:
             survey = args.survey.split(",")
             if len(survey) > 0:
                 print "Currently only support running one survey, will run first in list."
                 survey = survey[0]
-            run_survey(survey=survey,
-                       surveys_repo=args.folder,
+            run_single(exp_id=survey,
+                       repo_type="surveys",
+                       source_repo=args.folder,
+                       battery_repo=args.battery_folder,
+                       port=args.port,
+                       subject_id=args.subid)
+
+        if args.game != None:
+            game = args.game.split(",")
+            if len(game) > 0:
+                print "Currently only support running one game, will run first in list."
+                game = game[0]
+            run_single(exp_id=game,
+                       repo_type="games",
+                       source_repo=args.folder,
                        battery_repo=args.battery_folder,
                        port=args.port,
                        subject_id=args.subid)
