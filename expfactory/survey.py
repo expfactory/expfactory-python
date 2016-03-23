@@ -49,6 +49,18 @@ def get_required_string(required_boolean):
         required = "required"
     return required
 
+def parse_meta(text,options=None):
+    '''parse_meta returns fields to include in inputs for question text and options, for export
+    :param text: the text of the question (required)
+    :param options: options to include with the data (optional)
+    '''
+    text = text.replace('"',"'")
+    if options!= None:
+        options_joined =  "|".join([x.replace('"',"'") for x in options])
+        return 'meta-options="%s" meta-text="%s"' %(options_joined,text)
+    return 'meta-text="%s"' %(text)
+
+
 def create_radio(text,id_attribute,options,values,classes=None,required=0):
     '''create_radio generate a material lite radio button given a text field, and a set of options.
     :param text: The text (content) of the question to ask
@@ -65,11 +77,13 @@ def create_radio(text,id_attribute,options,values,classes=None,required=0):
     
     required = get_required_string(required)
 
+    meta = parse_meta(text,options)
+
     if len(options) == len(values):
         radio_html = "<p>%s</p>" %(text)
         for n in range(len(options)):
             option_id = "%s_%s" %(id_attribute,n)
-            radio_html = '%s\n<label class="%s" for="option-%s">\n<input type="radio" id="option-%s" class="mdl-radio__button %s" name="%s_options" value="%s">\n<span class="mdl-radio__label">%s</span>\n</label>' %(radio_html,classes,option_id,option_id,required,id_attribute,values[n],options[n])
+            radio_html = '%s\n<label class="%s" for="option-%s">\n<input type="radio" id="option-%s" class="mdl-radio__button %s" name="%s_options" value="%s" %s>\n<span class="mdl-radio__label">%s</span>\n</label>' %(radio_html,classes,option_id,option_id,required,id_attribute,values[n],meta,options[n])
         return "%s<br><br><br><br>" %(radio_html)
         
     print "ERROR: %s options provided, and only %s values. Must define one option per value." %(len(options),len(values))
@@ -88,10 +102,12 @@ def create_checkbox(text,id_attribute,options,classes=None,required=0):
 
     required = get_required_string(required)
 
+    meta = parse_meta(text,options)
+
     checkbox_html = "<p>%s</p>" %(text)
     for n in range(len(options)):
         option_id = "%s_%s" %(id_attribute,n)
-        checkbox_html = '%s\n<label class="%s" for="checkbox-%s">\n<input type="checkbox" id="checkbox-%s" class="mdl-checkbox__input %s">\n<span class="mdl-checkbox__label">%s</span>\n</label>' %(checkbox_html,classes,option_id,option_id,required,options[n])
+        checkbox_html = '%s\n<label class="%s" for="checkbox-%s">\n<input type="checkbox" id="checkbox-%s" %s class="mdl-checkbox__input %s">\n<span class="mdl-checkbox__label">%s</span>\n</label>' %(checkbox_html,classes,option_id,option_id,meta,required,options[n])
     return "%s<br><br><br>" %(checkbox_html)
     
 def base_textfield(text,box_text=None,classes=None):
@@ -123,8 +139,9 @@ def create_textfield(text,id_attribute,box_text=None,classes=None,required=0):
 
     textfield_html,box_text = base_textfield(text,box_text)
     required = get_required_string(required)
+    meta = parse_meta(text)
 
-    return '%s\n<div class="%s">\n<input class="mdl-textfield__input %s" type="text" id="%s">\n<label class="mdl-textfield__label" for="%s">%s</label>\n</div><br><br><br>' %(textfield_html,classes,required,id_attribute,id_attribute,box_text)
+    return '%s\n<div class="%s">\n<input class="mdl-textfield__input %s" type="text" id="%s" %s>\n<label class="mdl-textfield__label" for="%s">%s</label>\n</div><br><br><br>' %(textfield_html,classes,required,id_attribute,meta,id_attribute,box_text)
 
 
 def create_numeric_textfield(text,id_attribute,box_text=None,classes=None,required=0):
@@ -141,8 +158,9 @@ def create_numeric_textfield(text,id_attribute,box_text=None,classes=None,requir
 
     required = get_required_string(required)
     textfield_html,box_text = base_textfield(text,box_text)
+    meta = parse_meta(text)
 
-    return '%s\n<div class="%s">\n<input class="mdl-textfield__input %s" type="text" pattern="-?[0-9]*(\.[0-9]+)?" id="%s">\n<label class="mdl-textfield__label" for="%s">%s</label>\n<span class="mdl-textfield__error">Input is not a number!</span>\n</div><br><br><br>' %(textfield_html,classes,required,id_attribute,id_attribute,box_text)
+    return '%s\n<div class="%s">\n<input class="mdl-textfield__input %s" type="text" pattern="-?[0-9]*(\.[0-9]+)?" id="%s" %s>\n<label class="mdl-textfield__label" for="%s">%s</label>\n<span class="mdl-textfield__error">Input is not a number!</span>\n</div><br><br><br>' %(textfield_html,classes,required,id_attribute,meta,id_attribute,box_text)
 
 
 def create_select_table(text,id_attribute,df,classes=None,required=0):
@@ -160,6 +178,7 @@ def create_select_table(text,id_attribute,df,classes=None,required=0):
 
         required = get_required_string(required)
         table_html = '<p>%s</p>\n<table id="%s" class="%s">\n<thead>\n<tr>' %(text,id_attribute,classes)
+        meta = parse_meta(text)
 
         # Parse column names
         column_names = df.columns.tolist()
@@ -192,10 +211,11 @@ def create_textarea(text,id_attribute,classes=None,rows=3,required=0):
     :param required: is the question required? 0=False,1=True, default 0
     '''        
     textfield_html,box_text = base_textfield(text,box_text)
+    meta = parse_meta(text)
 
     if classes == None:
         classes = "mdl-textfield mdl-js-textfield"
-    return '%s\n<div class="%s"><textarea class="mdl-textfield__input %s" type="text" rows= "%s" id="%s" ></textarea>\n<label class="mdl-textfield__label" for="%s">%s</label></div><br><br><br>' %(textfield_html,classes,required,rows,id_attribute,id_attribute)
+    return '%s\n<div class="%s"><textarea class="mdl-textfield__input %s" type="text" rows= "%s" id="%s" %s ></textarea>\n<label class="mdl-textfield__label" for="%s">%s</label></div><br><br><br>' %(textfield_html,classes,required,rows,meta,id_attribute,id_attribute)
 
 
 def parse_questions(question_file,exp_id,delim="\t"):
@@ -245,10 +265,10 @@ def parse_questions(question_file,exp_id,delim="\t"):
                 elif question_type == "radio":
                     if not str(options) == "nan" and not str(values) == "nan":
                         new_question = create_radio(text=question_text,
-                                                      options=options.split(","),
-                                                      values = values.split(","),
-                                                      required=required,
-                                                      id_attribute=unique_id)
+                                                    options=options.split(","),
+                                                    values = values.split(","),
+                                                    required=required,
+                                                    id_attribute=unique_id)
                     else:
                         print "Radio question %s found null for options or values, skipping." %(question_text)
  

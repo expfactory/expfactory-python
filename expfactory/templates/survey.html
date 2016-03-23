@@ -51,8 +51,22 @@ $( document ).ready(function() {
 	event.preventDefault();
         
         // Save data to browser
-        var form = $(document.questions);
-        var data = "text/json;charset=utf-8," + JSON.stringify(form.serializeArray());
+        var $elements = $("#questions :input");
+        
+        var results = []
+        $elements.each(function(index, element) {
+          var result = {}
+
+          if ($.inArray( $(element).attr("name"), [ "forward", "backward", "process"] ) == -1) {
+              result.name = $(element).attr("name");
+              result.value = $(element).attr("value");
+              result.options = $(element).attr("meta-options");
+              result.text = $(element).attr("meta-text");
+              results.push(result);
+          }
+        })
+
+        var data = "text/json;charset=utf-8," + JSON.stringify(results);
         var a = document.createElement('a');
         a.title = "Download"
         a.id = "download"
@@ -64,6 +78,7 @@ $( document ).ready(function() {
             $("body").append(a)
             a.click()
         })
+
 
      // Validation
      }).validate({
