@@ -51,7 +51,9 @@ $( document ).ready(function() {
 	event.preventDefault();
         
         // Save data to browser
-        var $elements = $("input:checked");
+        var $inputs = $("input:checked");
+        var $text = $("input:text")
+        var $elements = $inputs.add(text)
         
         var results = []
         $elements.each(function(index, element) {
