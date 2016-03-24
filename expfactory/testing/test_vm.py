@@ -51,11 +51,11 @@ class TestVm(unittest.TestCase):
         self.assertTrue(re.search("expfactory_finished",init))
         self.assertTrue(re.search("jsPsych.init",init))
 
-        init = get_jspsych_init(self.config[0],deployment="docker")
+        init = get_jspsych_init(self.config[0],deployment="docker-mturk")
         self.assertTrue(re.search("{{next_page}}",init))
         self.assertTrue(re.search("jsPsych.init",init))
 
-        init = get_jspsych_init(self.config[0],deployment="docker-preview")
+        init = get_jspsych_init(self.config[0],deployment="docker-local")
         self.assertTrue(re.search("test_task_experiment",init))
         self.assertTrue(re.search("jsPsych.init",init))
         

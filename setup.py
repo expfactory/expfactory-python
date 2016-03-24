@@ -9,7 +9,7 @@ setup(
     name="expfactory",
 
     # Version number (initial):
-    version="2.4.1",
+    version="2.4.2",
 
     # Application author details:
     author="Vanessa Sochat",
@@ -25,7 +25,7 @@ setup(
     # Details
     url="http://www.github.com/expfactory",
 
-    license="LICENSE.txt",
+    license="LICENSE",
     description="Python module for managing experiment factory experiments, for deployment to a psiturk battery or docker container.",
     keywords='psiturk behavior neuroscience experiment factory docker',
 
