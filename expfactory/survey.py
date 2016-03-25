@@ -165,7 +165,7 @@ def create_numeric_textfield(text,id_attribute,box_text=None,classes="",required
     textfield_html,box_text = base_textfield(text,id_attribute,box_text)
     meta = parse_meta(text)
 
-    return '%s\n<div class="%s">\n<input class="mdl-textfield__input %s" type="text" pattern="-?[0-9]*(\.[0-9]+)?" id="%s" name="%s" %s>\n<label class="mdl-textfield__label" for="%s">%s</label>\n<span class="mdl-textfield__error">Input is not a number!</span>\n</div><br><br><br>' %(textfield_html,class_names,classes,required,id_attribute,id_attribute,meta,id_attribute,box_text)
+    return '%s\n<div class="%s">\n<input class="mdl-textfield__input %s %s" type="text" pattern="-?[0-9]*(\.[0-9]+)?" id="%s" name="%s" %s>\n<label class="mdl-textfield__label" for="%s">%s</label>\n<span class="mdl-textfield__error">Input is not a number!</span>\n</div><br><br><br>' %(textfield_html,class_names,classes,required,id_attribute,id_attribute,meta,id_attribute,box_text)
 
 
 def create_select_table(text,id_attribute,df,classes="",required=0):
@@ -275,8 +275,6 @@ def parse_questions(question_file,exp_id,delim="\t",return_requiredcount=True):
             options = question[1].option_text
             values = question[1].option_values
             required = int(question[1].required)
-            print required
-            print isinstance(required,int)
             unique_id = "%s_%s" %(exp_id,question_count)
             new_question = None
             if required == 1:
