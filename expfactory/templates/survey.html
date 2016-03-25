@@ -27,33 +27,8 @@
 </form>
 </div>
 
-<!-- Dialog will show if required questions are missing -->
-<dialog class="mdl-dialog">
-    <h4 class="mdl-dialog__title">Answers Required!</h4>
-    <div class="mdl-dialog__content">
-        <p>
-            Please answer all required questions in red.
-        </p>
-    </div>
-    <div class="mdl-dialog__actions">
-        <button type="button" class="mdl-button close">OK</button>
-    </div>
-</dialog>
-
-
 <script>
 $( document ).ready(function() {
-
-    // Register the dialog
-    var dialog = document.querySelector('dialog');
-    if (! dialog.showModal) {
-      dialogPolyfill.registerDialog(dialog);
-    }
-
-    // Close the dialog
-    dialog.querySelector('.close').addEventListener('click', function() {
-      dialog.close();
-    });
 
     expfactory_finished = false;
 
@@ -75,7 +50,7 @@ $( document ).ready(function() {
                 });
 
                 if (missing == true){
-                    dialog.showModal();
+                   alert("Please answer all required questions in red.");
                 }
             }
 
