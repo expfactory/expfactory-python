@@ -372,6 +372,7 @@ def get_experiment_html(experiment,experiment_folder,url_prefix="",deployment="l
     '''
 
     css,js = get_stylejs(experiment,url_prefix)
+    validation = ""
 
     # JsPsych experiment
     if experiment[0]["template"] in ["jspsych"]:
@@ -381,7 +382,7 @@ def get_experiment_html(experiment,experiment_folder,url_prefix="",deployment="l
 
     # HTML survey
     elif experiment[0]["template"] in ["survey"]:
-        html = generate_survey(experiment,experiment_folder)
+        html,validation = generate_survey(experiment,experiment_folder)
         runcode = ""
         template_base = "survey"
 
@@ -400,6 +401,7 @@ def get_experiment_html(experiment,experiment_folder,url_prefix="",deployment="l
     exp_template = sub_template(exp_template,"{{css}}",css)
     exp_template = sub_template(exp_template,"{{run}}",runcode)
     exp_template = sub_template(exp_template,"{{html}}",html)
+    exp_template = sub_template(exp_template,"{{validation}}",validation)
     exp_template = sub_template(exp_template,"{{exp_id}}",experiment[0]["exp_id"])
     return exp_template
 
