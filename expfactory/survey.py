@@ -230,12 +230,21 @@ def parse_validation(required_counts):
     '''
     validation = ""
     current_page = 1
-    for page_number,required_questions in required_counts.iteritems():
+    pages = required_counts.keys()
+    pages.sort()
+    for page_number in pages:
+        required_questions = required_counts[page_number]
         if current_page == 1:
             validation = "%s if ( state.stepIndex === %s ) {\n" %(validation,page_number)
         else:
             validation = "%s else if ( state.stepIndex === %s ) {\n" %(validation,page_number)
-        validation = '%s if ($(".page%s.required:checked").length != %s){\nis_required($(".page%s.required:not(checked)"));\nreturn false;\n}}' %(validation,page_number,required_questions,page_number)
+        validation = '%s if ($(".page%s.required:checked").length != %s){\nis_required($(".page%s.required:not(checked)"));\nreturn false;\n' %(validation,page_number,required_questions,page_number)
+        # If we are at the last page, passing validation should enable the submit
+        if page_number == pages[-1]:
+            validation = '%s } else {\nexpfactory_finished=true;\n' %(validation)
+        validation = '%s}}' %(validation)
+        current_page+=1
+
     return validation
 
 def parse_questions(question_file,exp_id,delim="\t",return_requiredcount=True):
