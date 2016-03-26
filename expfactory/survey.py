@@ -247,11 +247,11 @@ def parse_validation(required_counts):
 
     return validation
 
-def parse_questions(question_file,exp_id,delim="\t",return_requiredcount=True):
-    '''parse_questions reads in a text file, separated by delim, into a pandas data frame, checking that all column names are provided.
-    :param question_file: a TAB separated file to be read with experiment questions. Will also be validated for columns names.
-    :param exp_id: the experiment unique id, to be used to generate question ids
-    :param return_requiredcount: if True, will return questions,page_count where page_count is a dictionary to look up the number of required questions on each page {1:10}
+
+def read_survey_file(question_file,delim="\t"):
+    ''''read_survey_file reads in a survey file, and returns a DataFrame with columns. If there is an error, None is returned, and the error is printed to the screen.
+    :param question_file: the survey.tsv (or other) questions file
+    :param delim: the delimiter of the question_file
     '''
     df = pandas.read_csv(question_file,sep=delim)
     required_columns = ["question_type","question_text","page_number","option_text","option_values","required"]
@@ -268,6 +268,21 @@ def parse_questions(question_file,exp_id,delim="\t",return_requiredcount=True):
 
     # Make sure all required columns are included
     if len([x for x in required_columns if x in acceptable_columns]) == len(required_columns):
+        df.columns = acceptable_columns
+        return df
+    else:
+        missing_columns = [x for x in required_columns if x not in acceptable_columns]
+        print "Question file is missing required columns %s" %(",".join(missing_columns))
+        return None
+
+def parse_questions(question_file,exp_id,delim="\t",return_requiredcount=True):
+    '''parse_questions reads in a text file, separated by delim, into a pandas data frame, checking that all column names are provided.
+    :param question_file: a TAB separated file to be read with experiment questions. Will also be validated for columns names.
+    :param exp_id: the experiment unique id, to be used to generate question ids
+    :param return_requiredcount: if True, will return questions,page_count where page_count is a dictionary to look up the number of required questions on each page {1:10}
+    '''
+    df = read_survey_file(question_file,delim=delim)
+    if isinstance(df,pandas.DataFrame):
  
         # Each question will have id [exp_id][question_count] with appended _[count] for options
         question_count = 0
@@ -390,7 +405,7 @@ def generate_survey(experiment,experiment_folder,form_action="#",classes=None,su
     validation = parse_validation(required_count)
 
     if questions != None:
-        survey = '<div class="%s">\n<div class="experiment-ribbon"></div>\n<main class="experiment-main mdl-layout__content">\n<div class="experiment-container mdl-grid">\n<div class="mdl-cell mdl-cell--2-col mdl-cell--hide-tablet mdl-cell--hide-phone">\n</div>\n<div class="experiment-content mdl-color--white mdl-shadow--4dp content mdl-color-text--grey-800 mdl-cell mdl-cell--8-col">\n\n<div id="questions">\n\n<form name="questions" action="%s">' %(classes,form_action)
+        survey = '<div class="%s">\n<div class="experiment-ribbon"></div>\n<main class="experiment-main mdl-layout__content">\n<div class="experiment-container mdl-grid">\n<div class="mdl-cell mdl-cell--2-col mdl-cell--hide-tablet mdl-cell--hide-phone">\n</div>\n<div class="experiment-content mdl-color--white mdl-shadow--4dp content mdl-color-text--grey-800 mdl-cell mdl-cell--8-col">\n\n<div id="questions">\n\n<form name="questions" action="%s", method="POST">' %(classes,form_action)
 
         for question in questions:
             survey = "%s\n%s" %(survey,question)       

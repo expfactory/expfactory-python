@@ -280,14 +280,14 @@ def load_experiment(experiment_folder):
         print "Problem reading config.json, %s" %(e)
         raise
 
-def find_changed(new_repo,comparison_repo,return_experiments=True):
+def find_changed(new_repo,comparison_repo,return_experiments=True,repo_type="experiments"):
     '''find_changed returns a list of changed files or experiments between two repos
     :param new_repo: the updated repo - any new files, or changed files, will be returned
     :param comparison_repo: the old repo to compare against. A file changed or missing in this repo in the new_repo indicates it should be tested
     :param return_experiments: return experiment folders. Default is True. If False, will return complete file list
     ''' 
     # First find all experiment folders in current repo
-    experiment_folders = get_experiments(new_repo,load=False,warning=False)
+    experiment_folders = get_experiments(new_repo,load=False,warning=False,repo_type=repo_type)
     file_list = []
     # Find all files
     for experiment_folder in experiment_folders:
@@ -297,7 +297,7 @@ def find_changed(new_repo,comparison_repo,return_experiments=True):
     # Compare against master
     changed_files = []
     for contender_file in file_list:
-        old_file = contender_file.replace("%s/expfactory-experiments" %(os.environ["HOME"]),comparison_repo)
+        old_file = contender_file.replace("%s/expfactory-%s" %(os.environ["HOME"],repo_type),comparison_repo)
         # If the old file exists, check if it's changed
         if os.path.exists(old_file):
             if not filecmp.cmp(old_file,contender_file):

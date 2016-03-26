@@ -6,6 +6,7 @@ tests for experiments and batteries, not for expfactory-python
 from selenium.common.exceptions import WebDriverException, UnexpectedAlertPresentException
 from expfactory.experiment import validate, get_experiments, load_experiment, find_changed
 from expfactory.views import generate_experiment_web, tmp_experiment
+from expfactory.survey import read_survey_file, parse_questions, parse_validation
 from numpy.testing import assert_equal, assert_string_equal
 from expfactory.utils import find_directories, get_url
 from selenium.webdriver.common.keys import Keys
@@ -47,6 +48,89 @@ def validate_experiment_directories(experiment_folder):
     for contender in experiments:
         assert_equal(validate(contender),True)
 
+## GENERAL VALIDATION #############################################################################
+
+
+def validate_circle_yml(experiment_repo,repo_type="experiments"):
+    '''validate_circle_yml will make sure that all experiment folders in a repo are tested with circle_ci_test in the circle.yml
+    :param experiment_repo: the experiment repo folder that contains experiment subdirectories with config.json files
+    '''
+    if "CIRCLE_BRANCH" in os.environ.keys():
+        circle_yml_file = "%s/circle.yml" %experiment_repo
+        assert_equal(os.path.exists(circle_yml_file),True)
+        circle_yml_file = open(circle_yml_file,"r")
+        circle_yml = "".join([x.strip("\n").replace(" ","").replace("'","").replace('"',"") for x in circle_yml_file.readlines()])
+        circle_yml = circle_yml.replace("(","").replace(")","")
+        experiments = get_experiments(experiment_repo,load=True,warning=False,repo_type=repo_type)
+        tags = [x[0]["exp_id"] for x in experiments] 
+
+        for tag in tags:
+            print "TESTING if %s defined for circle ci testing in circle.yml..." %tag
+            if repo_type == "experiments":
+                assert_equal(re.search("circle_ci_test%s" %tag,circle_yml)!=None,True)
+            elif repo_type == "surveys":
+                assert_equal(re.search("circle_ci_survey%s" %tag,circle_yml)!=None,True)
+    else:
+       print "Not in a continuous integration (CircleCI) environment, skipping test."
+    print "All experiments found in circle.yml for testing!"
+
+
+
+## SURVEYS ########################################################################################
+
+def circle_ci_survey(survey_tags,survey_repo=None,delete=True,survey_file="survey.tsv"):
+    '''circle_ci_survey checks format of surveys.tsv file
+    :param survey_tags: list of survey folders (exp_id variables) to test
+    :param survey_repo: folder with experiments to test. If None, will pull from master branch
+    :param delete: delete experiment folders when finished
+    '''
+
+    if isinstance(survey_tags,str):
+        survey_tags = [survey_tags]
+
+    # If we are running on circle, only test changed experiments
+    if "CIRCLE_BRANCH" in os.environ.keys():
+
+        print "DETECTED CONTINUOUS INTEGRATION ENVIRONMENT..."
+
+        master_folder = os.path.abspath(os.path.join(os.getcwd(),"master"))
+        if not os.path.exists(master_folder):
+            os.mkdir(master_folder)
+            download_repo("surveys",master_folder)
+        changed_surveys = [os.path.split(x)[-1] for x in find_changed(os.getcwd(),master_folder)]    
+        changed_surveys = [e for e in survey_tags if e in changed_surveys]
+        
+    if len(changed_surveys) > 0:
+        validate_surveys(survey_tags=changed_surveys,survey_repo=master_folder,survey_file=survey_file)
+    else:
+        print "Skipping surveys %s, no changes detected." %(",".join(surveys_tags))
+
+
+def validate_surveys(survey_tags,survey_repo,survey_file="survey.tsv",delim="\t"):
+    '''validate_surveys validates an experiment factory survey folder
+    :param survey_tags: a list of surveys to validate
+    :param survey_repo: the survey repo with the survey folders to validate
+    :param survey_file: the default file to validate
+    '''
+    if isinstance(survey_tags,str):
+        survey_tags = [survey_tags]
+
+    for survey_tag in survey_tags:
+        survey_folder = "%s/%s" %(survey_repo,survey_tag)
+        print "Testing load of config.json for %s" %(survey_folder)
+        survey = load_experiment("%s" %survey_folder)
+        survey_file = "%s/%s" %(survey_folder,survey_tag)       
+        print "Testing valid columns in %s" %(survey[0]["exp_id"])
+        df = read_survey_file(survey_file,delim=delim)
+        assert_equal(isinstance(df,pandas.DataFrame),True)
+        print "Testing survey generation of %s" %(survey[0]["exp_id"])
+        questions,required_count = parse_questions(survey_file,exp_id=survey[0]["exp_id"])
+        print "Testing validation generation of %s" %(survey[0]["exp_id"])
+        validation = parse_validation(required_count)
+      
+
+## EXPERIMENTS ####################################################################################
+
 def validate_experiment_tag(experiment_folder):
     '''validate_experiment_tag looks for definition of exp_id as the tag somewhere in experiment.js. We are only requiring one definition for now (a more lax approach), but this standard might be changed.
     '''
@@ -77,26 +161,6 @@ def validate_experiment_tag(experiment_folder):
                     line_number = line_numbers[e]
                     print "Checking %s on line %s..." %(exp_id_instance[0],line_number)
                     assert_equal(re.search(tag,exp_id_instance[0])!=None,True) 
-
-def validate_circle_yml(experiment_repo):
-    '''validate_circle_yml will make sure that all experiment folders in a repo are tested with circle_ci_test in the circle.yml
-    :param experiment_repo: the experiment repo folder that contains experiment subdirectories with config.json files
-    '''
-    if "CIRCLE_BRANCH" in os.environ.keys():
-        experiments = get_experiments(experiment_repo,load=True,warning=False)
-        circle_yml_file = "%s/circle.yml" %experiment_repo
-        assert_equal(os.path.exists(circle_yml_file),True)
-        tags = [x[0]["exp_id"] for x in experiments] 
-        circle_yml_file = open(circle_yml_file,"r")
-        circle_yml = "".join([x.strip("\n").replace(" ","").replace("'","").replace('"',"") for x in circle_yml_file.readlines()])
-        circle_yml = circle_yml.replace("(","").replace(")","")
-        for tag in tags:
-            print "TESTING if %s defined for circle ci testing in circle.yml..." %tag
-            assert_equal(re.search("circle_ci_test%s" %tag,circle_yml)!=None,True)
-    else:
-       print "Not in a continuous integration (CircleCI) environment, skipping test."
-    print "All experiments found in circle.yml for testing!"
-
 
 def circle_ci_test(experiment_tags,web_folder,experiment_repo=None,delete=True,pause_time=500):
     '''circle_ci_test
