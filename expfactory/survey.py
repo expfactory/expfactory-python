@@ -282,6 +282,7 @@ def parse_questions(question_file,exp_id,delim="\t",return_requiredcount=True):
     :param return_requiredcount: if True, will return questions,page_count where page_count is a dictionary to look up the number of required questions on each page {1:10}
     '''
     df = read_survey_file(question_file,delim=delim)
+    acceptable_types = get_question_types()
     if isinstance(df,pandas.DataFrame):
  
         # Each question will have id [exp_id][question_count] with appended _[count] for options
