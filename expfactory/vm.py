@@ -8,6 +8,7 @@ from git import Repo
 import tempfile
 import shutil
 import os
+import re
 
 def download_repo(repo_type,destination):
     '''download_repo
@@ -145,6 +146,13 @@ def get_stylejs(experiment,url_prefix=""):
                 js = "%s\n<script src='%sstatic/%s/%s/%s'></script>" %(js,url_prefix,repo_type,tag,script)
             elif ext == "css":
                 css = "%s\n<link rel='stylesheet' type='text/css' href='%sstatic/%s/%s/%s'>" %(css,url_prefix,repo_type,tag,script)
+
+        # Do we have an https/https path?
+        elif re.search("^http",script):
+            if ext == "js":
+                js = "%s\n<script src='%s'></script>" %(js,script)
+            elif ext == "css":
+                css = "%s\n<link rel='stylesheet' type='text/css' href='%s'>" %(css,script)
 
         # Do we have a battery relative path?
         else:    
