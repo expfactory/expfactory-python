@@ -286,7 +286,6 @@ def parse_questions(question_file,exp_id,delim="\t",return_requiredcount=True):
  
         # Each question will have id [exp_id][question_count] with appended _[count] for options
         question_count = 0
-        df.columns = acceptable_columns
         questions = []
         current_page_number = 1
         current_page = '<div class="step">'
