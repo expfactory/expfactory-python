@@ -93,15 +93,16 @@ def circle_ci_survey(survey_tags,survey_repo=None,delete=True,survey_file="surve
 
         print "DETECTED CONTINUOUS INTEGRATION ENVIRONMENT..."
 
-        master_folder = os.path.abspath(os.path.join(os.getcwd(),"master"))
+        survey_repo = os.getcwd()
+        master_folder = os.path.abspath(os.path.join(survey_repo,"master"))
         if not os.path.exists(master_folder):
             os.mkdir(master_folder)
             download_repo("surveys",master_folder)
-        changed_surveys = [os.path.split(x)[-1] for x in find_changed(os.getcwd(),master_folder)]    
+        changed_surveys = [os.path.split(x)[-1] for x in find_changed(survey_repo,master_folder,repo_type="surveys")]    
         changed_surveys = [e for e in survey_tags if e in changed_surveys]
         
     if len(changed_surveys) > 0:
-        validate_surveys(survey_tags=changed_surveys,survey_repo=master_folder,survey_file=survey_file)
+        validate_surveys(survey_tags=changed_surveys,survey_repo=survey_repo,survey_file=survey_file)
     else:
         print "Skipping surveys %s, no changes detected." %(",".join(survey_tags))
 
@@ -119,7 +120,7 @@ def validate_surveys(survey_tags,survey_repo,survey_file="survey.tsv",delim="\t"
         survey_folder = "%s/%s" %(survey_repo,survey_tag)
         print "Testing load of config.json for %s" %(survey_folder)
         survey = load_experiment("%s" %survey_folder)
-        survey_file = "%s/%s" %(survey_folder,survey_tag)       
+        survey_file = "%s/%s" %(survey_folder,survey_file)       
         print "Testing valid columns in %s" %(survey[0]["exp_id"])
         df = read_survey_file(survey_file,delim=delim)
         assert_equal(isinstance(df,pandas.DataFrame),True)
