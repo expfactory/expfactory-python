@@ -103,7 +103,7 @@ def circle_ci_survey(survey_tags,survey_repo=None,delete=True,survey_file="surve
     if len(changed_surveys) > 0:
         validate_surveys(survey_tags=changed_surveys,survey_repo=master_folder,survey_file=survey_file)
     else:
-        print "Skipping surveys %s, no changes detected." %(",".join(surveys_tags))
+        print "Skipping surveys %s, no changes detected." %(",".join(survey_tags))
 
 
 def validate_surveys(survey_tags,survey_repo,survey_file="survey.tsv",delim="\t"):
