@@ -257,7 +257,6 @@ def read_survey_file(question_file,delim="\t"):
     required_columns = ["question_type","question_text","page_number","option_text","option_values","required"]
     optional_columns = ["variables"]
     acceptable_types = get_question_types()
-    required_counts = dict()
 
     # Parse column names, ensure lower case, check that are valid
     column_names = [x.lower() for x in df.columns.tolist()]
@@ -283,6 +282,8 @@ def parse_questions(question_file,exp_id,delim="\t",return_requiredcount=True):
     '''
     df = read_survey_file(question_file,delim=delim)
     acceptable_types = get_question_types()
+    required_counts = dict()
+
     if isinstance(df,pandas.DataFrame):
  
         # Each question will have id [exp_id][question_count] with appended _[count] for options
