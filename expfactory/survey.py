@@ -405,12 +405,12 @@ def generate_survey(experiment,experiment_folder,form_action="#",classes=None,su
 
     # Get validation code based on maximum page value
     validation = parse_validation(required_count)
-    csrf_token = ""
+    token = ""
     if csrf_token == True:
-        csrf_token = "{% csrf_token %}"
+        token = "{% csrf_token %}"
 
     if questions != None:
-        survey = '<div class="%s">\n<div class="experiment-ribbon"></div>\n<main class="experiment-main mdl-layout__content">\n<div class="experiment-container mdl-grid">\n<div class="mdl-cell mdl-cell--2-col mdl-cell--hide-tablet mdl-cell--hide-phone">\n</div>\n<div class="experiment-content mdl-color--white mdl-shadow--4dp content mdl-color-text--grey-800 mdl-cell mdl-cell--8-col">\n\n<div id="questions">\n\n<form name="questions" action="%s", method="POST">%s' %(classes,form_action,csrf_token)
+        survey = '<div class="%s">\n<div class="experiment-ribbon"></div>\n<main class="experiment-main mdl-layout__content">\n<div class="experiment-container mdl-grid">\n<div class="mdl-cell mdl-cell--2-col mdl-cell--hide-tablet mdl-cell--hide-phone">\n</div>\n<div class="experiment-content mdl-color--white mdl-shadow--4dp content mdl-color-text--grey-800 mdl-cell mdl-cell--8-col">\n\n<div id="questions">\n\n<form name="questions" action="%s", method="POST">%s' %(classes,form_action,token)
 
         for question in questions:
             survey = "%s\n%s" %(survey,question)       
