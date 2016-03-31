@@ -384,7 +384,7 @@ def parse_questions(question_file,exp_id,delim="\t",return_requiredcount=True):
 
 
 
-def generate_survey(experiment,experiment_folder,form_action="#",classes=None,survey_file="survey.tsv",get_validation=True):
+def generate_survey(experiment,experiment_folder,form_action="#",classes=None,survey_file="survey.tsv",get_validation=True,csrf_token=False):
     '''generate_survey takes a list of questions and outputs html for an expfactory survey, and validation code
     :param experiment: The experiment loaded config.json
     :param experiment_folder: should contain survey.tsv, a TAB separated file with question data. Will be read into a pandas data frame, and columns must follow expfactory standard. Data within columns is separated by commas.
@@ -392,6 +392,7 @@ def generate_survey(experiment,experiment_folder,form_action="#",classes=None,su
     :param classes: the classes to apply to the outer content div. If none, default will be used
     :param survey_file: the survey file, should be survey.tsv for a valid survey experiment
     :param get_validation: get code for validation, default is True
+    :param csrf_token: if true, include django code for csrf_token ({% csrf_token %})
     '''       
     if classes == None:
         classes = "experiment-layout mdl-layout mdl-layout--fixed-header mdl-js-layout mdl-color--grey-100"
@@ -404,9 +405,12 @@ def generate_survey(experiment,experiment_folder,form_action="#",classes=None,su
 
     # Get validation code based on maximum page value
     validation = parse_validation(required_count)
+    csrf_token = ""
+    if csrf_token == True:
+        csrf_token = "{% csrf_token %}"
 
     if questions != None:
-        survey = '<div class="%s">\n<div class="experiment-ribbon"></div>\n<main class="experiment-main mdl-layout__content">\n<div class="experiment-container mdl-grid">\n<div class="mdl-cell mdl-cell--2-col mdl-cell--hide-tablet mdl-cell--hide-phone">\n</div>\n<div class="experiment-content mdl-color--white mdl-shadow--4dp content mdl-color-text--grey-800 mdl-cell mdl-cell--8-col">\n\n<div id="questions">\n\n<form name="questions" action="%s", method="POST">' %(classes,form_action)
+        survey = '<div class="%s">\n<div class="experiment-ribbon"></div>\n<main class="experiment-main mdl-layout__content">\n<div class="experiment-container mdl-grid">\n<div class="mdl-cell mdl-cell--2-col mdl-cell--hide-tablet mdl-cell--hide-phone">\n</div>\n<div class="experiment-content mdl-color--white mdl-shadow--4dp content mdl-color-text--grey-800 mdl-cell mdl-cell--8-col">\n\n<div id="questions">\n\n<form name="questions" action="%s", method="POST">%s' %(classes,form_action,csrf_token)
 
         for question in questions:
             survey = "%s\n%s" %(survey,question)       
