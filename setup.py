@@ -9,7 +9,7 @@ setup(
     name="expfactory",
 
     # Version number (initial):
-    version="2.5.16",
+    version="2.5.17",
 
     # Application author details:
     author="Vanessa Sochat",
