@@ -244,6 +244,7 @@ def export_radio(text,id_attribute,options,values,required=0):
     if len(options) == len(values):
         question_list["id"] = "%s_options" %(id_attribute)
         question_list["required"] = required
+        question_list["text"] = text
         option_list = []
         for n in range(len(options)):
             option_id = "%s_%s" %(id_attribute,n)
@@ -261,6 +262,7 @@ def export_checkbox(text,id_attribute,options,required=0):
     question_list = {}
     question_list["id"] = "%s_options" %(id_attribute)
     question_list["required"] = required
+    question_list["text"] = text
     option_list = []
     for n in range(len(options)):
         option_id = "%s_%s" %(id_attribute,n)
