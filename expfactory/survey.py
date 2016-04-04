@@ -27,6 +27,8 @@ def get_question_types():
    return ["radio","checkbox","textfield","textarea","numeric","table","instruction"]
 
 
+# CREATION FUNCTIONS ##############################################################################
+
 def create_instruction(text,id_attribute,tag="h2"):
     '''create_instruction creates a tag of type [tag] with some text inside, useful for description or instructions.
     :param text: the text to give in the instruction.
@@ -223,6 +225,67 @@ def create_textarea(text,id_attribute,classes="",rows=3,required=0):
     return '%s\n<div class="%s"><textarea class="mdl-textfield__input %s %s" type="text" rows="%s" id="%s" name="%s" %s ></textarea>\n<label class="mdl-textfield__label" for="%s">%s</label></div><br><br><br>' %(textfield_html,class_names,classes,required,rows,id_attribute,id_attribute,meta,id_attribute,box_text)
 
 
+# EXPORT FUNCTIONS ##############################################################################
+
+def export_instruction(text,id_attribute,required=0):
+    return {"text":text,"id":id_attribute,"required":required}
+
+def export_radio(text,id_attribute,options,values,required=0):
+    '''export_radio returns a json data structure of the question
+    :param text: The text (content) of the question to ask
+    :param id_attribute: the unique id for the question
+    :param options: a list of text options for the user to select from (not the value of the field)
+    :param values: a list of values for corresponding options
+    :param required: is the question required? 0=False,1=True, default 0
+    ''' 
+    options,values = format_options_values(options,values)    
+    question_list = {}
+
+    if len(options) == len(values):
+        question_list["id"] = "%s_options" %(id_attribute)
+        question_list["required"] = required
+        question_list["text"] = text
+        option_list = []
+        for n in range(len(options)):
+            option_id = "%s_%s" %(id_attribute,n)
+            option_list.append({"id":option_id,"value":values[n],"text":options[n]})
+        question_list["options"] = option_list
+    return question_list
+
+def export_checkbox(text,id_attribute,options,required=0):
+    '''export_checkbox returns json data structure to describe checkbox
+    :param text: The text (content) of the question to ask
+    :param options: a list of text options for the user to select from
+    :param id_attribute: the unique id for the question
+    :param required: is the question required? 0=False,1=True, default 0
+    '''        
+    question_list = {}
+    question_list["id"] = "%s_options" %(id_attribute)
+    question_list["required"] = required
+    question_list["text"] = text
+    option_list = []
+    for n in range(len(options)):
+        option_id = "%s_%s" %(id_attribute,n)
+        option_list.append({"id":option_id,"text":options[n]})
+    question_list["options"] = option_list
+    return question_list
+
+
+def export_textfield(text,id_attribute,required=0):
+    '''create_textfield generates a material lite text field given a text prompt.
+    :param text: Any text content to precede the question field (default is None)
+    :param id_attribute: the unique id for the question
+    :param required: is the question required? 0=False,1=True, default 0
+    '''   
+    question_list = {}
+    question_list["id"] = id_attribute
+    question_list["required"] = required
+    question_list["text"] = text
+    return question_list
+
+
+# PARSING FUNCTIONS ############################################################################
+
 def parse_validation(required_counts):
     '''parse_validation parses code to validate each step
     :param page_count: the total number of pages for the survey (called "steps")
@@ -384,8 +447,7 @@ def parse_questions(question_file,exp_id,delim="\t",return_requiredcount=True):
         return None
 
 
-
-def generate_survey(experiment,experiment_folder,form_action="#",classes=None,survey_file="survey.tsv",get_validation=True):
+def generate_survey(experiment,experiment_folder,form_action="#",classes=None,survey_file="survey.tsv",get_validation=True,csrf_token=False):
     '''generate_survey takes a list of questions and outputs html for an expfactory survey, and validation code
     :param experiment: The experiment loaded config.json
     :param experiment_folder: should contain survey.tsv, a TAB separated file with question data. Will be read into a pandas data frame, and columns must follow expfactory standard. Data within columns is separated by commas.
@@ -393,6 +455,7 @@ def generate_survey(experiment,experiment_folder,form_action="#",classes=None,su
     :param classes: the classes to apply to the outer content div. If none, default will be used
     :param survey_file: the survey file, should be survey.tsv for a valid survey experiment
     :param get_validation: get code for validation, default is True
+    :param csrf_token: if true, include django code for csrf_token ({% csrf_token %})
     '''       
     if classes == None:
         classes = "experiment-layout mdl-layout mdl-layout--fixed-header mdl-js-layout mdl-color--grey-100"
@@ -405,9 +468,12 @@ def generate_survey(experiment,experiment_folder,form_action="#",classes=None,su
 
     # Get validation code based on maximum page value
     validation = parse_validation(required_count)
+    token = ""
+    if csrf_token == True:
+        token = "{% csrf_token %}"
 
     if questions != None:
-        survey = '<div class="%s">\n<div class="experiment-ribbon"></div>\n<main class="experiment-main mdl-layout__content">\n<div class="experiment-container mdl-grid">\n<div class="mdl-cell mdl-cell--2-col mdl-cell--hide-tablet mdl-cell--hide-phone">\n</div>\n<div class="experiment-content mdl-color--white mdl-shadow--4dp content mdl-color-text--grey-800 mdl-cell mdl-cell--8-col">\n\n<div id="questions">\n\n<form name="questions" action="%s", method="POST">' %(classes,form_action)
+        survey = '<div class="%s">\n<div class="experiment-ribbon"></div>\n<main class="experiment-main mdl-layout__content">\n<div class="experiment-container mdl-grid">\n<div class="mdl-cell mdl-cell--2-col mdl-cell--hide-tablet mdl-cell--hide-phone">\n</div>\n<div class="experiment-content mdl-color--white mdl-shadow--4dp content mdl-color-text--grey-800 mdl-cell mdl-cell--8-col">\n\n<div id="questions">\n\n<form name="questions" action="%s", method="POST">%s' %(classes,form_action,token)
 
         for question in questions:
             survey = "%s\n%s" %(survey,question)       
@@ -416,3 +482,75 @@ def generate_survey(experiment,experiment_folder,form_action="#",classes=None,su
         return survey
     else:
         print "ERROR: parsing input text file survey.tsv. Will not generate survey HTML"
+
+
+def export_questions(experiment,experiment_folder,survey_file="survey.tsv",delim="\t"):
+    '''export_questions reads in a text file, separated by delim, and returns a json data structure with questions to look up
+    :param question_file: a TAB separated file to be read with experiment questions. Will also be validated for columns names.
+    :param exp_id: the experiment unique id, to be used to generate question ids
+    :param experiment_folder: should contain survey.tsv, a TAB separated file with question data. Will be read into a pandas data frame, and columns must follow expfactory standard. Data within columns is separated by commas.
+    :param survey_file: the survey file, should be survey.tsv for a valid survey experiment
+    '''
+    exp_id = experiment[0]["exp_id"]
+    question_file = "%s/%s" %(experiment_folder,survey_file)
+    df = read_survey_file(question_file,delim=delim)
+    acceptable_types = get_question_types()
+
+    if isinstance(df,pandas.DataFrame):
+ 
+        # Each question will have id [exp_id][question_count] with appended _[count] for options
+        question_count = 0
+        questions = dict()
+        for question in df.iterrows():
+
+            question_type = question[1].question_type
+            question_text = question[1].question_text
+            page_number = question[1].page_number
+            page_class = "page%s" %(page_number)
+            options = question[1].option_text
+            values = question[1].option_values
+            required = int(question[1].required)
+            unique_id = "%s_%s" %(exp_id,question_count)
+            new_question = None
+
+            if question_type in acceptable_types:
+
+                # Instruction block / text
+                if question_type == "instruction":
+                    new_question = export_instruction(question_text,
+                                                      id_attribute=unique_id,
+                                                      required=required)
+                
+                # Radio button
+                elif question_type == "radio":
+                    if not str(options) == "nan" and not str(values) == "nan":
+                        new_question = export_radio(text=question_text,
+                                                    options=options.split(","),
+                                                    values = values.split(","),
+                                                    required=required,
+                                                    id_attribute=unique_id)
+                    else:
+                        print "Radio question %s found null for options or values, skipping." %(question_text)
+ 
+                # Checkbox
+                elif question_type == "checkbox":
+                    if not str(options) == "nan":
+                        new_question = export_checkbox(text=question_text,
+                                                       options=options.split(","),
+                                                       required=required,
+                                                       id_attribute=unique_id)
+                    else:
+                        print "Checkbox question %s found null for options, skipping." %(question_text)
+
+                # Textareas and Textfields, regular and numeric
+                elif question_type in ["textarea","textfield","numeric"]:
+                    new_question = export_textfield(question_text,
+                                                   required=required,
+                                                   id_attribute=unique_id)
+ 
+                question_count+=1
+                questions[new_question["id"]] = new_question
+
+        return questions
+    else:
+        return None
