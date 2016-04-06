@@ -2,13 +2,16 @@
 
 [![Circle CI](https://circleci.com/gh/expfactory/expfactory-python.svg?style=svg)](https://circleci.com/gh/expfactory/expfactory-python)
 
-Python module for managing [experiment factory javascript experiment files](https://github.com/expfactory/expfactory-experiments), a [psiturk battery](https://github.com/expfactory/expfactory-battery), and a [virtual machine](https://github.com/expfactory/expfactory-vm) to host the compilation of these things.  We currently have support for just psiturk batteries, and other integrations will come shortly. You can use the functions to control these components, or just install the module and run to create an entire experiment using a web interface.
+Python module for managing expriment-factory [experiments](https://github.com/expfactory/expfactory-experiments), [surveys](https://github.com/expfactory/expfactory-surveys), [games](https://github.com/expfactory/expfactory-games), a [psiturk battery](https://github.com/expfactory/expfactory-battery), a [docker deployment](https://github.com/expfactory/expfactory-docker), and a [virtual machine](https://github.com/expfactory/expfactory-vm) to host the compilation of these things. You can use the functions to control these components, or just install the module and run to create an entire experiment using a web interface.
 
-Please see our [documentation](http://expfactory.github.io/) for more complete details.
+- Please see our [documentation](http://expfactory.readthedocs.org/en/latest/getting-started.html) for more complete details.
+- Jump in and [try out our experiments](http://expfactory.github.io/table.html)
+- Express interest in Experiments as a Service (EaS) as [expfactory.org](http://www.expfactory.org)
 
 ### Installation (current)
 
       pip install expfactory
+
 
 ### Installation (dev)
 
@@ -16,22 +19,22 @@ Please see our [documentation](http://expfactory.github.io/) for more complete d
 
 
 ### Quick start
-Installation will place an executable, `expfactory` in your bin folder. To run the executable to open up a web interface to design your experiment:
 
-      expfactory
-
-The web interface includes the following:
-
-- custom generation of battery (local folder, AWS virtual machine, or virtual machine)
-- serves API (JSON) with experiment details
-- complete documentation
+Installation will place an executable, `expfactory` in your bin folder. 
 
 
-#### Run a local experiment
+#### Run your local experiment
 You can run an [expfactory-experiments](expfactory-experiments) folder as follows:
 
       cd test_task
-      expfactory --run
+      expfactory --preview
+
+
+#### Run paradigms locally
+
+      expfactory --run --experiments stroop,n_back
+      expfactory --run --survey bis11_survey
+      expfactory --run --game bridge_game
 
 
 #### Validate a local experiment
@@ -46,5 +49,18 @@ You can run an [expfactory-experiments](expfactory-experiments) folder as follow
       expfactory --test
 
 
+#### Interactive generation of psiturk battery
+
+To run the executable to open up a web interface to design your experiment:
+
+      expfactory
+
+The web interface includes the following:
+
+- custom generation of battery (local folder, AWS virtual machine, or virtual machine)
+- serves API (JSON) with experiment details
+- complete documentation
+
+
 ### Functions Provided
-You can also use the library as a module, and import expfactory functions into your application.  Please see our [documentation](http://expfactory.github.io) for details
+You can also use the library as a module, and import expfactory functions into your application.  Please see our [documentation](http://expfactory.readthedocs.org/en/latest/getting-started.html) for details
