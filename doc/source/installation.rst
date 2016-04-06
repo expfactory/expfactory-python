@@ -1,7 +1,7 @@
 Installation
 ============
 
-expfactory-python is the controller of all pieces of this infrastructure. You can install it with pip, either the development version: To install the latest version, use pip:
+Installation of the Experiment Factory Software requires some familiarity with the command line, as the software is based in python. "`Pip <https://en.wikipedia.org/wiki/Pip_(package_manager)>`_" is a package management system for python, and you can use pip to install our software, expfactory-python, which is the controller of all pieces of this infrastructure. If you want to install the development version, you can install directly from Github with this command:
 
 ::
 
@@ -10,7 +10,7 @@ expfactory-python is the controller of all pieces of this infrastructure. You ca
 
 
 
-To install the current release:
+Or to install the current release, use this command:
 
 
 ::
@@ -39,9 +39,59 @@ You can also use the module as a standard python module, meaning importing funct
 
 
 Quickstart
-''''''''''
+----------
 
-To run the executable to open up a web interface to select what you would like to do:
+Running Experiments
+'''''''''''''''''''
+
+Deploy a battery of experiments, a game, or a survey on your local machine
+
+:: 
+
+      expfactory --run --experiments stroop,nback
+      expfactory --run --survey bis11_survey
+      expfactory --run --game bridge_game
+
+
+
+Developing Experiments
+''''''''''''''''''''''
+
+To run (or preview) a folder (experiment) you are working on, you can cd into that folder, and use the `--run` command:
+
+
+::
+
+      cd my_experiment
+      expfactory --run
+
+
+You can also specify the folder as an argument:
+
+::
+
+      expfactory --run --folder /home/vanessa/Desktop/my_experiment
+      
+
+
+Validate the configuration file (config.json) for your experiment
+
+:: 
+
+      cd my_experiment
+      expfactory --validate
+
+
+Test your experiment with our experiment robot
+
+:: 
+
+      cd my_experiment
+      expfactory --test
+
+
+
+Run the executable to open up a web interface to generate psiturk battery or virtual machine.
 
 
 ::
@@ -57,22 +107,5 @@ You can also specify a port:
 
       expfactory --port=8088
 
-
-To run (or preview) a folder (experiment) you are working on, you can cd into that folder, and use the `--run` command:
-
-
-::
-
-
-      cd simple_experiment
-      expfactory --run
-
-
-You can also specify the folder as an argument:
-
-::
-
-      expfactory --run --folder /home/vanessa/Desktop/simple_rt
-      
 
 .. image:: _static/img/api/webinterface.png

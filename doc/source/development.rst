@@ -1,13 +1,13 @@
 Development
 ===========
 
-If you have not yet, please 'install `<http://vbmis.com/bmi/project/expfactory/installation.html>`_ the expfactory python application.
+If you have not yet, please 'install `<http://expfactory.readthedocs.org/en/latest/installation.html>`_ the expfactory python application.
 
 
 Contributing to code
 --------------------
 
-We recommend that you work with developing experiment code using Github. This means that your general workflow will be as follows:
+We recommend that you work with developing experiment code using Github. If you aren't familiar with Github, `here is an introduction <https://guides.github.com/activities/hello-world/>`_, and we provide more description below. This means that your general workflow will be as follows:
 
 * A. fork our experiments repo
 * B. clone the repository to your local machine
@@ -19,10 +19,10 @@ We recommend that you work with developing experiment code using Github. This me
 
 This will also be the general workflow for making any contributions to the battery, virtual machines, or python application.
 
-A. Fork our experiment repo
-'''''''''''''''''''''''''''
+A. Fork our repos
+'''''''''''''''''
 
-When you browse to `our repo <https://github.com/expfactory/expfactory-experiments>`_, you will see a "Fork" button in the upper right:
+When you browse to `our repo <https://github.com/expfactory/expfactory-experiments>`_, you will see a "Fork" button in the upper right (and the same is true for expfactory-surveys or expfactory-games):
 
 
 .. image:: _static/img/development/0fork.png
@@ -237,35 +237,14 @@ As we detailed above, remember that many people might be submitting PRs to work 
 
 Now that you are a development Github pro, you might want more details about the format of a new experiment.
 
-Contributing to experiments
----------------------------
-An experiment is just a folder with files that are expected to be a certain way. The "core" of an experiment is:
 
-* config.json: a file with a bunch of information about an experiment, meta-data
-* experiment.js: the main javascript file to run the experiment
-* style.css: (optional) custom styling
+Contributing a paradigm
+-----------------------
+Whether you want to contribute a survey, an experiment, or a game, the basic steps and structure of what you create will be the same. Each of surveys, experiments, and games has a repository under ` the expfactory github organization <http://www.github.com/expfactory>`_ and each repository is a collection of folders, with one paradigm for folder. You can store folders on your server or local machine, or just have our software grab the latest version directly from the repositories. The commonality between folders is that they all have a configuration file, the config.json, with a set of standard fields that are defined to allow the Experiment Factory Python Software to work with paradigms. A few notes about the config.json:
 
-A recommended strategy for developing a new experiment is to `find an experiment <https://github.com/expfactory/expfactory-experiments>`_ similar to the one you want to make, copy the folder, and edit it. We recommend using JsPsych for tutorials, help, and examples, as the `documentation <http://docs.jspsych.org/tutorials/go-nogo-task/>`_ is really great. We also provide an standard reaction time (commented) empty template `for you to download <https://github.com/expfactory/expfactory-python/raw/master/expfactory/templates/experiment_template.zip>`_, and in the future will provide a dynamic web interface for generating new templates. When you submit a PR to the expfactory-experiments repo, the experiment will be tested with continuous integration, and before doing this, we have provided a simple command line tool that can be used to validate the basics about the config.json and experiment folder.
-
-::
- 
-      cd my_new_experiment
-      expfactory --validate  # will validate config.json and experiment structure
-      expfactory --test      # will run test robot we run on continuous integreation
-
-
-Summary of Best Practices
-'''''''''''''''''''''''''
-
-* An experiment must minimally have an experiment.js and valid config.json file
-* You do not need to define fields in the config.json that are not required.
-* We use jspsych plugins for most experiments, and most are included with the battery repo, meaning you don't need to include them with your local folder, but rather specify their path in the "run" variable of your config.json (see below).
+* You do not need to define fields in the config.json that are not required. Use expfactory --validate to see if you did it right.
 * the folder name must correspond with the "exp_id" variable in the config.json
-* experiment folder names should be all lowercase, no hyphens (-), or spaces.
-* you can include any images/sounds supplementary files in your experiment folder, it will be included
-* these supplementary files specified in experiment.js should have paths relative to the battery experiment base directory, `static/experiments/[exp_id]/images/hello.png`
-* supplementary files specified in style.css should be relative to the experiment folder.
-
+* experiment, survey, and game folder names should be all lowercase, no hyphens (-), or spaces.
 
 config.json
 '''''''''''
@@ -274,8 +253,15 @@ A data structure that specifies the following:
 
  - name: [required] the full name of the experiment, best is to use the name of the publication it is associated with.
  - exp_id:  [required] the experiment id (unique identifier) for the experiment, typically the folder name, all lowercase with no special characters.
- - run:  [required] entry javascript and css files for the experiment. Paths here should all be relative to the experiment folder, and will be used to generate the code in `load_experiments.js` for example, for the experiment in folder `multi-source` with run variable specified as:
-
+ - cognitive_atlas_task_id: [optional] the identifier for the experiment defined in the cognitive atlas
+ - template:  [required] the javascript (or other) template that runs the experiment. We currently support jspsych, survey (for `material-design lite <getmdl.io>`_ surveys), or `phaser <http://phaser.io/>`_ (games). Please contact us to discuss adding your particular framework.
+ - contributors: a list of contributors to the task code base.
+ - reference: url(s) to referenced papers to develop the task. This field is to be removed, and the reference or DOI should be stored in the CognitiveAtlas.
+ - experiment_variables: should be a list of dictionaries to specify one or more variables to be available for use to measure performance, allocate bonus, or receive credit. The fields of this variable include "name" "type" "label" "range" and "description."  The "label" field will determine if the Experiment Factory docker virtual machine will parse the variable as being available to use for a reward (eg, label == "reward") or for allocation of credit (eg, label == "credit"). 
+ - notes: any notes about the implementation, etc.
+ - publish: [required] either "True" or "False" to determine if the experiment should be revealed to the user of the expfactory-python application.
+ - deployment_variables: a dictionary of customizations for the javascript template. For example, jspsych has a jspsych_init object that you may want to customize.
+ - run:  [required] entry javascript and css files for the experiment. Paths here should all be relative to the experiment folder, and will be used to embed the experiments in different contexts. For example, the following files in run in the folder `multisource`:
 
 ::
 
@@ -283,32 +269,25 @@ A data structure that specifies the following:
               "run": [
                       "experiment.js",
                       "style.css",
-                      "plugin.js"
+                      "static/js/jspsych/plugins/plugin.js"
                      ],
  
 
-will produce the following code in `load_experiment.js`:
+will produce the following in a rendered template:
 
 
 ::
 
-		case "multi-source":
-			loadjscssfile("/static/experiments/multi-source/experiment.js","js")
-			loadjscssfile("/static/experiments/multi-source/style.css","css")
-			loadjscssfile("/static/experiments/multi-source/plugin.js","js")
-			break;
+      <link rel='stylesheet' type='text/css' href='static/experiments/multisource/style.css'>
+
+      <script src='static/js/jspsych/plugins/plugin.js'></script>
+      <script src='static/experiments/multisource/experiment.js'></script>
 
 
- - cognitive_atlas_task_id: [required] the identifier for the experiment defined in the cognitive atlas
- - template:  [required] the javascript template that runs the experiment. We currently support only jspsych. Please contact us to discuss adding your particular framework.
- - contributors: a list of contributors to the task code base.
- - reference: url(s) to referenced papers to develop the task. This field is to be removed, and the reference or DOI should be stored in the CognitiveAtlas.
- - experiment_variables: should be a list of dictionaries to specify one or more variables to be available for use to measure performance, allocate bonus, or receive credit. The fields of this variable include "name" "type" "label" "range" and "description."  The "label" field will determine if the Experiment Factory docker virtual machine will parse the variable as being available to use for a reward (eg, label == "reward") or for allocation of credit (eg, label == "credit"). 
- - notes: any notes about the implementation, etc.
- - publish: [required] either "True" or "False" to determine if the experiment should be revealed to the user of the expfactory-python application.
- - deployment_variables: a dictionary of customizations for the javascript template. For example, jspsych has a jspsych_init object that you may want to customize.
+Note that the full path is a file served in our expfactory-battery (a plugin common to many experiments), and the local paths are files in the multisource experiment folder.
 
-An example of a config.json data structure is follows:
+
+An example of a config.json data structure is as follows:
 
 ::
 
@@ -332,10 +311,10 @@ An example of a config.json data structure is follows:
                      ],
               "reference": "http://www.sciencedirect.com/science/article/pii/S0896627311001255",
               "notes": "Condition = ordered stims in stage 1 and stage 2 (so [0, 1] or [1, 0] for stage 1 and [2, 3], [4, 5] etc. for stage 2 and FB for the FB condition (1 for reward, 0 for no reward)",
-              "publish": "True",
-    
+              "publish": "True"
          }
       ]
+
 
 
 experiment_variables
@@ -420,6 +399,37 @@ A list of javascript and css files that are essential for the experiment to run,
 
 Any files with full paths specified as the above will be checked for existance within the expfactory-battery folder. If found, the file will be linked successfully. If not found, the file will be looked for in the experiment folder. If the file does not exist in either place, an error will trigger upon generation of the battery.
 
+
+
+Contributing to experiments
+---------------------------
+An experiment is just a folder with files that are expected to be a certain way. The "core" of an experiment is:
+
+* config.json: a file with a bunch of information about an experiment, meta-data
+* experiment.js: the main javascript file to run the experiment
+* style.css: (optional) custom styling
+
+A recommended strategy for developing a new experiment is to `find an experiment <https://github.com/expfactory/expfactory-experiments>`_ similar to the one you want to make, copy the folder, and edit it. We recommend using JsPsych for tutorials, help, and examples, as the `documentation <http://docs.jspsych.org/tutorials/go-nogo-task/>`_ is really great. We also provide an standard reaction time (commented) empty template `for you to download <https://github.com/expfactory/expfactory-python/raw/master/expfactory/templates/experiment_template.zip>`_, and in the future will provide a dynamic web interface for generating new templates. When you submit a PR to the expfactory-experiments repo, the experiment will be tested with continuous integration, and before doing this, we have provided a simple command line tool that can be used to validate the basics about the config.json and experiment folder.
+
+::
+ 
+      cd my_new_experiment
+      expfactory --preview   # preview / run the experiment in the browser within the PWD
+      expfactory --validate  # will validate config.json and experiment structure
+      expfactory --test      # will run test robot we run on continuous integreation
+
+
+Summary of Best Practices
+'''''''''''''''''''''''''
+
+* An experiment must minimally have an experiment.js and valid config.json file
+* We use jspsych plugins for most experiments, and most are included with the battery repo, meaning you don't need to include them with your local folder, but rather specify their path in the "run" variable of your config.json (see below).
+* you can include any images/sounds supplementary files in your experiment folder, it will be included
+* these supplementary files specified in experiment.js should have paths relative to the battery experiment base directory, `static/experiments/[exp_id]/images/hello.png`
+* supplementary files specified in style.css should be relative to the experiment folder.
+
+
+
 experiment-specific static files
 ++++++++++++++++++++++++++++++++
 
@@ -474,13 +484,36 @@ style.css
 Is the main style file for the experiment, which will be copied into the battery style folder and linked appropriately. Images that are defined in this file should have paths relative to the images folder. `(required)`.
 
 
+Contributing to surveys
+-----------------------
+A survey is the easiest of our paradigms to contribute to, as an entire survey is just a tab delimited text file paired with a config.json in a folder in `expfactory-surveys <http://www.github.com/expfactory/expfactory-surveys>`_. In the config.json, "template" should be "survey". The easiest way to understand the tab delimited file is to `look at an example <https://github.com/expfactory/expfactory-surveys/blob/master/demographics_survey/survey.tsv>`_.
 
-Testing your Experiment
-'''''''''''''''''''''''
+You will notice the following columns in the header, which is the first row of the file:
 
+ - **question_type**: can be one of textfield, numeric (a numeric text field), radio, checkbox, or instruction. These are standard form elements, and will render in the Google Material Design Lite style.
+ - **question_text**: is the text content of the question, e.g., How do you feel when you wake up in the morning?
+ - **required**: is a boolean (0 or 1) to indicate if the participant is required to answer the question (1) or not (0) before moving on in the survey.
+ - **page_number**: determines the page that the question will be rendered on. If you `look at an example survey <http://expfactory.github.io/demographics_survey.html>`_ you will notice that questions are separated by Next / Previous tabs, and the final page has a Finish button. It was important for us to give control over pagination to preserve how some "old school" questionnaires were presented to participants.
+ - **option_text**: For radio and checkboxes, you are asking the user to select from one or more options. These should be the text portion (what the user sees on the screen), and separated by commas (e.g, Yes,No,Sometimes. Note: these fields are not required for instructions or textbox types, and can be left as empty tabs.
+ - **option_values**: Also for radio and checkboxes, these are the data values that correspond to the text. For example, the option_text Yes,No may correspond to 1,0. Again, this field is typically blank for instructions or textbox types.
+
+
+Contributing to games
+---------------------
+Games are under development, and currently we are using "phaser" as a first template. As with surveys and experiments, you are required to have a config.json, and the "template" variable should be defined as "phaser". Standards are under development, and an updated list can be found at `expfactory-games repo <https://github.com/expfactory/expfactory-games>`_. Currently, the following is required:
+
+ - the main game file should be called Run.js
+ - the boolean variable "finished" included with every trial (0 to continue/1 to finish)
+ - the game should have an inputData function that updates a data object when appropriate.
+
+While we further develop the standard, please see a finished game (`code <https://github.com/expfactory/expfactory-games/tree/master/bridge_game>`_/`live <http://expfactory.github.io/bridge_game.html>`_)as an example.
+
+
+Testing
+-------
 
 Manual run of folder
-........................
+....................
 It makes most sense to work directly from a folder in the expfactory-experiments repo that you have cloned. This method will work if you have an internet connection, as the expfactory executable will quickly plug your experiment into a battery, and open up the page in your browser.  To do this, you can cd into your experiment folder, and use the `--run` command. This command can be used to run or preview a single experiment locally:
 
 ::
