@@ -8,6 +8,8 @@ Python module for managing expriment-factory [experiments](https://github.com/ex
 - Jump in and [try out our experiments](http://expfactory.github.io/table.html)
 - Express interest in Experiments as a Service (EaS) as [expfactory.org](http://www.expfactory.org)
 
+The Experiment Factory code is licensed under the MIT open source license, which is a highly permissive license that places few limits upon reuse. This ensures that the code will be usable by the greatest number of researchers, in both academia and industry. 
+
 ### Installation (current)
 
       pip install expfactory

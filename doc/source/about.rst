@@ -5,6 +5,15 @@ The Experiment Factory is developed by the `Poldracklab <http://poldracklab.stan
 
 We are called the Experiment Factory because we want the software to support flexibility in designing the experiments, infrastructure, and deployment for your experiments.  Psychology and neuroscience researchers should have the same modern tools available to them as a commercial effort, and long gone should be the days of passing around paradigms from computer to computer on USB sticks. If we work together we can refine experiments to make them better, and making behavioral measurments with the same thing is one step toward a vision of reproducible science.
 
+License
+-------
+The Experiment Factory code is licensed under the MIT open source license, which is a highly permissive license that places few limits upon reuse. This ensures that the code will be usable by the greatest number of researchers, in both academia and industry. 
+
+
+Citation
+--------
+Our work is currently under review, and a citation will be available soon for inclusion in any work that takes advantage of our experiments or infrastructure.
+
 
 Integrations and Tools
 ----------------------
