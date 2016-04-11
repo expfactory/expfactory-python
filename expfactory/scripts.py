@@ -7,7 +7,8 @@ Runtime executable
 '''
 from expfactory.views import preview_experiment, run_battery, run_single
 from expfactory.battery import generate, generate_local
-from expfactory.experiment import validate
+from expfactory.experiment import validate, load_experiment
+from expfactory.tests import validate_surveys
 from glob import glob
 import argparse
 import sys
@@ -119,8 +120,17 @@ def main():
 
     # Validate a config.json
     elif args.validate == True:
-        validate(experiment_folder=args.folder)
+        if args.folder == None:
+            folder = os.getcwd()
+        validate(experiment_folder=folder)
+        # If a survey, and if validates, also validate survey.tsv
+        experiment = load_experiment(folder)[0]
+        if experiment["template"] == "survey":
+            print "Validating survey.tsv..."
+            survey_repo = os.path.dirname(folder)
+            validate_surveys(experiment["exp_id"],survey_repo)
 
+        
     # Run the experiment robot
     elif args.test == True:
         from expfactory.tests import test_experiment
