@@ -5,6 +5,7 @@ Functions to work with javascript surveys
 '''
 
 from expfactory.experiment import get_experiments
+from exceptions import ValueError
 from glob import glob
 import pandas
 import json
@@ -72,7 +73,7 @@ def add_classes(classes,new_classes):
         classes = "%s %s" %(classes,new_classes)
     return classes
 
-def create_radio(text,id_attribute,options,values,classes="",required=0):
+def create_radio(text,id_attribute,options,values,classes="",required=0,validate=False):
     '''create_radio generate a material lite radio button given a text field, and a set of options.
     :param text: The text (content) of the question to ask
     :param id_attribute: the unique id for the question
@@ -80,6 +81,7 @@ def create_radio(text,id_attribute,options,values,classes="",required=0):
     :param values: a list of values for corresponding options
     :param classes: classes to add to the default, should be a string
     :param required: is the question required? 0=False,1=True, default 0
+    :param validate: throw an error in the case that number of values != number of option (for testing)
     ''' 
     class_names = "mdl-radio mdl-js-radio mdl-js-ripple-effect"       
 
@@ -89,15 +91,27 @@ def create_radio(text,id_attribute,options,values,classes="",required=0):
 
     meta = parse_meta(text,options)
 
+    # If going through validation, tell the user the question, etc.
+    if validate == True:
+        print "Testing question %s with text %s" %(id_attribute,text)
+
+    # If options provided are equal to values, parse the question
     if len(options) == len(values):
         radio_html = '<p id="%s_options">%s</p>' %(id_attribute,text)
         for n in range(len(options)):
             option_id = "%s_%s" %(id_attribute,n)
             radio_html = '%s\n<label class="%s" for="option-%s">\n<input type="radio" id="option-%s" class="mdl-radio__button %s %s" name="%s_options" value="%s" %s>\n<span class="mdl-radio__label">%s</span>\n</label>' %(radio_html,class_names,option_id,option_id,required,classes,id_attribute,values[n],meta,options[n])
         return "%s<br><br><br><br>" %(radio_html)
-        
-    print "ERROR: %s options provided, and only %s values. Must define one option per value." %(len(options),len(values))
-    return ""
+
+    # Otherwise, we cannot include it
+    else:   
+        error_message = "ERROR: %s options provided, and only %s values. Must define one option per value." %(len(options),len(values))
+        if validate == True:
+            raise ValueError(error_message)
+        else:
+            print error_message
+
+        return ""
 
 def create_checkbox(text,id_attribute,options,classes="",required=0):
     '''create_checkbox generate a material lite checkbox field given a text field, and a set of options.
@@ -338,11 +352,12 @@ def read_survey_file(question_file,delim="\t"):
         print "Question file is missing required columns %s" %(",".join(missing_columns))
         return None
 
-def parse_questions(question_file,exp_id,delim="\t",return_requiredcount=True):
+def parse_questions(question_file,exp_id,delim="\t",return_requiredcount=True,validate=False):
     '''parse_questions reads in a text file, separated by delim, into a pandas data frame, checking that all column names are provided.
     :param question_file: a TAB separated file to be read with experiment questions. Will also be validated for columns names.
     :param exp_id: the experiment unique id, to be used to generate question ids
     :param return_requiredcount: if True, will return questions,page_count where page_count is a dictionary to look up the number of required questions on each page {1:10}
+    :param validate: throw an error in the case that number of values != number of option (for testing)
     '''
     df = read_survey_file(question_file,delim=delim)
     acceptable_types = get_question_types()
@@ -386,7 +401,8 @@ def parse_questions(question_file,exp_id,delim="\t",return_requiredcount=True):
                                                     values = values.split(","),
                                                     required=required,
                                                     id_attribute=unique_id,
-                                                    classes=page_class)
+                                                    classes=page_class,
+                                                    validate=validate)
                     else:
                         print "Radio question %s found null for options or values, skipping." %(question_text)
  

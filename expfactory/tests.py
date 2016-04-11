@@ -126,7 +126,9 @@ def validate_surveys(survey_tags,survey_repo,survey_file="survey.tsv",delim="\t"
         df = read_survey_file(survey_questions,delim=delim)
         assert_equal(isinstance(df,pandas.DataFrame),True)
         print "Testing survey generation of %s" %(survey[0]["exp_id"])
-        questions,required_count = parse_questions(survey_questions,exp_id=survey[0]["exp_id"])
+        questions,required_count = parse_questions(survey_questions,
+                                                   exp_id=survey[0]["exp_id"],
+                                                   validate=True)
         print "Testing validation generation of %s" %(survey[0]["exp_id"])
         validation = parse_validation(required_count)
       
