@@ -166,7 +166,7 @@ def validate_experiment_tag(experiment_folder):
                     print "Checking %s on line %s..." %(exp_id_instance[0],line_number)
                     assert_equal(re.search(tag,exp_id_instance[0])!=None,True) 
 
-def circle_ci_test(experiment_tags,web_folder,experiment_repo=None,delete=True,pause_time=500):
+def circle_ci_test(experiment_tags,web_folder,experiment_repo=None,delete=True,pause_time=500,repo_type="experiments"):
     '''circle_ci_test
     Deploy experiment testing robot, requires generation of web folder, and can be deleted on finish.
     :param experiment_tags: list of experiment folders (exp_id variables) to test
@@ -187,7 +187,7 @@ def circle_ci_test(experiment_tags,web_folder,experiment_repo=None,delete=True,p
         master_folder = os.path.abspath(os.path.join(os.getcwd(),"master"))
         if not os.path.exists(master_folder):
             os.mkdir(master_folder)
-            download_repo("experiments",master_folder)
+            download_repo(repo_type,master_folder)
         changed_experiments = [os.path.split(x)[-1] for x in find_changed(os.getcwd(),master_folder)]    
         changed_experiments = [e for e in experiment_tags if e in changed_experiments]
         
@@ -195,7 +195,7 @@ def circle_ci_test(experiment_tags,web_folder,experiment_repo=None,delete=True,p
         generate_experiment_web(web_folder,experiment_folder=os.path.abspath(experiment_repo),make_surveys=False) 
         experiment_robot_web(web_folder,experiment_tags=changed_experiments)
     else:
-        print "Skipping experiments %s, no changes detected." %(",".join(experiment_tags))
+        print "Skipping %s %s, no changes detected." %(repo_type,",".join(experiment_tags))
         
 
 def key_lookup(keyid):
