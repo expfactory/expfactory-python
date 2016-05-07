@@ -22,6 +22,9 @@
         <div class="toolbar">
             <button id="homeBtn" class="btn btn-default">Home</button>
             <button id="cogatBtn" class="btn btn-default">Concept View</button>
+            <button id="experimentBtn" class="btn btn-default">Experiments</button>
+            <button id="surveyBtn" class="btn btn-default">Surveys</button>
+            <button id="gameBtn" class="btn btn-default">Games</button>
         </div>
         [[SUB_TABLE_SUB]]        
     </div>
@@ -37,6 +40,9 @@
         var $table = $('#fresh-table'),
             $homeBtn = $('#homeBtn'), 
             $cogatBtn = $('#cogatBtn'), 
+            $experimentBtn = $('#experimentBtn'), 
+            $gameBtn = $('#gameBtn'), 
+            $surveyBtn = $('#surveyBtn'), 
             full_screen = false,
             window_height;
             
@@ -73,7 +79,26 @@
                     detailClose: 'fa fa-minus-circle'
                 }
             });
-                        
+
+            $gameBtn.click(function () {
+                $("input.form-control").val("phaser");
+                var $search = $("input.form-control");
+                $search.trigger('keyup');
+            });
+
+            $surveyBtn.click(function () {
+                $("input.form-control").val("survey");
+                var $search = $("input.form-control");
+                $search.trigger('keyup');
+            });
+
+
+            $experimentBtn.click(function () {
+                $("input.form-control").val("jspsych");
+                var $search = $("input.form-control");
+                $search.trigger('keyup');
+            });
+                 
             $homeBtn.click(function () {
                 document.location = "/";
             });
