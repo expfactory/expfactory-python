@@ -12,7 +12,12 @@ The Experiment Factory code is licensed under the MIT open source license, which
 
 Citation
 --------
-Our work is currently under review, and a citation will be available soon for inclusion in any work that takes advantage of our experiments or infrastructure.
+Please cite `the Experiment Factory paper <http://journal.frontiersin.org/article/10.3389/fpsyg.2016.00610/abstract>`_ if you use it in your work:
+
+::
+
+Sochat VV, Eisenberg IW, Enkavi AZ, Li J, Bissett PG and Poldrack RA (2016). The Experiment Factory: standardizing behavioral experiments. Front. Psychol. 7:610. doi: 10.3389/fpsyg.2016.00610
+
 
 
 Integrations and Tools
