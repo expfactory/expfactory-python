@@ -3,7 +3,7 @@ tests.py: part of expfactory package
 tests for experiments and batteries, not for expfactory-python
 
 '''
-from selenium.common.exceptions import WebDriverException, UnexpectedAlertPresentException
+from selenium.common.exceptions import WebDriverException, UnexpectedAlertPresentException, NoSuchElementException
 from expfactory.experiment import validate, get_experiments, load_experiment, find_changed
 from expfactory.views import generate_experiment_web, tmp_experiment
 from expfactory.survey import read_survey_file, parse_questions, parse_validation
@@ -49,6 +49,19 @@ def validate_experiment_directories(experiment_folder):
     for contender in experiments:
         assert_equal(validate(contender),True)
 
+def get_web_server(port=None):
+    '''get_web_server returns a httpd object (socket server) to run the experiment robot
+    :param port: the port for the server, default is None will select one randomly between 8000 and 9999
+    '''
+    if port == None:
+        port = choice(range(8000,9999),1)[0]
+    Handler = ExpfactoryServer
+    httpd = SocketServer.TCPServer(("", port), Handler)
+    server = Thread(target=httpd.serve_forever)
+    server.setDaemon(True)
+    server.start()
+    return httpd,port
+
 ## GENERAL VALIDATION #############################################################################
 
 
@@ -79,9 +92,10 @@ def validate_circle_yml(experiment_repo,repo_type="experiments"):
 
 ## SURVEYS ########################################################################################
 
-def circle_ci_survey(survey_tags,survey_repo=None,delete=True,survey_file="survey.tsv"):
+def circle_ci_survey(survey_tags,web_folder,survey_repo=None,delete=True,survey_file="survey.tsv"):
     '''circle_ci_survey checks format of surveys.tsv file
     :param survey_tags: list of survey folders (exp_id variables) to test
+    :param web folder: folder with generated survey web
     :param survey_repo: folder with experiments to test. If None, will pull from master branch
     :param delete: delete experiment folders when finished
     '''
@@ -104,6 +118,7 @@ def circle_ci_survey(survey_tags,survey_repo=None,delete=True,survey_file="surve
         
     if len(changed_surveys) > 0:
         validate_surveys(survey_tags=changed_surveys,survey_repo=survey_repo,survey_file=survey_file)
+        survey_robot_web(web_folder,survey_tags=changed_surveys)
     else:
         print "Skipping surveys %s, no changes detected." %(",".join(survey_tags))
 
@@ -132,6 +147,90 @@ def validate_surveys(survey_tags,survey_repo,survey_file="survey.tsv",delim="\t"
         print "Testing validation generation of %s" %(survey[0]["exp_id"])
         validation = parse_validation(required_count)
       
+
+def survey_robot_web(web_folder,survey_tags=None,port=None,pause_time=100):
+    '''survey_robot_web
+    Robot to automatically click through surveys, to work with an experiment web folder (meaning produced with views.get_experiment_web. This folder has the standard battery structure with experiment pre-generated as html files. 
+    :param web_folder: experimentweb generated folder with generate_experiment_web
+    :param survey_tags: list of experiment folders to test
+    :param pause_time: time to wait between tasks, in addition to time specified in jspsych
+    :param port: port. Randomly selected if None is selected
+    '''
+    web_base = os.path.abspath(web_folder)
+    httpd,port = get_web_server(port=port)
+
+    # Set up a web browser
+    os.chdir(web_base)
+    browser = get_browser() 
+    browser.implicitly_wait(3) # if error, will wait 3 seconds and retry
+    browser.set_page_load_timeout(10)
+
+    # Find surveys
+    surveys = get_experiments("%s/static/surveys" %web_base,load=True,warning=False,repo_type="surveys")
+
+    if survey_tags != None:
+        surveys = [s for s in surveys if s[0]["exp_id"] in survey_tags]
+    
+    print "Found %s surveys to test." %(len(surveys))
+
+    for survey in surveys:
+ 
+        print "STARTING TEST OF SURVEY %s" %(survey[0]["exp_id"])
+        get_page(browser,"http://localhost:%s/%s.html" %(port,survey[0]["exp_id"]))
+        
+        sleep(3)
+
+        count=1
+        while True:
+            print "Testing page %s of %s" %(count,survey[0]["exp_id"])
+            try:
+                finished = advance_survey(browser,pause_time)
+                if finished == True:
+                    break
+                count+=1
+            except UnexpectedAlertPresentException:
+                print "Found alert: closing."
+                try:
+                    alert = browser.switch_to_alert()
+                    alert.accept()
+                except:
+                    pass
+
+        print "FINISHING TEST OF SURVEY %s" %(survey[0]["exp_id"])
+
+    # Stop the server
+    httpd.server_close()
+
+
+def advance_survey(browser,pause_time):
+    '''advance_survey will click the next button and fill in current page question content / questions
+    :param browser: the web browser generated with get_browser
+    :param pause_time: time to pause between pages
+    '''
+
+    # Click all checkboxes and radio buttons
+    browser.execute_script('$(":radio").click();')
+    browser.execute_script('$(":checkbox").click();')
+
+    # If there are text boxes on the page, fill them (numeric and regular)
+    textfields = browser.execute_script('var elements = []; var tmp = $(".mdl-textfield__input"); $.each(tmp,function(i,e){elements.push(e)}); return elements;')
+    for text in textfields:
+        element_id = text.get_attribute('id')
+        textbox_type = text.get_attribute('type')
+        if textbox_type == "number":
+            fill_input = str('$("input[id=%s]").val(711);' %(element_id))
+        elif textbox_type == 'text':
+            fill_input = str('$("input[id=%s]").val("beep boop!");' %(element_id))
+        browser.execute_script(fill_input)
+    
+    # Click the forward button, click it
+    forward = browser.find_element_by_class_name('forward').click()
+    
+    # Have we reached the end?
+    finished = browser.execute_script("return expfactory_finished;")
+
+    return finished    
+
 
 ## EXPERIMENTS ####################################################################################
 
@@ -294,21 +393,15 @@ def key_lookup(keyid):
 
 def experiment_robot_web(web_folder,experiment_tags=None,port=None,pause_time=100):
     '''experiment_robot_web
-    Robot to automatically run and test experiments, to work with an experiment web folder (meaning produced with views.get_experiment_web. This folder has the standard battery structure with experiment pre-generated as html files. A separate function will/should eventually be made for single experiment preview.
-    :param experiment_tags: experimentweb generated folder with generate_experiment_web
+    Robot to automatically run and test experiments, to work with an experiment web folder (meaning produced with views.get_experiment_web. This folder has the standard battery structure with experiment pre-generated as html files. 
+    :param web_folder: experimentweb generated folder with generate_experiment_web
     :param experiment_tags: list of experiment folders to test
     :param pause_time: time to wait between tasks, in addition to time specified in jspsych
     :param port: port. Randomly selected if None is selected
     '''
     experimentweb_base = os.path.abspath(web_folder)
 
-    if port == None:
-        port = choice(range(8000,9999),1)[0]
-    Handler = ExpfactoryServer
-    httpd = SocketServer.TCPServer(("", port), Handler)
-    server = Thread(target=httpd.serve_forever)
-    server.setDaemon(True)
-    server.start()
+    httpd,port = get_web_server(port=port)
 
     # Set up a web browser
     os.chdir(experimentweb_base)
