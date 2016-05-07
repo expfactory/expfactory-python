@@ -274,11 +274,13 @@ def export_checkbox(text,id_attribute,options,required=0):
     :param required: is the question required? 0=False,1=True, default 0
     '''        
     new_questions = []
+    option_values = ",".join(options)
     for n in range(len(options)):
         option_id = "%s_%s" %(id_attribute,n)
         option_entry = {"id":"%s_options" %(option_id),
                         "required":required,
                         "text":text,
+                        "options":option_values,
                         "value":options[n]}
         new_questions.append(option_entry)
     return new_questions
