@@ -118,6 +118,7 @@ def circle_ci_survey(survey_tags,web_folder,survey_repo=None,delete=True,survey_
         
     if len(changed_surveys) > 0:
         validate_surveys(survey_tags=changed_surveys,survey_repo=survey_repo,survey_file=survey_file)
+        generate_experiment_web(web_folder,survey_folder=os.path.abspath(survey_repo)) 
         survey_robot_web(web_folder,survey_tags=changed_surveys)
     else:
         print "Skipping surveys %s, no changes detected." %(",".join(survey_tags))
