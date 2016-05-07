@@ -273,16 +273,15 @@ def export_checkbox(text,id_attribute,options,required=0):
     :param id_attribute: the unique id for the question
     :param required: is the question required? 0=False,1=True, default 0
     '''        
-    question_list = {}
-    question_list["id"] = "%s_options" %(id_attribute)
-    question_list["required"] = required
-    question_list["text"] = text
-    option_list = []
+    new_questions = []
     for n in range(len(options)):
         option_id = "%s_%s" %(id_attribute,n)
-        option_list.append({"id":option_id,"text":options[n]})
-    question_list["options"] = option_list
-    return question_list
+        option_entry = {"id":"%s_options" %(option_id),
+                        "required":required,
+                        "text":text,
+                        "value":options[n]}
+        new_questions.append(option_entry)
+    return new_questions
 
 
 def export_textfield(text,id_attribute,required=0):
@@ -566,7 +565,11 @@ def export_questions(experiment,experiment_folder,survey_file="survey.tsv",delim
                                                    id_attribute=unique_id)
  
                 question_count+=1
-                questions[new_question["id"]] = new_question
+                if isinstance(new_question,dict):
+                    questions[new_question["id"]] = new_question
+                elif isinstance(new_question,list):
+                    for nq in new_question:
+                        questions[nq["id"]] = nq
 
         return questions
     else:
