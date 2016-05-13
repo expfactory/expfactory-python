@@ -25,7 +25,7 @@ Integrations and Tools
 
 Psiturk
 '''''''
-These experiments are intended to run via the `psiturk infrastructure<https://github.com/NYUCCL/psiTurk>_`, and the `experiment factory battery<http://www.github.com/expfactory/expfactory-battery>_` is the main experiment code that, when fit with `experiments<http://www.github.com/expfactory/expfactory-experiments>_`, can run on Amazon Mechanical Turk.
+These experiments are intended to run via the `psiturk infrastructure <https://github.com/NYUCCL/psiTurk>`_, and the `experiment factory battery <http://www.github.com/expfactory/expfactory-battery>`_ is the main experiment code that, when fit with `experiments <http://www.github.com/expfactory/expfactory-experiments>`_, can run on Amazon Mechanical Turk.
 
 Phaser
 ''''''
