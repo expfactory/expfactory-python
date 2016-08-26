@@ -124,7 +124,7 @@ def circle_ci_survey(survey_tags,web_folder,survey_repo=None,delete=True,survey_
         print "Skipping surveys %s, no changes detected." %(",".join(survey_tags))
 
 
-def validate_surveys(survey_tags,survey_repo,survey_file="survey.tsv",delim="\t",raise_error=False):
+def validate_surveys(survey_tags,survey_repo,survey_file="survey.tsv",delim="\t",raise_error=True):
     '''validate_surveys validates an experiment factory survey folder
     :param survey_tags: a list of surveys to validate
     :param survey_repo: the survey repo with the survey folders to validate
