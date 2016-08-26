@@ -50,7 +50,7 @@ def dowarning(reason):
     print reason
 
 def get_valid_templates():
-    return ['jspsych','survey','phaser']
+    return ['jspsych','survey','phaser','custom']
 
 def get_acceptable_values(package_name):
     acceptable_values = dict()
