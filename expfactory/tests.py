@@ -124,30 +124,37 @@ def circle_ci_survey(survey_tags,web_folder,survey_repo=None,delete=True,survey_
         print "Skipping surveys %s, no changes detected." %(",".join(survey_tags))
 
 
-def validate_surveys(survey_tags,survey_repo,survey_file="survey.tsv",delim="\t"):
+def validate_surveys(survey_tags,survey_repo,survey_file="survey.tsv",delim="\t",raise_error=True):
     '''validate_surveys validates an experiment factory survey folder
     :param survey_tags: a list of surveys to validate
     :param survey_repo: the survey repo with the survey folders to validate
     :param survey_file: the default file to validate
+    :param raise_error: throw the error (meaning don't return True or False instead)
     '''
     if isinstance(survey_tags,str):
         survey_tags = [survey_tags]
 
     for survey_tag in survey_tags:
-        survey_folder = "%s/%s" %(survey_repo,survey_tag)
-        print "Testing load of config.json for %s" %(survey_folder)
-        survey = load_experiment("%s" %survey_folder)
-        survey_questions = "%s/%s" %(survey_folder,survey_file)       
-        print "Testing valid columns in %s" %(survey[0]["exp_id"])
-        df = read_survey_file(survey_questions,delim=delim)
-        assert_equal(isinstance(df,pandas.DataFrame),True)
-        print "Testing survey generation of %s" %(survey[0]["exp_id"])
-        questions,required_count = parse_questions(survey_questions,
-                                                   exp_id=survey[0]["exp_id"],
-                                                   validate=True)
-        print "Testing validation generation of %s" %(survey[0]["exp_id"])
-        validation = parse_validation(required_count)
-      
+        try:
+            survey_folder = "%s/%s" %(survey_repo,survey_tag)
+            print "Testing load of config.json for %s" %(survey_folder)
+            survey = load_experiment("%s" %survey_folder)
+            survey_questions = "%s/%s" %(survey_folder,survey_file)       
+            print "Testing valid columns in %s" %(survey[0]["exp_id"])
+            df = read_survey_file(survey_questions,delim=delim)
+            assert_equal(isinstance(df,pandas.DataFrame),True)
+            print "Testing survey generation of %s" %(survey[0]["exp_id"])
+            questions,required_count = parse_questions(survey_questions,
+                                                       exp_id=survey[0]["exp_id"],
+                                                       validate=True)
+            print "Testing validation generation of %s" %(survey[0]["exp_id"])
+            validation = parse_validation(required_count)
+        except:
+            if raise_error == False:
+                return False
+            raise
+    return True
+
 
 def survey_robot_web(web_folder,survey_tags=None,port=None,pause_time=100):
     '''survey_robot_web
