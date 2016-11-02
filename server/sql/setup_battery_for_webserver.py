@@ -1,4 +1,3 @@
-#!/opt/conda/bin/python
 from expfactory.battery import *
 from expfactory.vm import download_repo
 from expfactory.utils import get_installdir
@@ -9,12 +8,23 @@ import argparse
 
 # Get CLI parameters
 parser = argparse.ArgumentParser()
-parser.add_argument('battery', help='Battery destination directory')
-parser.add_argument('experiment', help='Experiment to use in the battery')
-args = parser.parse_args()
+parser.add_argument('--output', dest="output", help='Battery output directory',default=None)
+parser.add_argument('--experiments', dest="experiments" help='Experiment(s) to use in the battery, separated by commas.')
 
-experiments = [args.experiment]
-battery_dest = args.battery
+try:
+    args = parser.parse_args()
+except:
+    parser.print_help()
+    sys.exit(0)
+
+
+# If the user doesn't specify an output directory, use temporary
+battery_dest = args.output
+if battery_dest == None:
+    battery_dest = tempfile.mkdtemp()
+
+experiments = ",".split(args.experiments)
+
 
 # Download the missing repos
 battery_repo='battery'

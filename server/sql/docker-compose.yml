@@ -1,0 +1,20 @@
+db:
+  image: mysql/mysql-server:latest
+  ports: 
+    - 3306
+  environment:
+    MYSQL_ROOT_PASSWORD: pass
+    MYSQL_DATABASE: expfactory
+    MYSQL_USER: composer
+    MYSQL_PASSWORD: composer
+
+web:
+  image: vanessa/expfactory-sql
+  ports:
+    - "80:80"
+  env_file:
+    - variables.sh
+  links:
+    - db
+  volumes:
+    - .:/code
