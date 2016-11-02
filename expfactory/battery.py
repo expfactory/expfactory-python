@@ -197,6 +197,8 @@ def template_experiments(battery_dest,battery_repo,valid_experiments,template_lo
             load_template = add_custom_variables(custom_variables["load"],load_template)
 
     # load experiment scripts
+    if not os.path.exists("%s/static/js" %(battery_dest)):
+        os.mkdir("%s/static/js" %(battery_dest))
     template_output = "%s/static/js/load_experiments.js" %(battery_dest)
     filey = open(template_output,'w')
     filey.writelines(load_template)
