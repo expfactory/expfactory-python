@@ -85,8 +85,8 @@ def validate_circle_yml(experiment_repo,repo_type="experiments"):
             elif repo_type == "surveys":
                 assert_equal(re.search("circle_ci_survey%s" %tag,circle_yml)!=None,True)
     else:
-       print "Not in a continuous integration (CircleCI) environment, skipping test."
-    print "All experiments found in circle.yml for testing!"
+       print("Not in a continuous integration (CircleCI) environment, skipping test.")
+    print("All experiments found in circle.yml for testing!")
 
 
 
@@ -106,7 +106,7 @@ def circle_ci_survey(survey_tags,web_folder,survey_repo=None,delete=True,survey_
     # If we are running on circle, only test changed experiments
     if "CIRCLE_BRANCH" in os.environ.keys():
 
-        print "DETECTED CONTINUOUS INTEGRATION ENVIRONMENT..."
+        print("DETECTED CONTINUOUS INTEGRATION ENVIRONMENT...")
 
         survey_repo = os.getcwd()
         master_folder = os.path.abspath(os.path.join(survey_repo,"master"))
@@ -121,7 +121,7 @@ def circle_ci_survey(survey_tags,web_folder,survey_repo=None,delete=True,survey_
         generate_experiment_web(web_folder,survey_folder=os.path.abspath(survey_repo)) 
         survey_robot_web(web_folder,survey_tags=changed_surveys)
     else:
-        print "Skipping surveys %s, no changes detected." %(",".join(survey_tags))
+        print("Skipping surveys %s, no changes detected." %(",".join(survey_tags)))
 
 
 def validate_surveys(survey_tags,survey_repo,survey_file="survey.tsv",delim="\t",raise_error=True):
@@ -137,17 +137,17 @@ def validate_surveys(survey_tags,survey_repo,survey_file="survey.tsv",delim="\t"
     for survey_tag in survey_tags:
         try:
             survey_folder = "%s/%s" %(survey_repo,survey_tag)
-            print "Testing load of config.json for %s" %(survey_folder)
+            print("Testing load of config.json for %s" %(survey_folder))
             survey = load_experiment("%s" %survey_folder)
             survey_questions = "%s/%s" %(survey_folder,survey_file)       
-            print "Testing valid columns in %s" %(survey[0]["exp_id"])
+            print("Testing valid columns in %s" %(survey[0]["exp_id"]))
             df = read_survey_file(survey_questions,delim=delim)
             assert_equal(isinstance(df,pandas.DataFrame),True)
-            print "Testing survey generation of %s" %(survey[0]["exp_id"])
+            print("Testing survey generation of %s" %(survey[0]["exp_id"]))
             questions,required_count = parse_questions(survey_questions,
                                                        exp_id=survey[0]["exp_id"],
                                                        validate=True)
-            print "Testing validation generation of %s" %(survey[0]["exp_id"])
+            print("Testing validation generation of %s" %(survey[0]["exp_id"]))
             validation = parse_validation(required_count)
         except:
             if raise_error == False:
@@ -179,32 +179,32 @@ def survey_robot_web(web_folder,survey_tags=None,port=None,pause_time=100):
     if survey_tags != None:
         surveys = [s for s in surveys if s[0]["exp_id"] in survey_tags]
     
-    print "Found %s surveys to test." %(len(surveys))
+    print("Found %s surveys to test." %(len(surveys)))
 
     for survey in surveys:
  
-        print "STARTING TEST OF SURVEY %s" %(survey[0]["exp_id"])
+        print("STARTING TEST OF SURVEY %s" %(survey[0]["exp_id"]))
         get_page(browser,"http://localhost:%s/%s.html" %(port,survey[0]["exp_id"]))
         
         sleep(3)
 
         count=1
         while True:
-            print "Testing page %s of %s" %(count,survey[0]["exp_id"])
+            print("Testing page %s of %s" %(count,survey[0]["exp_id"]))
             try:
                 finished = advance_survey(browser,pause_time)
                 if finished == True:
                     break
                 count+=1
             except UnexpectedAlertPresentException:
-                print "Found alert: closing."
+                print("Found alert: closing.")
                 try:
                     alert = browser.switch_to_alert()
                     alert.accept()
                 except:
                     pass
 
-        print "FINISHING TEST OF SURVEY %s" %(survey[0]["exp_id"])
+        print("FINISHING TEST OF SURVEY %s" %(survey[0]["exp_id"]))
 
     # Stop the server
     httpd.server_close()
@@ -246,14 +246,14 @@ def validate_experiment_tag(experiment_folder):
     '''validate_experiment_tag looks for definition of exp_id as the tag somewhere in experiment.js. We are only requiring one definition for now (a more lax approach), but this standard might be changed.
     '''
     experiments = find_directories(experiment_folder)
-    print "Testing %s experiment for definition of exp_id in experiment.js..."
+    print("Testing %s experiment for definition of exp_id in experiment.js...")
     for contender in experiments:
         if validate(contender,warning=False) == True:
             experiment = load_experiment(contender)
             tag = experiment[0]["exp_id"]
 
             # Experiment MUST contain experiment.js to run main experiment
-            print "TESTING %s for exp_id in experiment.js..." %tag
+            print("TESTING %s for exp_id in experiment.js..." %tag)
             assert_equal("experiment.js" in experiment[0]["run"],True)
 
             if "experiment.js" in experiment[0]["run"]:
@@ -270,7 +270,7 @@ def validate_experiment_tag(experiment_folder):
                 for e in range(len(exp_id_instances)):
                     exp_id_instance = exp_id_instances[e]
                     line_number = line_numbers[e]
-                    print "Checking %s on line %s..." %(exp_id_instance[0],line_number)
+                    print("Checking %s on line %s..." %(exp_id_instance[0],line_number))
                     assert_equal(re.search(tag,exp_id_instance[0])!=None,True) 
 
 def circle_ci_test(experiment_tags,web_folder,experiment_repo=None,delete=True,pause_time=500,repo_type="experiments"):
@@ -289,7 +289,7 @@ def circle_ci_test(experiment_tags,web_folder,experiment_repo=None,delete=True,p
     # If we are running on circle, only test changed experiments
     if "CIRCLE_BRANCH" in os.environ.keys():
 
-        print "DETECTED CONTINUOUS INTEGRATION ENVIRONMENT..."
+        print("DETECTED CONTINUOUS INTEGRATION ENVIRONMENT...")
 
         master_folder = os.path.abspath(os.path.join(os.getcwd(),"master"))
         if not os.path.exists(master_folder):
@@ -302,7 +302,7 @@ def circle_ci_test(experiment_tags,web_folder,experiment_repo=None,delete=True,p
         generate_experiment_web(web_folder,experiment_folder=os.path.abspath(experiment_repo),make_surveys=False) 
         experiment_robot_web(web_folder,experiment_tags=changed_experiments)
     else:
-        print "Skipping %s %s, no changes detected." %(repo_type,",".join(experiment_tags))
+        print("Skipping %s %s, no changes detected." %(repo_type,",".join(experiment_tags)))
         
 
 def key_lookup(keyid):
@@ -423,11 +423,11 @@ def experiment_robot_web(web_folder,experiment_tags=None,port=None,pause_time=10
     if experiment_tags != None:
         experiments = [e for e in experiments if e[0]["exp_id"] in experiment_tags]
     
-    print "Found %s experiments to test." %(len(experiments))
+    print("Found %s experiments to test." %(len(experiments)))
 
     for experiment in experiments:
  
-        print "STARTING TEST OF EXPERIMENT %s" %(experiment[0]["exp_id"])
+        print("STARTING TEST OF EXPERIMENT %s" %(experiment[0]["exp_id"]))
         get_page(browser,"http://localhost:%s/%s.html" %(port,experiment[0]["exp_id"]))
         
         sleep(3)
@@ -435,21 +435,21 @@ def experiment_robot_web(web_folder,experiment_tags=None,port=None,pause_time=10
         count=0
         wait_time=0
         while True:
-            print "Testing command %s of %s" %(count,experiment[0]["exp_id"])
+            print("Testing command %s of %s" %(count,experiment[0]["exp_id"]))
             try:
                 wait_time,finished = test_block(browser,experiment,pause_time,wait_time)
                 if finished == True:
                     break
                 count+=1
             except UnexpectedAlertPresentException:
-                print "Found alert: closing."
+                print("Found alert: closing.")
                 try:
                     alert = browser.switch_to_alert()
                     alert.accept()
                 except:
                     pass
 
-        print "FINISHING TEST OF EXPERIMENT %s" %(experiment[0]["exp_id"])
+        print("FINISHING TEST OF EXPERIMENT %s" %(experiment[0]["exp_id"]))
 
     # Stop the server
     httpd.server_close()
@@ -535,7 +535,7 @@ def test_block(browser,experiment,pause_time=0,wait_time=0):
                 continue_key = key_lookup(random_choice)
                 browser.find_element_by_tag_name('html').send_keys(continue_key)
             except ValueError:
-                print "ValueError, %s found as choices." %(choices)
+                print("ValueError, %s found as choices." %(choices))
         else:
                 browser.find_element_by_tag_name('html').send_keys(Keys.ENTER)
         if "type" in block:
@@ -642,7 +642,7 @@ def test_experiment(folder=None,battery_folder=None,port=None,pause_time=2000):
         browser.implicitly_wait(3) # if error, will wait 3 seconds and retry
         browser.set_page_load_timeout(10)
  
-        print "STARTING TEST OF EXPERIMENT %s" %(experiment[0]["exp_id"])
+        print("STARTING TEST OF EXPERIMENT %s" %(experiment[0]["exp_id"]))
         get_page(browser,"http://localhost:%s" %(port))
         
         sleep(3)
@@ -650,14 +650,14 @@ def test_experiment(folder=None,battery_folder=None,port=None,pause_time=2000):
         count=0
         wait_time=1000
         while True:
-            print "Testing block %s of %s" %(count,experiment[0]["exp_id"])
+            print("Testing block %s of %s" %(count,experiment[0]["exp_id"]))
             wait_time,finished = test_block(browser,experiment,pause_time,wait_time)
             if finished == True:
                 break
             count+=1
-        print "FINISHING TEST OF EXPERIMENT %s" %(experiment[0]["exp_id"])
+        print("FINISHING TEST OF EXPERIMENT %s" %(experiment[0]["exp_id"]))
 
     except:
-        print "Stopping web server..."
+        print("Stopping web server...")
         httpd.server_close()
         shutil.rmtree(tmpdir)

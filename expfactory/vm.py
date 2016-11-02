@@ -18,7 +18,7 @@ def download_repo(repo_type,destination):
     '''
     acceptable_types = ["experiments","battery","vm","surveys","games"]
     if repo_type not in acceptable_types:
-        print "repo_type must be in %s" %(",".join(acceptable_types))
+        print("repo_type must be in %s" %(",".join(acceptable_types)))
     else:
         return Repo.clone_from("https://github.com/expfactory/expfactory-%s" %(repo_type), destination)
 
@@ -60,7 +60,7 @@ def generate_database_url(dbtype=None,username=None,password=None,host=None,tabl
     '''
     if not template:
         if not dbtype or not username or not password or not host or not table:
-            print "Please provide all inputs: dbtype,username,password,host,table."
+            print("Please provide all inputs: dbtype,username,password,host,table.")
         else:
             return "%s://%s:%s@%s/%s"  %(dbtype,
                                          username,

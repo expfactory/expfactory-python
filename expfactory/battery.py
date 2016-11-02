@@ -110,7 +110,7 @@ def generate_local(battery_dest=None,subject_id=None,battery_repo=None,experimen
                              custom_variables=custom_variables)
         return battery_dest    
     else:
-        print "Folder exists at %s, cannot generate." %(battery_dest)
+        print("Folder exists at %s, cannot generate." %(battery_dest))
 
 
 def generate(battery_dest=None,battery_repo=None,experiment_repo=None,experiments=None,config=None,make_config=True,warning=True,time=30):
@@ -156,7 +156,7 @@ def generate(battery_dest=None,battery_repo=None,experiment_repo=None,experiment
 
         return battery_dest
     else:
-        print "Folder exists at %s, cannot generate." %(battery_dest)
+        print("Folder exists at %s, cannot generate." %(battery_dest))
 
         
 def template_experiments(battery_dest,battery_repo,valid_experiments,template_load=None,template_exp=None,
@@ -231,7 +231,7 @@ def move_experiments(valid_experiments,battery_dest,repo_type="experiments"):
             copy_directory(valid_experiment,"%s/static/%s/%s" %(battery_dest,repo_type,experiment_folder))
             moved_experiments.append(valid_experiment)
         except:
-           print "Cannot move %s, will not be added." %(valid_experiment)
+           print("Cannot move %s, will not be added." %(valid_experiment))
     return moved_experiments
 
 

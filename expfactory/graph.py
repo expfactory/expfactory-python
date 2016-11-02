@@ -195,7 +195,7 @@ def make_tree_from_triples(triples,output_html=False,meta_data=None,delim="\t",p
 
     # Generate nodes
     unique_nodes = triples.id.unique().tolist()
-    print "%s unique nodes found." %(len(unique_nodes))
+    print("%s unique nodes found." %(len(unique_nodes)))
     for node in unique_nodes:
         parents = triples.parent[triples.id==node].tolist()
         name = triples.name[triples.id==node].unique().tolist()

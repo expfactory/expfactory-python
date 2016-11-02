@@ -43,11 +43,11 @@ def get_validation_fields():
             ("template",1,str)]
 
 def notvalid(reason):
-    print reason
+    print(reason)
     return False
 
 def dowarning(reason):
-    print reason
+    print(reason)
 
 def get_valid_templates():
     return ['jspsych','survey','phaser','custom']
@@ -243,7 +243,7 @@ def get_experiments(experiment_repo,load=False,warning=True,repo_type="experimen
     '''
     experiments = find_directories(experiment_repo)
     valid_experiments = [e for e in experiments if validate(e,warning)]
-    print "Found %s valid %s" %(len(valid_experiments),repo_type)
+    print("Found %s valid %s" %(len(valid_experiments),repo_type))
     if load == True:
         valid_experiments = load_experiments(valid_experiments)
     return valid_experiments
@@ -277,7 +277,7 @@ def load_experiment(experiment_folder):
         meta = remove_unicode_dict(meta[0])
         return [meta]
     except ValueError as e:
-        print "Problem reading config.json, %s" %(e)
+        print("Problem reading config.json, %s" %(e))
         raise
 
 def find_changed(new_repo,comparison_repo,return_experiments=True,repo_type="experiments"):
@@ -307,7 +307,7 @@ def find_changed(new_repo,comparison_repo,return_experiments=True,repo_type="exp
             changed_files.append(contender_file)
 
     # Find differences with compare
-    print "Found files changed: %s" %(",".join(changed_files))
+    print("Found files changed: %s" %(",".join(changed_files)))
 
     if return_experiments == True:
         return numpy.unique([os.path.dirname(x.strip("\n")) for x in changed_files if os.path.dirname(x.strip("\n")) != ""]).tolist()

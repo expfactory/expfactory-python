@@ -93,7 +93,7 @@ def create_radio(text,id_attribute,options,values,classes="",required=0,validate
 
     # If going through validation, tell the user the question, etc.
     if validate == True:
-        print "Testing question %s with text %s" %(id_attribute,text)
+        print("Testing question %s with text %s" %(id_attribute,text))
 
     # If options provided are equal to values, parse the question
     if len(options) == len(values):
@@ -109,7 +109,7 @@ def create_radio(text,id_attribute,options,values,classes="",required=0,validate
         if validate == True:
             raise ValueError(error_message)
         else:
-            print error_message
+            print(error_message)
 
         return ""
 
@@ -220,7 +220,7 @@ def create_select_table(text,id_attribute,df,classes="",required=0):
             table_html = "%s\n</tr>" %(table_html)
         return "%s\n</tbody>\n</table><br><br><br>" %(table_html)
  
-    print "ERROR: DataFrame (df) must be a pandas.DataFrame"
+    print("ERROR: DataFrame (df) must be a pandas.DataFrame")
 
 
 def create_textarea(text,id_attribute,box_text=None,classes="",rows=3,required=0):
@@ -356,7 +356,7 @@ def read_survey_file(question_file,delim="\t"):
         return df
     else:
         missing_columns = [x for x in required_columns if x not in acceptable_columns]
-        print "Question file is missing required columns %s" %(",".join(missing_columns))
+        print("Question file is missing required columns %s" %(",".join(missing_columns)))
         return None
 
 def parse_questions(question_file,exp_id,delim="\t",return_requiredcount=True,validate=False):
@@ -411,7 +411,7 @@ def parse_questions(question_file,exp_id,delim="\t",return_requiredcount=True,va
                                                     classes=page_class,
                                                     validate=validate)
                     else:
-                        print "Radio question %s found null for options or values, skipping." %(question_text)
+                        print("Radio question %s found null for options or values, skipping." %(question_text))
  
                 # Checkbox
                 elif question_type == "checkbox":
@@ -422,7 +422,7 @@ def parse_questions(question_file,exp_id,delim="\t",return_requiredcount=True,va
                                                        id_attribute=unique_id,
                                                        classes=page_class)
                     else:
-                        print "Checkbox question %s found null for options, skipping." %(question_text)
+                        print("Checkbox question %s found null for options, skipping." %(question_text))
 
                 # Textareas and Textfields, regular and numeric
                 elif question_type == "textarea":
@@ -446,7 +446,7 @@ def parse_questions(question_file,exp_id,delim="\t",return_requiredcount=True,va
 
                 # Table
                 elif question_type == "table":
-                    print "Table option not yet supported! Coming soon."
+                    print("Table option not yet supported! Coming soon.")
  
                 question_count+=1
             
@@ -504,7 +504,7 @@ def generate_survey(experiment,experiment_folder,form_action="#",classes=None,su
             return survey,validation    
         return survey
     else:
-        print "ERROR: parsing input text file survey.tsv. Will not generate survey HTML"
+        print("ERROR: parsing input text file survey.tsv. Will not generate survey HTML")
 
 
 def export_questions(experiment,experiment_folder,survey_file="survey.tsv",delim="\t"):
@@ -553,7 +553,7 @@ def export_questions(experiment,experiment_folder,survey_file="survey.tsv",delim
                                                     required=required,
                                                     id_attribute=unique_id)
                     else:
-                        print "Radio question %s found null for options or values, skipping." %(question_text)
+                        print("Radio question %s found null for options or values, skipping." %(question_text))
  
                 # Checkbox
                 elif question_type == "checkbox":
@@ -563,7 +563,7 @@ def export_questions(experiment,experiment_folder,survey_file="survey.tsv",delim
                                                        required=required,
                                                        id_attribute=unique_id)
                     else:
-                        print "Checkbox question %s found null for options, skipping." %(question_text)
+                        print("Checkbox question %s found null for options, skipping." %(question_text))
 
                 # Textareas and Textfields, regular and numeric
                 elif question_type in ["textarea","textfield","numeric"]:

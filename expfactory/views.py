@@ -45,9 +45,9 @@ def run_single(exp_id,repo_type,destination=None,source_repo=None,battery_repo=N
     '''
     valid_repos = ["experiments","games","surveys"]
     if repo_type not in valid_repos:
-        print "Repo type must be in %s" %(",".join(valid_repos))   
+        print("Repo type must be in %s" %(",".join(valid_repos)))  
 
-    print "Deploying %s %s" %(repo_type[:-1],exp_id)
+    print("Deploying %s %s" %(repo_type[:-1],exp_id))
 
     # Default uses downloaded repos
     experiment_repo = None
@@ -86,10 +86,10 @@ def run_single(exp_id,repo_type,destination=None,source_repo=None,battery_repo=N
         if output_folder in base[repo_type]:
             preview_experiment(folder=output_folder,battery_folder=base["battery_repo"],port=port)
         else:
-            print "Invalid %s %s not found in surveys repo!" %(repo_type[:-1],exp_id)
+            print("Invalid %s %s not found in surveys repo!" %(repo_type[:-1],exp_id))
 
     else:
-        print "Folder exists at %s, cannot generate." %(destination)
+        print("Folder exists at %s, cannot generate." %(destination))
 
 
 def run_battery(destination=None,experiments=None,experiment_folder=None,subject_id=None,battery_folder=None,port=None,time=30):
@@ -102,7 +102,7 @@ def run_battery(destination=None,experiments=None,experiment_folder=None,subject
     :param port: the port number, default will be randomly generated between 8000 and 9999
     :param time: total number of minutes for experiments to add to battery
     '''
-    print "Generating custom battery selecting from experiments for maximum of %s minutes, please wait..." %(time)
+    print("Generating custom battery selecting from experiments for maximum of %s minutes, please wait..." %(time))
 
     if destination == None:
         destination = tempfile.mkdtemp()
@@ -123,11 +123,11 @@ def run_battery(destination=None,experiments=None,experiment_folder=None,subject
             port = choice(range(8000,9999),1)[0]
         Handler = SimpleHTTPServer.SimpleHTTPRequestHandler
         httpd = SocketServer.TCPServer(("", port), Handler)
-        print "Preview experiment at localhost:%s" %port
+        print("Preview experiment at localhost:%s" %port)
         webbrowser.open("http://localhost:%s" %(port))
         httpd.serve_forever()
     except:
-        print "Stopping web server..."
+        print("Stopping web server...")
         httpd.server_close()
         shutil.rmtree(tmpdir)
 
@@ -149,11 +149,11 @@ def preview_experiment(folder=None,battery_folder=None,port=None):
             port = choice(range(8000,9999),1)[0]
         Handler = SimpleHTTPServer.SimpleHTTPRequestHandler
         httpd = SocketServer.TCPServer(("", port), Handler)
-        print "Preview experiment at localhost:%s" %port
+        print("Preview experiment at localhost:%s" %port)
         webbrowser.open("http://localhost:%s" %(port))
         httpd.serve_forever()
     except:
-        print "Stopping web server..."
+        print("Stopping web server...")
         httpd.server_close()
         shutil.rmtree(tmpdir)
 

@@ -182,7 +182,7 @@ def clean_up(dirpath):
 def start(port=8088):
     if port==None:
         port=8088
-    print "Nobody ever comes in... nobody ever comes out..."
+    print("Nobody ever comes in... nobody ever comes out...")
     webbrowser.open("http://localhost:%s" %(port))
     app.run(host="0.0.0.0",debug=True,port=port)
     
