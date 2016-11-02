@@ -287,3 +287,30 @@ Expfactory-docker
 -----------------
 
 The Experiment Factory docker is a set of containers that can be run locally, or again on the cloud. The entire application comes packaged in a Docker image, meaning that installation and deployment of experiments happens in a web interface deployed by the image. We plan to offer experiment deployment as a service at `expfactory.org <http://www.expfactory.org>`_ and encourage you to `sign up <http://www.expfactory.org/signup>`_ to express interest. You can also `deploy our Docker infrastructure <http://www.expfactory.org/signup>`_ on your own server, however experience with docker and cloud computing is required.
+
+Expfactory-server
+-----------------
+
+Another deployment option is to deploy the batteries to a web server.
+
+The batteries themselves are stored as static html files with a uid parameter in the query string to pass the subject id: e.g. https://mywebserver/itest/digit_span-en/?uid=123456789
+
+PHP scripts, also hosted by the web server, are called on experiment completion to save the results (in JSON format) to a MySQL database.
+
+The folder `expfactory-python/expfactory-server <https://github.com/expfactory/expfactory-python/tree/master/expfactory-server>`_ contains the required server resources to deploy.
+Ensure to define your database connection parameters in database_connect.php.
+In this folder, you will also find a create_expfactory_table.sql and a concerto.conf file as an example of how to make `Concerto <https://github.com/campsych/concerto-platform/wiki>`_ and Expfactory coexist and share the same database.
+
+Edit the post\_url variable in `webserver-battery-template.html template <https://github.com/expfactory/expfactory-python/tree/master//expfactory/templates/webserver-battery-template.html>`_ to change the default URL to the PHP script (/itest/save_data.php) if needed. If not a local URL, cross-origin resource sharing should be enabled : refer to http://enable-cors.org/server_apache.html
+
+The folder `expfactory-python/script <https://github.com/expfactory/expfactory-python/tree/master/script>`_ contains the required setup_battery_for_webserver.py script to generate the battery in the target web directory.
+
+::
+
+      python setup_battery_for_webserver.py /var/www/vhosts/expfactory-server/digit_span-en digit_span
+
+Though the run_battery.py script has no use in production, you may test your batteries easily with:
+
+::
+
+      python run_battery.py --port 8080 /var/www/vhosts/expfactory-server/digit_span-en

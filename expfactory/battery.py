@@ -41,6 +41,7 @@ def generate_base(battery_dest,tasks=None,experiment_repo=None,survey_repo=None,
     copy_directory(battery_repo,battery_dest)
     valid_experiments = []
     valid_surveys = []
+    valid_games = []
     if add_experiments == True:
         valid_experiments = get_experiments(experiment_repo,warning=warning)
     if add_surveys == True:
