@@ -283,12 +283,13 @@ A few important notes:
 
  * Many times you will not be able to connect to your machine because the security group input/output is too stringent. Make sure to open ports to allow the default psiturk port to come through (22362) as well as SSH.
 
-Expfactory-docker
+expfactory-docker
 -----------------
 
 The Experiment Factory docker is a set of containers that can be run locally, or again on the cloud. The entire application comes packaged in a Docker image, meaning that installation and deployment of experiments happens in a web interface deployed by the image. We plan to offer experiment deployment as a service at `expfactory.org <http://www.expfactory.org>`_ and encourage you to `sign up <http://www.expfactory.org/signup>`_ to express interest. You can also `deploy our Docker infrastructure <http://www.expfactory.org/signup>`_ on your own server, however experience with docker and cloud computing is required.
 
-Expfactory-server
+
+expfactory-server
 -----------------
 
 Another deployment option is to deploy the batteries to a web server.
@@ -307,10 +308,12 @@ The `setup_battery_for_webserver.py <https://github.com/expfactory/expfactory-py
 
 ::
 
-      python setup_battery_for_webserver.py /var/www/vhosts/expfactory-server/digit_span-en digit_span
+      python setup_battery_for_webserver.py --output /var/www/vhosts/expfactory-server/digit_span-en --experiments digit_span
 
 Though the `run_battery.py <https://github.com/expfactory/expfactory-python/tree/master/script/run_battery.py>`_ script has no use in production, you may test your batteries easily with:
 
 ::
 
-      python run_battery.py --port 8080 /var/www/vhosts/expfactory-server/digit_span-en
+      python run_battery.py --port 8080 --folder /var/www/vhosts/expfactory-server/digit_span-en
+
+

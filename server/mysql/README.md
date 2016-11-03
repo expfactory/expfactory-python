@@ -61,4 +61,6 @@ Then run [setup_battery_for_webserver.py](setup_battery_for_webserver.py) to gen
 Though the [run_battery.py](../../script/run_battery.py) script has no use in production, you may test your batteries easily with:
 
 
-      python run_battery.py --port 8080 /var/www/vhosts/expfactory-server/digit_span-en
+      python run_battery.py --port 8080 --folder /var/www/vhosts/expfactory-server/digit_span-en
+
+Note that if you do not specify the `--folder` argument, the present working directory is used. If you do not specify a port, `8080` is used by default.
