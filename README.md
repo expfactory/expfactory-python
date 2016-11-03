@@ -64,5 +64,9 @@ The web interface includes the following:
 - complete documentation
 
 
+#### Static deployment with your own mysql database
+We have recently added support for generating a local battery that will work with your own mysql database. See [server/mysql](server/mysql) for details.
+
+
 ### Functions Provided
 You can also use the library as a module, and import expfactory functions into your application.  Please see our [documentation](http://expfactory.readthedocs.org/en/latest/getting-started.html) for details
