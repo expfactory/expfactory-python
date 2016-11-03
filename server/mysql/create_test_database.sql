@@ -1,0 +1,3 @@
+CREATE DATABASE concerto;
+GRANT ALL PRIVILEGES ON concerto.* TO concerto@'%' IDENTIFIED BY 'concerto';
+FLUSH PRIVILEGES;
