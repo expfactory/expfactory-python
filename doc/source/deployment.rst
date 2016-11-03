@@ -297,19 +297,19 @@ The batteries themselves are stored as static html files with a uid parameter in
 
 PHP scripts, also hosted by the web server, are called on experiment completion to save the results (in JSON format) to a MySQL database.
 
-The folder `expfactory-python/expfactory-server <https://github.com/expfactory/expfactory-python/tree/master/expfactory-server>`_ contains the required server resources to deploy.
+The folder `expfactory-python/server/mysql <https://github.com/expfactory/expfactory-python/tree/master/server/mysql>`_ contains the required server resources to deploy.
 Ensure to define your database connection parameters in database_connect.php.
 In this folder, you will also find a create_expfactory_table.sql and a concerto.conf file as an example of how to make `Concerto <https://github.com/campsych/concerto-platform/wiki>`_ and Expfactory coexist and share the same database.
 
-Edit the post\_url variable in `webserver-battery-template.html template <https://github.com/expfactory/expfactory-python/tree/master//expfactory/templates/webserver-battery-template.html>`_ to change the default URL to the PHP script (/itest/save_data.php) if needed. If not a local URL, cross-origin resource sharing should be enabled : refer to http://enable-cors.org/server_apache.html
+Edit the post\_url variable in the `templates/webserver-battery-template.html <https://github.com/expfactory/expfactory-python/tree/master/server/mysql/templates/webserver-battery-template.html>`_ template to change the default URL to the PHP script (/itest/save_data.php) if needed. If not a local URL, cross-origin resource sharing should be enabled : refer to http://enable-cors.org/server_apache.html
 
-The folder `expfactory-python/script <https://github.com/expfactory/expfactory-python/tree/master/script>`_ contains the required setup_battery_for_webserver.py script to generate the battery in the target web directory.
+The `setup_battery_for_webserver.py <https://github.com/expfactory/expfactory-python/tree/master/server/mysql/setup_battery_for_webserver.py>`_ script should be used to generate the battery in the target web directory.
 
 ::
 
       python setup_battery_for_webserver.py /var/www/vhosts/expfactory-server/digit_span-en digit_span
 
-Though the run_battery.py script has no use in production, you may test your batteries easily with:
+Though the `run_battery.py <https://github.com/expfactory/expfactory-python/tree/master/script/run_battery.py>`_ script has no use in production, you may test your batteries easily with:
 
 ::
 

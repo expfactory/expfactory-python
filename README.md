@@ -65,7 +65,7 @@ The web interface includes the following:
 
 
 #### Static deployment with your own mysql database
-We have recently added support for generating a local battery that will work with your own mysql database. See [expfactory-server/mysql](expfactory-server/mysql) for details.
+We have recently added support for generating a local battery that will work with your own mysql database. See [server/mysql](server/mysql) for details.
 
 
 ### Functions Provided
