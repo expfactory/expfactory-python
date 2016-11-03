@@ -4,6 +4,6 @@ flask-restful
 gitpython
 scipy
 seaborn
-selenium
+selenium==2.53.6
 cognitiveatlas
 numexpr
