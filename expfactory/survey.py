@@ -2,14 +2,36 @@
 survey.py: part of expfactory package
 Functions to work with javascript surveys
 
+Copyright (c) 2016-2017 Vanessa Sochat
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
 '''
 
 from expfactory.experiment import get_experiments
 from exceptions import ValueError
+from logman import bot
 from glob import glob
 import pandas
 import json
 import uuid
+import sys
 import re
 import os
 
@@ -93,7 +115,7 @@ def create_radio(text,id_attribute,options,values,classes="",required=0,validate
 
     # If going through validation, tell the user the question, etc.
     if validate == True:
-        print "Testing question %s with text %s" %(id_attribute,text)
+        bot.debug("Testing question %s with text %s" %(id_attribute,text))
 
     # If options provided are equal to values, parse the question
     if len(options) == len(values):
@@ -109,7 +131,7 @@ def create_radio(text,id_attribute,options,values,classes="",required=0,validate
         if validate == True:
             raise ValueError(error_message)
         else:
-            print error_message
+            bot.error(error_message)
 
         return ""
 
@@ -220,7 +242,8 @@ def create_select_table(text,id_attribute,df,classes="",required=0):
             table_html = "%s\n</tr>" %(table_html)
         return "%s\n</tbody>\n</table><br><br><br>" %(table_html)
  
-    print "ERROR: DataFrame (df) must be a pandas.DataFrame"
+    bot.error("ERROR: DataFrame (df) must be a pandas.DataFrame")
+    sys.exit(1)
 
 
 def create_textarea(text,id_attribute,box_text=None,classes="",rows=3,required=0):
@@ -356,8 +379,10 @@ def read_survey_file(question_file,delim="\t"):
         return df
     else:
         missing_columns = [x for x in required_columns if x not in acceptable_columns]
-        print "Question file is missing required columns %s" %(",".join(missing_columns))
+        bot.error("Question file is missing required columns %s" %(",".join(missing_columns)))
+        sys.exit(1)
         return None
+
 
 def parse_questions(question_file,exp_id,delim="\t",return_requiredcount=True,validate=False):
     '''parse_questions reads in a text file, separated by delim, into a pandas data frame, checking that all column names are provided.
@@ -411,7 +436,7 @@ def parse_questions(question_file,exp_id,delim="\t",return_requiredcount=True,va
                                                     classes=page_class,
                                                     validate=validate)
                     else:
-                        print "Radio question %s found null for options or values, skipping." %(question_text)
+                        bot.warning("Radio question %s found null for options or values, skipping." %(question_text))
  
                 # Checkbox
                 elif question_type == "checkbox":
@@ -422,7 +447,7 @@ def parse_questions(question_file,exp_id,delim="\t",return_requiredcount=True,va
                                                        id_attribute=unique_id,
                                                        classes=page_class)
                     else:
-                        print "Checkbox question %s found null for options, skipping." %(question_text)
+                        bot.warning("Checkbox question %s found null for options, skipping." %(question_text))
 
                 # Textareas and Textfields, regular and numeric
                 elif question_type == "textarea":
@@ -446,7 +471,7 @@ def parse_questions(question_file,exp_id,delim="\t",return_requiredcount=True,va
 
                 # Table
                 elif question_type == "table":
-                    print "Table option not yet supported! Coming soon."
+                    bot.warning("Table option not yet supported! Coming soon.")
  
                 question_count+=1
             
@@ -504,7 +529,8 @@ def generate_survey(experiment,experiment_folder,form_action="#",classes=None,su
             return survey,validation    
         return survey
     else:
-        print "ERROR: parsing input text file survey.tsv. Will not generate survey HTML"
+        bot.error("ERROR: parsing input text file survey.tsv. Will not generate survey HTML")
+        sys.exit(1)
 
 
 def export_questions(experiment,experiment_folder,survey_file="survey.tsv",delim="\t"):
@@ -553,7 +579,7 @@ def export_questions(experiment,experiment_folder,survey_file="survey.tsv",delim
                                                     required=required,
                                                     id_attribute=unique_id)
                     else:
-                        print "Radio question %s found null for options or values, skipping." %(question_text)
+                        bot.warning("Radio question %s found null for options or values, skipping." %(question_text))
  
                 # Checkbox
                 elif question_type == "checkbox":
@@ -563,7 +589,7 @@ def export_questions(experiment,experiment_folder,survey_file="survey.tsv",delim
                                                        required=required,
                                                        id_attribute=unique_id)
                     else:
-                        print "Checkbox question %s found null for options, skipping." %(question_text)
+                        bot.warning("Checkbox question %s found null for options, skipping." %(question_text))
 
                 # Textareas and Textfields, regular and numeric
                 elif question_type in ["textarea","textfield","numeric"]:

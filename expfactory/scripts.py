@@ -4,19 +4,58 @@
 script.py: part of expfactory api
 Runtime executable
 
+Copyright (c) 2016-2017 Vanessa Sochat, Stanford University
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
 '''
-from expfactory.views import preview_experiment, run_battery, run_single
-from expfactory.battery import generate, generate_local
-from expfactory.experiment import validate, load_experiment
+
+from expfactory.views import (
+    preview_experiment, 
+    run_battery, 
+    run_single
+)
+
+from expfactory.battery import (
+    generate, 
+    generate_local
+)
+
+from expfactory.experiment import (
+    validate, 
+    load_experiment
+)
+
 from expfactory.tests import validate_surveys
+
 from glob import glob
 import argparse
 import sys
 import os
 
-def main():
+
+
+def get_parser():
+
     parser = argparse.ArgumentParser(
     description="generate experiments and infrastructure to serve them.")
+
     parser.add_argument("--folder", dest='folder', help="full path to single experiment folder (for single experiment run with --run) or folder with many experiments (for battery run with --run)", type=str, default=None)
     parser.add_argument("--subid", dest='subid', help="subject id to embed in experiments data in the case of a battery run with --run", type=str, default=None)
     parser.add_argument("--experiments", dest='experiments', help="comma separated list of experiments for a local battery", type=str, default=None)
@@ -33,23 +72,35 @@ def main():
     parser.add_argument("--output", dest='output', help="output folder for --generate command, if a temporary directory is not desired. Must not exist.", type=str, default=None)
     parser.add_argument('--test', dest='test', help="test an experiment folder with the experiment robot", default=False, action='store_true')
 
+    return parser
+
+
+def main():
+
+    from logman import bot
+    parser = get_parser()
+
     try:
         args = parser.parse_args()
     except:
         parser.print_help()
         sys.exit(0)
 
+    
     # Check if the person wants to preview experiment or battery
     if args.preview == True:
-        preview_experiment(folder=args.folder,battery_folder=args.battery_folder,port=args.port)
+        preview_experiment(folder=args.folder,
+                           battery_folder=args.battery_folder,
+                           port=args.port)
 
     # Generate a local battery folder (static)
     elif args.generate == True:
 
-        if args.experiments != None:
+        if args.experiments is not None:
 
             # Deploy a psiturk battery folder
             experiments = args.experiments.split(",")
+
             if args.psiturk == True:
                 outdir = generate(battery_dest=args.output,
                                   battery_repo=args.battery_folder,
@@ -68,25 +119,25 @@ def main():
                                         warning=False,
                                         time=args.time)
 
-            print "Battery generation complete: static files are in %s" %(outdir)
+            bot.info("Battery generation complete: static files are in %s" %(outdir))
 
         else:
-            print "Please specify list of comma separated experiments with --experiments"
+            bot.info("Please specify list of comma separated experiments with --experiments")
 
     # Run a local battery
     elif args.run == True:
 
         # Warn the user about using repos for experiments and battery
         if args.battery_folder == None:
-            print "No battery folder specified. Will pull latest battery from expfactory-battery repo"
+            bot.info("No battery folder specified. Will pull latest battery from expfactory-battery repo")
 
         if args.folder == None:
-            print "No experiments, games, or surveys folder specified. Will pull latest from expfactory-experiments repo"
+            bot.info("No experiments, games, or surveys folder specified. Will pull latest from expfactory-experiments repo")
 
-        if args.survey != None:
+        if args.survey is not None:
             survey = args.survey.split(",")
             if len(survey) > 0:
-                print "Currently only support running one survey, will run first in list."
+                bot.warning("Currently only support running one survey, will run first in list.")
                 survey = survey[0]
             run_single(exp_id=survey,
                        repo_type="surveys",
@@ -95,10 +146,10 @@ def main():
                        port=args.port,
                        subject_id=args.subid)
 
-        if args.game != None:
+        if args.game is not None:
             game = args.game.split(",")
             if len(game) > 0:
-                print "Currently only support running one game, will run first in list."
+                bot.warning("Currently only support running one game, will run first in list.")
                 game = game[0]
             run_single(exp_id=game,
                        repo_type="games",
@@ -107,7 +158,7 @@ def main():
                        port=args.port,
                        subject_id=args.subid)
 
-        if args.experiments != None:
+        if args.experiments is not None:
             experiments = args.experiments.split(",")
             run_battery(experiments=experiments,
                         experiment_folder=args.folder,
@@ -116,7 +167,7 @@ def main():
                         port=args.port,
                         time=args.time)
         else:
-            print "Please specify list of comma separated experiments with --experiments"
+            bot.info("Please specify list of comma separated experiments with --experiments")
 
     # Validate a config.json
     elif args.validate == True:
@@ -126,7 +177,7 @@ def main():
         # If a survey, and if validates, also validate survey.tsv
         experiment = load_experiment(folder)[0]
         if experiment["template"] == "survey":
-            print "Validating survey.tsv..."
+            bot.debug("Validating survey.tsv...")
             survey_repo = os.path.dirname(folder)
             validate_surveys(experiment["exp_id"],survey_repo)
 
@@ -134,7 +185,9 @@ def main():
     # Run the experiment robot
     elif args.test == True:
         from expfactory.tests import test_experiment
-        test_experiment(folder=args.folder,battery_folder=args.battery_folder,port=args.port)
+        test_experiment(folder=args.folder,
+                        battery_folder=args.battery_folder,
+                        port=args.port)
 
     # Otherwise, just open the expfactory interface
     else:        

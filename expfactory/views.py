@@ -3,6 +3,27 @@ views.py
 
 part of the experiment factory package
 functions for developing experiments and batteries, viewing and testing things
+
+Copyright (c) 2016-2017 Vanessa Sochat
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
 '''
 
 from expfactory.utils import copy_directory, get_installdir, sub_template, get_template, save_pretty_json
@@ -11,6 +32,7 @@ from expfactory.vm import custom_battery_download, get_stylejs, get_jspsych_init
 from expfactory.experiment import load_experiment, get_experiments
 from cognitiveatlas.api import get_concept, get_task
 from expfactory.survey import generate_survey
+from logman import bot
 from numpy.random import choice
 import SimpleHTTPServer
 import SocketServer
@@ -45,16 +67,17 @@ def run_single(exp_id,repo_type,destination=None,source_repo=None,battery_repo=N
     '''
     valid_repos = ["experiments","games","surveys"]
     if repo_type not in valid_repos:
-        print "Repo type must be in %s" %(",".join(valid_repos))   
+        bot.error("Repo type must be in %s" %(",".join(valid_repos)))
+        sys.exit(1)
 
-    print "Deploying %s %s" %(repo_type[:-1],exp_id)
+    bot.debug("Deploying %s %s" %(repo_type[:-1],exp_id))
 
     # Default uses downloaded repos
     experiment_repo = None
     survey_repo = None
     game_repo = None
 
-    if source_repo != None:
+    if source_repo is not None:
         if repo_type == "experiments":
             experiment_repo = source_repo
         elif repo_type == "surveys":
@@ -86,10 +109,10 @@ def run_single(exp_id,repo_type,destination=None,source_repo=None,battery_repo=N
         if output_folder in base[repo_type]:
             preview_experiment(folder=output_folder,battery_folder=base["battery_repo"],port=port)
         else:
-            print "Invalid %s %s not found in surveys repo!" %(repo_type[:-1],exp_id)
+            bot.error("Invalid %s %s not found in surveys repo!" %(repo_type[:-1],exp_id))
 
     else:
-        print "Folder exists at %s, cannot generate." %(destination)
+        bot.error("Folder exists at %s, cannot generate." %(destination))
 
 
 def run_battery(destination=None,experiments=None,experiment_folder=None,subject_id=None,battery_folder=None,port=None,time=30):
@@ -102,7 +125,7 @@ def run_battery(destination=None,experiments=None,experiment_folder=None,subject
     :param port: the port number, default will be randomly generated between 8000 and 9999
     :param time: total number of minutes for experiments to add to battery
     '''
-    print "Generating custom battery selecting from experiments for maximum of %s minutes, please wait..." %(time)
+    bot.debug("Generating custom battery selecting from experiments for maximum of %s minutes, please wait..." %(time))
 
     if destination == None:
         destination = tempfile.mkdtemp()
@@ -123,11 +146,11 @@ def run_battery(destination=None,experiments=None,experiment_folder=None,subject
             port = choice(range(8000,9999),1)[0]
         Handler = SimpleHTTPServer.SimpleHTTPRequestHandler
         httpd = SocketServer.TCPServer(("", port), Handler)
-        print "Preview experiment at localhost:%s" %port
+        bot.info("Preview experiment at localhost:%s" %port)
         webbrowser.open("http://localhost:%s" %(port))
         httpd.serve_forever()
     except:
-        print "Stopping web server..."
+        bot.info("Stopping web server...")
         httpd.server_close()
         shutil.rmtree(tmpdir)
 
@@ -149,11 +172,11 @@ def preview_experiment(folder=None,battery_folder=None,port=None):
             port = choice(range(8000,9999),1)[0]
         Handler = SimpleHTTPServer.SimpleHTTPRequestHandler
         httpd = SocketServer.TCPServer(("", port), Handler)
-        print "Preview experiment at localhost:%s" %port
+        bot.info("Preview experiment at localhost:%s" %port)
         webbrowser.open("http://localhost:%s" %(port))
         httpd.serve_forever()
     except:
-        print "Stopping web server..."
+        bot.info("Stopping web server...")
         httpd.server_close()
         shutil.rmtree(tmpdir)
 

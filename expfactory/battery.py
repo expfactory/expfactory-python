@@ -2,14 +2,52 @@
 battery.py: part of expfactory package
 Functions to generate batteries
 
+Copyright (c) 2016-2017 Vanessa Sochat
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
 '''
-from expfactory.vm import custom_battery_download, get_jspsych_init, get_stylejs
-from expfactory.experiment import get_experiments, load_experiment
-from expfactory.utils import copy_directory, get_template, \
-     sub_template, get_installdir, save_template
+
+from expfactory.vm import (
+    custom_battery_download, 
+    get_jspsych_init, 
+    get_stylejs
+)
+
+from expfactory.experiment import (
+    get_experiments, 
+    load_experiment
+)
+
+from expfactory.utils import (
+    copy_directory, 
+    get_template, 
+    sub_template, 
+    get_installdir, 
+    save_template
+)
+
+from logman import bot
 import tempfile
 import shutil
 import numpy
+import sys
 import uuid
 import os
 import re
@@ -111,7 +149,8 @@ def generate_local(battery_dest=None,subject_id=None,battery_repo=None,experimen
                              custom_variables=custom_variables)
         return battery_dest    
     else:
-        print "Folder exists at %s, cannot generate." %(battery_dest)
+        bot.error("Folder exists at %s, cannot generate." %(battery_dest))
+        sys.exit(1)
 
 
 def generate(battery_dest=None,battery_repo=None,experiment_repo=None,experiments=None,config=None,make_config=True,warning=True,time=30):
@@ -157,7 +196,8 @@ def generate(battery_dest=None,battery_repo=None,experiment_repo=None,experiment
 
         return battery_dest
     else:
-        print "Folder exists at %s, cannot generate." %(battery_dest)
+        bot.error("Folder exists at %s, cannot generate." %(battery_dest))
+        sys.exit(1)
 
         
 def template_experiments(battery_dest,battery_repo,valid_experiments,template_load=None,template_exp=None,
@@ -234,7 +274,7 @@ def move_experiments(valid_experiments,battery_dest,repo_type="experiments"):
             copy_directory(valid_experiment,"%s/static/%s/%s" %(battery_dest,repo_type,experiment_folder))
             moved_experiments.append(valid_experiment)
         except:
-           print "Cannot move %s, will not be added." %(valid_experiment)
+           bot.warning("Cannot move %s, will not be added." %(valid_experiment))
     return moved_experiments
 
 

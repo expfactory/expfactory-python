@@ -2,11 +2,32 @@
 experiment.py: part of expfactory package
 Functions to work with javascript experiments
 
+Copyright (c) 2016-2017 Vanessa Sochat
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
 '''
 
 from expfactory.utils import find_directories, remove_unicode_dict
 from glob import glob
 import filecmp
+from logman import bot
 import numpy
 import json
 import re
@@ -43,11 +64,11 @@ def get_validation_fields():
             ("template",1,str)]
 
 def notvalid(reason):
-    print reason
+    bot.error(reason)
     return False
 
 def dowarning(reason):
-    print reason
+    bot.warning(reason)
 
 def get_valid_templates():
     return ['jspsych','survey','phaser','custom']
@@ -243,7 +264,7 @@ def get_experiments(experiment_repo,load=False,warning=True,repo_type="experimen
     '''
     experiments = find_directories(experiment_repo)
     valid_experiments = [e for e in experiments if validate(e,warning)]
-    print "Found %s valid %s" %(len(valid_experiments),repo_type)
+    bot.info("Found %s valid %s" %(len(valid_experiments),repo_type))
     if load == True:
         valid_experiments = load_experiments(valid_experiments)
     return valid_experiments
@@ -277,7 +298,7 @@ def load_experiment(experiment_folder):
         meta = remove_unicode_dict(meta[0])
         return [meta]
     except ValueError as e:
-        print "Problem reading config.json, %s" %(e)
+        bot.error("Problem reading config.json, %s" %(e))
         raise
 
 def find_changed(new_repo,comparison_repo,return_experiments=True,repo_type="experiments"):
@@ -307,7 +328,7 @@ def find_changed(new_repo,comparison_repo,return_experiments=True,repo_type="exp
             changed_files.append(contender_file)
 
     # Find differences with compare
-    print "Found files changed: %s" %(",".join(changed_files))
+    bot.debug("Found files changed: %s" %",".join(changed_files))
 
     if return_experiments == True:
         return numpy.unique([os.path.dirname(x.strip("\n")) for x in changed_files if os.path.dirname(x.strip("\n")) != ""]).tolist()

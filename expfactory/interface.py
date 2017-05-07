@@ -1,3 +1,26 @@
+'''
+Copyright (c) 2016-2017 Vanessa Sochat
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+'''
+
 from expfactory.vm import custom_battery_download, add_custom_logo, generate_database_url, \
      prepare_vm, specify_experiments
 from expfactory.experiment import validate, load_experiment, get_experiments, make_lookup
@@ -5,11 +28,13 @@ from expfactory.utils import copy_directory, get_installdir, sub_template
 from expfactory.battery import generate, generate_config
 from flask import Flask, render_template, request
 from flask_restful import Resource, Api
+from logman import bot
 from werkzeug import secure_filename
 import webbrowser
 import tempfile
 import shutil
 import random
+import sys
 import os
 
 # SERVER CONFIGURATION ##############################################
@@ -182,7 +207,7 @@ def clean_up(dirpath):
 def start(port=8088):
     if port==None:
         port=8088
-    print "Nobody ever comes in... nobody ever comes out..."
+    bot.info("Nobody ever comes in... nobody ever comes out...")
     webbrowser.open("http://localhost:%s" %(port))
     app.run(host="0.0.0.0",debug=True,port=port)
     

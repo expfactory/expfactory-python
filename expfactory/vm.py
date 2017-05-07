@@ -2,11 +2,35 @@
 vm.py: part of expfactory package
 Functions to generate virtual machines to run expfactory batteries
 
+Copyright (c) 2016-2017 Vanessa Sochat
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+
 '''
+
 from expfactory.utils import save_template, clean_fields, copy_directory, get_installdir, sub_template, get_template
+from logman import bot
 from git import Repo
 import tempfile
 import shutil
+import sys
 import os
 import re
 
@@ -18,7 +42,8 @@ def download_repo(repo_type,destination):
     '''
     acceptable_types = ["experiments","battery","vm","surveys","games"]
     if repo_type not in acceptable_types:
-        print "repo_type must be in %s" %(",".join(acceptable_types))
+        bot.error("repo_type must be in %s" %(",".join(acceptable_types)))
+        sys.exit(1)
     else:
         return Repo.clone_from("https://github.com/expfactory/expfactory-%s" %(repo_type), destination)
 
@@ -60,7 +85,8 @@ def generate_database_url(dbtype=None,username=None,password=None,host=None,tabl
     '''
     if not template:
         if not dbtype or not username or not password or not host or not table:
-            print "Please provide all inputs: dbtype,username,password,host,table."
+            bot.error("Please provide all inputs: dbtype,username,password,host,table.")
+            sys.exit(1)
         else:
             return "%s://%s:%s@%s/%s"  %(dbtype,
                                          username,
@@ -73,6 +99,7 @@ def generate_database_url(dbtype=None,username=None,password=None,host=None,tabl
         return "sqlite:///participants.db" 
     elif template == "postgresql":
         return "postgresql://expfactory:expfactory@localhost:5432/expfactory"
+
 
 def prepare_vm(battery_dest,fields=None,vm_repo=None,vm_type="vagrant"):
     '''prepare_vm
