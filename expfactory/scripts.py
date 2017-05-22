@@ -32,6 +32,14 @@ from expfactory.views import (
     run_single
 )
 
+from expfactory.cli import (
+    list_experiments,
+    install_experiments,
+    update_experiments,
+    remove_experiments
+)
+
+
 from expfactory.battery import (
     generate, 
     generate_local
@@ -56,7 +64,14 @@ def get_parser():
     parser = argparse.ArgumentParser(
     description="generate experiments and infrastructure to serve them.")
 
-    parser.add_argument("--folder", dest='folder', help="full path to single experiment folder (for single experiment run with --run) or folder with many experiments (for battery run with --run)", type=str, default=None)
+    parser.add_argument("--list", dest='list', help="list available experiments.", default=False, action='store_true')
+    parser.add_argument("--update", dest='update', help="update experiments. No specification updates all.",  default=None, type=str)
+    parser.add_argument("--install", dest='install', help="install one or more experiments.", default=None, type=str)
+    parser.add_argument("--uninstall", dest='uninstall', help="uninstall one or more experiments.", default=None, type=str)
+
+    parser.add_argument("--folder", dest='folder', help="full path to folder to use", type=str, default=None)
+
+    # Needs updating
     parser.add_argument("--subid", dest='subid', help="subject id to embed in experiments data in the case of a battery run with --run", type=str, default=None)
     parser.add_argument("--experiments", dest='experiments', help="comma separated list of experiments for a local battery", type=str, default=None)
     parser.add_argument("--port", dest='port', help="port to preview experiment", type=int, default=None)

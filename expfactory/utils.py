@@ -131,10 +131,17 @@ def save_template(output_file,html_snippet):
     filey.writelines(html_snippet)
     filey.close()
 
-def save_pretty_json(outfile,myjson):
-    filey = open(outfile,'wb')
-    filey.write(json.dumps(myjson, sort_keys=True,indent=4, separators=(',', ': ')))
-    filey.close()
+
+def read_json(filename,mode='r'):
+    with open(filename,mode) as filey:
+        data = json.load(filey)
+    return data
+
+
+def write_json(json_obj,filename,mode='w'):
+    with open(filename,mode) as filey:
+        filey.write(json.dumps(json_obj, sort_keys=True,indent=4, separators=(',', ': ')))
+    return filename
 
 
 def is_type(var,types=[int,float,list]):

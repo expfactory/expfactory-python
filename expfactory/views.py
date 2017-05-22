@@ -26,7 +26,7 @@ SOFTWARE.
 
 '''
 
-from expfactory.utils import copy_directory, get_installdir, sub_template, get_template, save_pretty_json
+from expfactory.utils import copy_directory, get_installdir, sub_template, get_template, write_json
 from expfactory.battery import get_experiment_run, generate_local, move_experiments, generate_base
 from expfactory.vm import custom_battery_download, get_stylejs, get_jspsych_init
 from expfactory.experiment import load_experiment, get_experiments
@@ -380,7 +380,7 @@ def generate_experiment_web(output_dir,experiment_folder=None,survey_folder=None
         data_folder = os.path.abspath("%s/data" %output_dir)
         if not os.path.exists(data_folder):
             os.mkdir(data_folder)
-        save_pretty_json("%s/expfactory-experiments.json" %(data_folder),json.loads(valid.to_json(orient="records")))
+        write_json(json.loads(valid.to_json(orient="records")),"%s/expfactory-experiments.json" %(data_folder))
         valid.to_csv("%s/expfactory-experiments.tsv" %(data_folder),sep="\t",index=None)
         valid.to_pickle("%s/expfactory-experiments.pkl" %(data_folder))
 

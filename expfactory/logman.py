@@ -12,6 +12,7 @@ INFO 1
 VERBOSE 2
 VERBOSE2 3
 DEBUG 4
+TEST 5
 
 VERBOSE is equivalent to VERBOSE1 (this is mirroring the C code)
 and for each level, calling it corresponds to calling the class'
@@ -64,7 +65,7 @@ INFO = 1
 VERBOSE = 2
 VERBOSE2 = 3
 DEBUG = 4
-
+TEST = 5
 
 class ExpfactoryMessage:
 
@@ -78,6 +79,7 @@ class ExpfactoryMessage:
                        ERROR: "\033[91m",  # red
                        WARNING:"\033[93m", # dark yellow
                        LOG:"\033[95m",     # purple
+                       TEST:"\033[95m",     # purple
                        DEBUG:"\033[36m",   # cyan
                        'OFF':"\033[0m"}    # end sequence
 
@@ -120,7 +122,8 @@ class ExpfactoryMessage:
                      LOG,
                      VERBOSE,
                      VERBOSE2,
-                     DEBUG ]:
+                     DEBUG,
+                     TEST]:
             return True
         return False
 
@@ -260,6 +263,9 @@ class ExpfactoryMessage:
     def debug(self,message):
         self.emit(DEBUG,message,'DEBUG')        
 
+    def test(self,message):
+        self.emit(TEST,message,'TEST')        
+
     def is_quiet(self):
         '''is_quiet returns true if the level is under 1
         '''
@@ -272,7 +278,7 @@ def get_logging_level():
     '''get_logging_level will configure a logging to standard out based on the user's
     selected level, which should be in an environment variable called
     '''
-    return int(os.environ.get("EXPFACTORY_MESSAGELEVEL",4))
+    return int(os.environ.get("EXPFACTORY_MESSAGELEVEL",5))
     
 
 def get_user_color_preference():
