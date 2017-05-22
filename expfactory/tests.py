@@ -450,7 +450,7 @@ def experiment_robot_web(web_folder,experiment_tags=None,port=None,pause_time=10
 
     for experiment in experiments:
  
-        bot.log("STARTING TEST OF EXPERIMENT %s" %experiment[0]["exp_id"]))
+        bot.log("STARTING TEST OF EXPERIMENT %s" %experiment[0]["exp_id"])
         get_page(browser,"http://localhost:%s/%s.html" %(port,experiment[0]["exp_id"]))
         
         sleep(3)
@@ -458,7 +458,7 @@ def experiment_robot_web(web_folder,experiment_tags=None,port=None,pause_time=10
         count=0
         wait_time=0
         while True:
-            bot.log("Testing command %s of %s" %count,experiment[0]["exp_id"]))
+            bot.log("Testing command %s of %s" %count,experiment[0]["exp_id"])
             try:
                 wait_time,finished = test_block(browser,experiment,pause_time,wait_time)
                 if finished == True:
