@@ -71,7 +71,7 @@ def get_parser():
 
 def main():
 
-    from logman import bot
+    from expfactory.logman import bot
     parser = get_parser()
 
     try:

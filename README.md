@@ -107,3 +107,11 @@ $ sudo singularity instance.list
 DAEMON NAME      PID      CONTAINER IMAGE
 web2             32708    /home/vanessa/Documents/Dropbox/Code/expfactory/experiments/expfactory
 ```
+
+If you want to shell inside
+
+```
+sudo singularity shell --writable instance://web1
+```
+
+
