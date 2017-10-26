@@ -46,7 +46,11 @@ git clone https://github.com/expfactory-experiments/adaptive-n-back
 mv adaptive-n-back/* .
 ```
 
-We are installing each experiment as a [Standard Container Integration Format (SCI-F)](https://containers-ftw.github.io/SCI-F/) app. The high level idea is that it gives easy accessibility to multiple different internal modules in our container. In our case, an internal module is an experiment. Note that here we might add different environment variables for an experiment, or specify a custom database, but since we are just developing and testing now, let's keep it simple! Let's build the image, and we are going to create a development (tester) image called a "sandbox" first:
+We are installing each experiment as a [Standard Container Integration Format (SCI-F)](https://containers-ftw.github.io/SCI-F/) app. The high level idea is that it gives easy accessibility to multiple different internal modules in our container. In our case, an internal module is an experiment. Note that here we might add different environment variables for an experiment, or specify a custom database, but since we are just developing and testing now, let's keep it simple! 
+
+
+### Build the Battery Container
+Let's build the image, and we are going to create a development (tester) image called a "sandbox" first:
 
 
 ```
@@ -72,5 +76,34 @@ singularity help expfactory
 
 In the future I will likely make an automatic "recipe generator" that uses the config.jsons to help, for now it's just a game of copy pasting :)
 
- singularity instance.start expfactory.img web1
 
+### Start the Server
+We will be starting instances of the container, meaning a deployment of a web server with the expfactory software to serve a battery. This means first starting the container. In the command below, we use `instnace.start` and name our instance `web1`.
+
+```
+ singularity instance.start expfactory.img web1
+```
+
+List your images:
+
+```
+singularity instance.list
+DAEMON NAME      PID      CONTAINER IMAGE
+web1             29903    /home/vanessa/Documents/Dropbox/Code/expfactory/experiments/expfactory
+```
+
+Stop the instance
+
+```
+singularity instance.stop web1
+Stopping web1 instance of /home/vanessa/Documents/Dropbox/Code/expfactory/experiments/expfactory (PID=29903)
+```
+
+If you want a writable instance (meaning using shell with sudo) you need to also create it as sudo. The creator is the owner.
+
+```
+sudo singularity instance.start --writable expfactory web2
+$ sudo singularity instance.list
+DAEMON NAME      PID      CONTAINER IMAGE
+web2             32708    /home/vanessa/Documents/Dropbox/Code/expfactory/experiments/expfactory
+```
