@@ -24,14 +24,72 @@ SOFTWARE.
 
 '''
 
-from expfactory.utils import find_directories, remove_unicode_dict
+from utils import find_directories, read_json
 from glob import glob
 import filecmp
 from logman import bot
-import numpy
 import json
 import re
 import os
+
+
+def get_experiments(base, load=False, warning=True):
+    ''' get_experiments will return loaded json for all valid experiments from an experiment folder
+    :param base: full path to the base folder with experiments inside
+    :param load: if True, returns a list of loaded config.json objects. If False (default) returns the paths to the experiments
+    '''
+    experiments = find_directories(base)
+    valid_experiments = [e for e in experiments if validate(e,warning)]
+    bot.info("Found %s valid experiments" %(len(valid_experiments)))
+    if load is True:
+        valid_experiments = load_experiments(valid_experiments)
+    return valid_experiments
+
+
+def load_experiments(folders):
+    '''load_experiments
+    a wrapper for load_experiment to read multiple experiments
+    :param experiment_folders: a list of experiment folders to load, full paths
+    '''
+    experiments = []
+    if isinstance(folders,str):
+        folders = [experiment_folders]
+    for folder in folders:
+        exp = load_experiment(folder)
+        experiments.append(exp)
+    return experiments
+
+
+def load_experiment(folder):
+    '''load_experiment:
+    reads in the config.json for an
+    :param folder: full path to experiment folder
+    '''
+    fullpath = os.path.abspath(folder)
+    config = "%s/config.json" %(fullpath)
+    if not os.path.exists(config):
+        return notvalid("config.json could not be found in %s" %(experiment_folder))
+    return read_json(meta)
+    
+
+def notvalid(reason):
+    bot.error(reason)
+    return False
+
+def dowarning(reason):
+    bot.warning(reason)
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 def get_validation_fields():
@@ -63,12 +121,6 @@ def get_validation_fields():
             ("deployment_variables",0,str),
             ("template",1,str)]
 
-def notvalid(reason):
-    bot.error(reason)
-    return False
-
-def dowarning(reason):
-    bot.warning(reason)
 
 def get_valid_templates():
     return ['jspsych','survey','phaser','custom']
@@ -90,29 +142,21 @@ def get_acceptable_values(package_name):
     return acceptable_values[package_name]
 
 
-def validate(experiment_folder=None,warning=True):
+def validate(folder=None, warning=True):
     '''validate
     :param experiment_folder: full path to experiment folder with config.json
     :param warning: issue a warning for empty fields with level 2 (warning)
-
-    ..note::
-
-        takes an experiment folder, and looks for validation based on:
-    
-        - config.json
-        - files existing specified in config.json
-
-        All fields should be defined, but for now we just care about run scripts
-    
     '''
-    if experiment_folder==None:
-        experiment_folder=os.path.abspath(os.getcwd())
+
+    if folder is None:
+        folder=os.path.abspath(os.getcwd())
 
     try:
-        meta = load_experiment(experiment_folder)
+        meta = load_experiment(folder)
         if meta == False:
             return notvalid("%s is not an experiment." %(experiment_folder))
         experiment_name = os.path.basename(experiment_folder)
+
     except:
         return notvalid("%s: config.json is not loadable." %(experiment_folder))
 
@@ -255,51 +299,8 @@ def check_boolean(experiment_name,value,variable_name):
         return notvalid("%s: %s is not an acceptable value for %s. Must be true/false." %(experiment_name,value,varialbe_name))
 
 
-def get_experiments(experiment_repo,load=False,warning=True,repo_type="experiments"):
-    '''get_experiments
-    return loaded json for all valid experiments from an experiment folder
-    :param experiment_repo: full path to the experiments repo
-    :param load: if True, returns a list of loaded config.json objects. If False (default) returns the paths to the experiments
-    :param repo_type: tells the user what kind of task is being parsed, default is "experiments," but can also be "surveys" when called by get_surveys
-    '''
-    experiments = find_directories(experiment_repo)
-    valid_experiments = [e for e in experiments if validate(e,warning)]
-    bot.info("Found %s valid %s" %(len(valid_experiments),repo_type))
-    if load == True:
-        valid_experiments = load_experiments(valid_experiments)
-    return valid_experiments
 
 
-def load_experiments(experiment_folders):
-    '''load_experiments
-    a wrapper for load_experiment to read multiple experiments
-    :param experiment_folders: a list of experiment folders to load, full paths
-    '''
-    experiments = []
-    if isinstance(experiment_folders,str):
-        experiment_folders = [experiment_folders]
-    for experiment_folder in experiment_folders:
-        exp = load_experiment(experiment_folder)
-        experiments.append(exp)
-    return experiments
-
-
-def load_experiment(experiment_folder):
-    '''load_experiment:
-    reads in the config.json for an
-    :param experiment folder: full path to experiment folder
-    '''
-    fullpath = os.path.abspath(experiment_folder)
-    configjson = "%s/config.json" %(fullpath)
-    if not os.path.exists(configjson):
-        return notvalid("config.json could not be found in %s" %(experiment_folder))
-    try: 
-        meta = json.load(open(configjson,"r"))
-        meta = remove_unicode_dict(meta[0])
-        return [meta]
-    except ValueError as e:
-        bot.error("Problem reading config.json, %s" %(e))
-        raise
 
 def find_changed(new_repo,comparison_repo,return_experiments=True,repo_type="experiments"):
     '''find_changed returns a list of changed files or experiments between two repos
@@ -331,7 +332,7 @@ def find_changed(new_repo,comparison_repo,return_experiments=True,repo_type="exp
     bot.debug("Found files changed: %s" %",".join(changed_files))
 
     if return_experiments == True:
-        return numpy.unique([os.path.dirname(x.strip("\n")) for x in changed_files if os.path.dirname(x.strip("\n")) != ""]).tolist()
+        return list(set([os.path.dirname(x.strip("\n")) for x in changed_files if os.path.dirname(x.strip("\n")) != ""]))
         
     return changed_files
 

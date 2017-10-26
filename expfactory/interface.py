@@ -21,11 +21,12 @@ SOFTWARE.
 
 '''
 
-from expfactory.vm import custom_battery_download, add_custom_logo, generate_database_url, \
-     prepare_vm, specify_experiments
-from expfactory.experiment import validate, load_experiment, get_experiments, make_lookup
-from expfactory.utils import copy_directory, get_installdir, sub_template
-from expfactory.battery import generate, generate_config
+from experiment import (
+    get_experiments, 
+    make_lookup
+)
+
+from utils import copy_directory, get_installdir, sub_template
 from flask import Flask, render_template, request
 from flask_restful import Resource, Api
 from logman import bot
@@ -42,12 +43,16 @@ class EFServer(Flask):
 
     def __init__(self, *args, **kwargs):
             super(EFServer, self).__init__(*args, **kwargs)
+ 
+            self.selection = os.environ.get('EXPERIMENTS', [])
+            self.base = os.environ.get('EXPFACTORY_BASE','/scif/apps')
 
-            # download repo on start of application
-            self.tmpdir = tempfile.mkdtemp()
-            custom_battery_download(tmpdir=self.tmpdir)
-            self.experiments = get_experiments("%s/experiments" %self.tmpdir,load=True,warning=False)
+            print(self.selection)
+            # Experiments are located under /scif/apps in Singularity container
+            self.experiments = get_experiments("%s" % self.base)
             self.experiment_lookup = make_lookup(self.experiments,"exp_id")
+
+            # Final set is intersection between 
 
 # API VIEWS #########################################################
 class apiExperiments(Resource):
@@ -86,7 +91,6 @@ def get_field(request,fields,value):
     Get value from a form field
 
     """
-
     if value in request.form.values():
         fields[value] = request.form[value]
     return fields
@@ -205,8 +209,6 @@ def clean_up(dirpath):
     
 # This is how the command line version will run
 def start(port=8088):
-    if port==None:
-        port=8088
     bot.info("Nobody ever comes in... nobody ever comes out...")
     webbrowser.open("http://localhost:%s" %(port))
     app.run(host="0.0.0.0",debug=True,port=port)

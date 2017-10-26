@@ -23,14 +23,6 @@ SOFTWARE.
 
 
 '''
-from urllib2 import (
-    Request, urlopen, HTTPError
-)
-
-#try:
-#    from urllib.parse import urlparse
-#except ImportError:
-#   from urlparse import urlparse
 
 import errno
 import collections
@@ -64,7 +56,6 @@ def find_directories(root,fullpath=True):
     (not recursive)
 
     '''
-
     directories = []
     for item in os.listdir(root):
         # Don't include hidden directories
@@ -76,19 +67,6 @@ def find_directories(root,fullpath=True):
                     directories.append(item)
     return directories
 
-def remove_unicode_dict(input_dict):
-    """
-    remove unicode keys and values from dict, encoding in utf8
-
-    """
-    if isinstance(input_dict, basestring):
-        return str(input_dict)
-    elif isinstance(input_dict, collections.Mapping):
-        return dict(map(remove_unicode_dict, input_dict.iteritems()))
-    elif isinstance(input_dict, collections.Iterable):
-        return type(input_dict)(map(remove_unicode_dict, input_dict))
-    else:
-        return input_dict
  
 def copy_directory(src, dest):
     """
@@ -177,12 +155,3 @@ def clean_fields(mydict):
         else:
             newdict[cleanfield] = value.encode("utf-8")
     return newdict
-
-
-def get_url(url):
-    """get_url
-    return a url as string
-    """
-    request = Request(url)
-    response = urlopen(request)
-    return response.read()

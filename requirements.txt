@@ -1,9 +1,2 @@
-numpy
 flask
 flask-restful
-gitpython
-scipy
-seaborn
-selenium==2.53.6
-cognitiveatlas
-numexpr

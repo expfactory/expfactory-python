@@ -22,7 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 '''
 
-__version__ = "2.5.47"
+__version__ = "3.0"
 AUTHOR = 'Vanessa Sochat'
 AUTHOR_EMAIL = 'vsochat@stanford.edu'
 NAME = 'expfactory'
@@ -33,11 +33,8 @@ LICENSE = "LICENSE"
 
 
 INSTALL_REQUIRES = (
-
-    ('gitpython', {'exact_version': "2.1.1"}),
     ('flask', {'min_version': '0.12'}),
     ('flask-restful', {'min_version': None}),
     ('requests', {'min_version': '2.12.4'}),
     ('retrying', {'min_version': '1.3.3'}),
-    ('selenium', {'exact_version': '2.53.6'}),
 )
