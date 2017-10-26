@@ -72,6 +72,8 @@ def get_parser():
 def main():
 
     from expfactory.logman import bot
+    # This will also import and set defaults
+
     parser = get_parser()
 
     try:
@@ -95,8 +97,7 @@ def main():
 
     os.environ['EXPFACTORY_BASE'] = args.base
 
-
-    from interface import start
+    from expfactory.interface import start
     start(port=args.port)
 
 if __name__ == '__main__':

@@ -21,17 +21,18 @@ SOFTWARE.
 
 '''
 
-from experiment import (
+from expfactory.experiment import (
     get_experiments, 
-    make_lookup
+    make_lookup,
+    get_selection
 )
 
-from utils import copy_directory, get_installdir, sub_template
 from flask import Flask, render_template, request
 from flask_restful import Resource, Api
-from logman import bot
+from expfactory.logman import bot
 from werkzeug import secure_filename
-import webbrowser
+from expfactory.logman import bot
+import jinja2
 import tempfile
 import shutil
 import random
@@ -44,37 +45,66 @@ class EFServer(Flask):
     def __init__(self, *args, **kwargs):
             super(EFServer, self).__init__(*args, **kwargs)
  
+            # Step 1: obtain installed and selected experiments (/scif/apps)
             self.selection = os.environ.get('EXPERIMENTS', [])
             self.base = os.environ.get('EXPFACTORY_BASE','/scif/apps')
+            bot.log("User has selected: %s" %self.selection)
+            available = get_experiments("%s" % self.base)
+            bot.log("Experiments Available: %s" %"\n".join(available))
 
-            print(self.selection)
-            # Experiments are located under /scif/apps in Singularity container
-            self.experiments = get_experiments("%s" % self.base)
-            self.experiment_lookup = make_lookup(self.experiments,"exp_id")
+            # Create API endpoint to serve metadata
+            self.experiments = get_selection(available, self.selection)
+            self.lookup = make_lookup(self.experiments)
+            bot.log("Final Set \n%s" %"\n".join(list(self.lookup.keys())))
 
-            # Final set is intersection between 
+            # Completed will go into list
+            self.completed = []
 
-# API VIEWS #########################################################
+
+# API VIEWS ####################################################################
+
 class apiExperiments(Resource):
     '''apiExperiments
     Main view for REST API to display all available experiments
     '''
     def get(self):
-        experiment_json = app.experiments
-        return experiment_json
-
+        return app.lookup
+        
 class apiExperimentSingle(Resource):
     '''apiExperimentSingle
     return complete meta data for specific experiment
     :param exp_id: exp_id for experiment to preview
     '''
     def get(self, exp_id):
-        return {exp_id: app.experiment_lookup[exp_id]}
+        return {exp_id: app.lookup[exp_id]}
 
 app = EFServer(__name__)
+
+# Create custom loader with experiments to serve
+#loader = jinja2.ChoiceLoader([
+#             app.jinja_loader,
+#             jinja2.FileSystemLoader(['/scif/apps'])
+#         ])
+
+#app.jinja_loader = loader
+
+#import pickle
+#pickle.dump(loader,open('loader.pkl','wb'))
+
 api = Api(app)    
 api.add_resource(apiExperiments,'/experiments')
 api.add_resource(apiExperimentSingle,'/experiments/<string:exp_id>')
+
+
+# EXPERIMENT ROUTER ###########################################################
+@app.route('/finish')
+def router():
+
+    #TODO: need to figure out how to serve from directory AND add static.. posts?
+    # data in browser?
+    #TODO: decide how we decide if it's finished. Is there a local result database?
+    # Do we use an internal database? Are the views required to post OR save?
+    return render_template('battery.html')
 
 
 # WEB INTERFACE VIEWS ##############################################
@@ -208,10 +238,9 @@ def clean_up(dirpath):
         shutil.rmtree(dirpath)
     
 # This is how the command line version will run
-def start(port=8088):
+def start(port=8088, debug=False):
     bot.info("Nobody ever comes in... nobody ever comes out...")
-    webbrowser.open("http://localhost:%s" %(port))
-    app.run(host="0.0.0.0",debug=True,port=port)
+    app.run(host="0.0.0.0", debug=False,port=port)
     
 if __name__ == '__main__':
     app.debug = True

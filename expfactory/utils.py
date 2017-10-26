@@ -26,16 +26,14 @@ SOFTWARE.
 
 import errno
 import collections
-from logman import bot
+from expfactory.logman import bot
 import shutil
 import json
 import os
 import re
-import __init__
-
 
 def get_installdir():
-    return os.path.dirname(os.path.abspath(__init__.__file__))
+    return os.path.dirname(os.path.abspath(__file__))
 
 
 def find_subdirectories(basepath):

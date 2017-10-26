@@ -103,6 +103,16 @@ If you want a writable instance (meaning using shell with sudo) you need to also
 
 ```
 sudo singularity instance.start --writable expfactory web2
+```
+
+or to bind a directory from the host (e.g., for writing a result)
+
+```
+sudo singularity instance.start --bind expfactory-python:/opt expfactory/ web1
+```
+And then list your instances
+
+```
 $ sudo singularity instance.list
 DAEMON NAME      PID      CONTAINER IMAGE
 web2             32708    /home/vanessa/Documents/Dropbox/Code/expfactory/experiments/expfactory
