@@ -22,62 +22,55 @@ The Experiment Factory code is licensed under the MIT open source license, which
 
 
 
-### Quick start
+## Quick start
 
 You don't actually need to install the Software on your local machine, it will be installed into a container where your experiments live.
 
+You do, however, need to install [Singularity](https://singularityware.github.io) on your local machine. This is a container technology akin to Docker, but it has support on most HPC clusters and works on old kernels, and Docker does not.
+
+
+### Write your recipe
+A Singularity Recipe is a file that details how you want your container to build. In our case, we want to give instructions about which experiments to install. First, copy an example recipe:
+
 
 ```
-git clone -b development git+git://github.com/expfactory/expfactory-python.git
-
+wget https://raw.githubusercontent.com/vsoch/expfactory-python/development/examples/Singularity
 ```
 
+This will place the build recipe `Singularity` in your present working directory, and by fault we will install two experiments, adaptive-n-back and tower-of-london. The experiments each have their own repository maintained at [https://www.github.com/expfactory-experiments](https://www.github.com/expfactory-experiments).
 
-Installation will place an executable, `expfactory` in your bin folder. 
+If you look inside the recipe, you will see an "app" section for each experiment. All it does is clone the repository content:
 
+```
+git clone https://github.com/expfactory-experiments/adaptive-n-back
+mv adaptive-n-back/* .
+```
 
-#### Run your local experiment
-You can run an [expfactory-experiments](expfactory-experiments) folder as follows:
-
-      cd test_task
-      expfactory --preview
-
-
-#### Run paradigms locally
-
-      expfactory --run --experiments stroop,n_back
-      expfactory --run --survey bis11_survey
-      expfactory --run --game bridge_game
+We are installing each experiment as a [Standard Container Integration Format (SCI-F)](https://containers-ftw.github.io/SCI-F/) app. The high level idea is that it gives easy accessibility to multiple different internal modules in our container. In our case, an internal module is an experiment. Note that here we might add different environment variables for an experiment, or specify a custom database, but since we are just developing and testing now, let's keep it simple! Let's build the image, and we are going to create a development (tester) image called a "sandbox" first:
 
 
-#### Validate a local experiment
+```
+sudo singularity build --sandbox expfactory Singularity
+```
 
-      cd test_task
-      expfactory --validate
+Let's break down the above. We are asking the singularity command line software to `build` an image, specifically a `--sandbox` (folder) kind for development, **from** the recipe file `Singularity`.
 
-
-#### Test with experiment robot
-
-      cd test_task
-      expfactory --test
+Once building is done, we can see what experiments are installed:
 
 
-#### Interactive generation of psiturk battery
+```
+singularity apps expfactory
+adaptive-n-back
+tower-of-london
+```
 
-To run the executable to open up a web interface to design your experiment:
+You can also ask for help:
 
-      expfactory
+```
+singularity help expfactory
+```
 
-The web interface includes the following:
+In the future I will likely make an automatic "recipe generator" that uses the config.jsons to help, for now it's just a game of copy pasting :)
 
-- custom generation of battery (local folder, AWS virtual machine, or virtual machine)
-- serves API (JSON) with experiment details
-- complete documentation
+ singularity instance.start expfactory.img web1
 
-
-#### Static deployment with your own mysql database
-We have recently added support for generating a local battery that will work with your own mysql database. See [server/mysql](server/mysql) for details.
-
-
-### Functions Provided
-You can also use the library as a module, and import expfactory functions into your application.  Please see our [documentation](http://expfactory.readthedocs.org/en/latest/getting-started.html) for details
