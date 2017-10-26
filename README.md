@@ -2,7 +2,17 @@
 
 [![Circle CI](https://circleci.com/gh/expfactory/expfactory-python.svg?style=svg)](https://circleci.com/gh/expfactory/expfactory-python)
 
-Python module for managing expriment-factory [experiments](https://github.com/expfactory/expfactory-experiments), [surveys](https://github.com/expfactory/expfactory-surveys), [games](https://github.com/expfactory/expfactory-games), a [psiturk battery](https://github.com/expfactory/expfactory-battery), a [docker deployment](https://github.com/expfactory/expfactory-docker), and a [virtual machine](https://github.com/expfactory/expfactory-vm) to host the compilation of these things. You can use the functions to control these components, or just install the module and run to create an entire experiment using a web interface.
+The Experiment Factory Python is a module for managing reproducible experiments. The previous version focused on a template approach for [experiments](https://github.com/expfactory/expfactory-experiments), [surveys](https://github.com/expfactory/expfactory-surveys), and [games](https://github.com/expfactory/expfactory-games), and this version is agnostic to the underlying driver of the experiments, and provides reproducible, instantly deployable "container" experiments. What does that mean?
+
+ - You obtain (or build from scratch) one container, a battery of experiments.
+ - The container is a Singularity container, meaning that it's a file that can be easily moved, and shared.
+ - You run the container with (optionally) some subset and ordering of your battery.
+ 
+The means that the minimum requirement of an experiment is:
+
+ - an `index.html` file and `config.json` in the root of the folder.
+ - (optional) documentation about any special variables that can be set in the Singularity build recipe environment section for it (more on this later).
+ - an associated repository to clone from, (optionally) registered in the library.
 
 - Please see our [documentation](http://expfactory.readthedocs.org/en/latest/getting-started.html) for more complete details.
 - Jump in and [try out our experiments](http://expfactory.github.io/table.html)
@@ -10,17 +20,18 @@ Python module for managing expriment-factory [experiments](https://github.com/ex
 
 The Experiment Factory code is licensed under the MIT open source license, which is a highly permissive license that places few limits upon reuse. This ensures that the code will be usable by the greatest number of researchers, in both academia and industry. 
 
-### Installation (current)
-
-      pip install expfactory
-
-
-### Installation (dev)
-
-      pip install git+git://github.com/expfactory/expfactory-python.git
 
 
 ### Quick start
+
+You don't actually need to install the Software on your local machine, it will be installed into a container where your experiments live.
+
+
+```
+git clone -b development git+git://github.com/expfactory/expfactory-python.git
+
+```
+
 
 Installation will place an executable, `expfactory` in your bin folder. 
 
