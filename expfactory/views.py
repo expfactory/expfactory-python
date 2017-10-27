@@ -1,4 +1,6 @@
 '''
+views.py: part of expfactory package
+
 Copyright (c) 2016-2017 Vanessa Sochat
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -19,81 +21,12 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
+
 '''
 
-from expfactory.experiment import (
-    get_experiments, 
-    make_lookup,
-    get_selection
-)
-
-from flask import Flask, render_template, request
-from flask_restful import Resource, Api
 from expfactory.logman import bot
-from werkzeug import secure_filename
-from expfactory.logman import bot
-import jinja2
-import tempfile
-import shutil
-import random
-import sys
+from expfactory.server import app
 import os
-
-# SERVER CONFIGURATION ##############################################
-class EFServer(Flask):
-
-    def __init__(self, *args, **kwargs):
-            super(EFServer, self).__init__(*args, **kwargs)
- 
-            # Step 1: obtain installed and selected experiments (/scif/apps)
-            self.selection = os.environ.get('EXPERIMENTS', [])
-            self.base = os.environ.get('EXPFACTORY_BASE','/scif/apps')
-            bot.log("User has selected: %s" %self.selection)
-            available = get_experiments("%s" % self.base)
-            bot.log("Experiments Available: %s" %"\n".join(available))
-
-            # Create API endpoint to serve metadata
-            self.experiments = get_selection(available, self.selection)
-            self.lookup = make_lookup(self.experiments)
-            bot.log("Final Set \n%s" %"\n".join(list(self.lookup.keys())))
-
-            # Completed will go into list
-            self.completed = []
-
-
-# API VIEWS ####################################################################
-
-class apiExperiments(Resource):
-    '''apiExperiments
-    Main view for REST API to display all available experiments
-    '''
-    def get(self):
-        return app.lookup
-        
-class apiExperimentSingle(Resource):
-    '''apiExperimentSingle
-    return complete meta data for specific experiment
-    :param exp_id: exp_id for experiment to preview
-    '''
-    def get(self, exp_id):
-        return {exp_id: app.lookup[exp_id]}
-
-app = EFServer(__name__)
-
-# Create custom loader with experiments to serve
-#loader = jinja2.ChoiceLoader([
-#             app.jinja_loader,
-#             jinja2.FileSystemLoader(['/scif/apps'])
-#         ])
-
-#app.jinja_loader = loader
-
-#import pickle
-#pickle.dump(loader,open('loader.pkl','wb'))
-
-api = Api(app)    
-api.add_resource(apiExperiments,'/experiments')
-api.add_resource(apiExperimentSingle,'/experiments/<string:exp_id>')
 
 
 # EXPERIMENT ROUTER ###########################################################
@@ -109,12 +42,7 @@ def router():
 
 # WEB INTERFACE VIEWS ##############################################
 
-app.config['ALLOWED_EXTENSIONS'] = set(['png', 'jpg', 'jpeg','gif'])
-    
-# For a given file, return whether it's an allowed type or not
-def allowed_file(filename):
-    return '.' in filename and \
-        filename.rsplit('.', 1)[1] in app.config['ALLOWED_EXTENSIONS']
+
 
 def get_field(request,fields,value):
     """
@@ -236,12 +164,3 @@ def select():
 def clean_up(dirpath):
     if os.path.exists(dirpath):
         shutil.rmtree(dirpath)
-    
-# This is how the command line version will run
-def start(port=8088, debug=False):
-    bot.info("Nobody ever comes in... nobody ever comes out...")
-    app.run(host="0.0.0.0", debug=False,port=port)
-    
-if __name__ == '__main__':
-    app.debug = True
-    app.run(host='0.0.0.0')

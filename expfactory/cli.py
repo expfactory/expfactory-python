@@ -46,6 +46,10 @@ def get_parser():
                          help="comma separated list of experiments for a local battery", 
                          type=str, default=None)
 
+    parser.add_argument("--subid", dest='subid', 
+                         help="subject id for saving database",
+                         type=str, default=None)
+
     parser.add_argument("--base", dest='base', 
                          help="base folder with experiment subfolders (defaults to /scif/apps)",
                          type=str, default='/scif/apps')
@@ -96,8 +100,9 @@ def main():
         sys.exit(1)
 
     os.environ['EXPFACTORY_BASE'] = args.base
+    os.environ['EXPFACTORY_SUBID'] = args.subid
 
-    from expfactory.interface import start
+    from expfactory.server import start
     start(port=args.port)
 
 if __name__ == '__main__':
