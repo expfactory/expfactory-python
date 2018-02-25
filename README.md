@@ -2,6 +2,8 @@
 
 [![Circle CI](https://circleci.com/gh/expfactory/expfactory-python.svg?style=svg)](https://circleci.com/gh/expfactory/expfactory-python)
 
+**LEGACY** This repository is no longer actively maintained, and exists to support current implementations. We encourage users to create reproducible experiment containers with the redone [expfactory](https://expfactory.github.io) software.
+
 Python module for managing expriment-factory [experiments](https://github.com/expfactory/expfactory-experiments), [surveys](https://github.com/expfactory/expfactory-surveys), [games](https://github.com/expfactory/expfactory-games), a [psiturk battery](https://github.com/expfactory/expfactory-battery), a [docker deployment](https://github.com/expfactory/expfactory-docker), and a [virtual machine](https://github.com/expfactory/expfactory-vm) to host the compilation of these things. You can use the functions to control these components, or just install the module and run to create an entire experiment using a web interface.
 
 - Please see our [documentation](http://expfactory.readthedocs.org/en/latest/getting-started.html) for more complete details.
