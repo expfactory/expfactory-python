@@ -252,7 +252,7 @@ def validate_experiment_tag(experiment_folder):
 
             # Experiment MUST contain experiment.js to run main experiment
             print("TESTING %s for exp_id in experiment.js..." %tag)
-            assert("experiment.js" in experiment[0]["run"],True)
+            assert("experiment.js" in experiment[0]["run"])
 
             if "experiment.js" in experiment[0]["run"]:
                 experiment_js_file = open("%s/%s/experiment.js" %(experiment_folder,tag),"r") 
@@ -261,7 +261,7 @@ def validate_experiment_tag(experiment_folder):
                 experiment_js = "".join(experiment_js_list)
                 [x]
                 has_exp_id = re.search("exp_id:%s" %tag,experiment_js) != None or re.search("exp_id=%s" %tag,experiment_js) != None 
-                assert(has_exp_id,True)
+                assert(has_exp_id)
                 # Ensure all are formatted correctly
                 exp_id_instances = [re.findall("exp_id[=|:].+",x) for x in experiment_js_list if len(re.findall("exp_id[=|:].+,",x)) != 0]
                 line_numbers = [x+1 for x in range(len(experiment_js_list)) if len(re.findall("exp_id[=|:].+,",experiment_js_list[x])) != 0]
@@ -269,7 +269,7 @@ def validate_experiment_tag(experiment_folder):
                     exp_id_instance = exp_id_instances[e]
                     line_number = line_numbers[e]
                     print("Checking %s on line %s..." %(exp_id_instance[0],line_number))
-                    assert(re.search(tag,exp_id_instance[0])!=None,True) 
+                    assert(re.search(tag,exp_id_instance[0])!=None)
 
 def circle_ci_test(experiment_tags,web_folder,experiment_repo=None,delete=True,pause_time=500,repo_type="experiments"):
     '''circle_ci_test
