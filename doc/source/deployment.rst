@@ -283,7 +283,37 @@ A few important notes:
 
  * Many times you will not be able to connect to your machine because the security group input/output is too stringent. Make sure to open ports to allow the default psiturk port to come through (22362) as well as SSH.
 
-Expfactory-docker
+expfactory-docker
 -----------------
 
 The Experiment Factory docker is a set of containers that can be run locally, or again on the cloud. The entire application comes packaged in a Docker image, meaning that installation and deployment of experiments happens in a web interface deployed by the image. We plan to offer experiment deployment as a service at `expfactory.org <http://www.expfactory.org>`_ and encourage you to `sign up <http://www.expfactory.org/signup>`_ to express interest. You can also `deploy our Docker infrastructure <http://www.expfactory.org/signup>`_ on your own server, however experience with docker and cloud computing is required.
+
+
+expfactory-server
+-----------------
+
+Another deployment option is to deploy the batteries to a web server.
+
+The batteries themselves are stored as static html files with a uid parameter in the query string to pass the subject id: e.g. https://mywebserver/itest/digit_span-en/?uid=123456789
+
+PHP scripts, also hosted by the web server, are called on experiment completion to save the results (in JSON format) to a MySQL database.
+
+The folder `expfactory-python/server/mysql <https://github.com/expfactory/expfactory-python/tree/master/server/mysql>`_ contains the required server resources to deploy.
+Ensure to define your database connection parameters in database_connect.php.
+In this folder, you will also find a create_expfactory_table.sql and a concerto.conf file as an example of how to make `Concerto <https://github.com/campsych/concerto-platform/wiki>`_ and Expfactory coexist and share the same database.
+
+Edit the post\_url variable in the `templates/webserver-battery-template.html <https://github.com/expfactory/expfactory-python/tree/master/server/mysql/templates/webserver-battery-template.html>`_ template to change the default URL to the PHP script (/itest/save_data.php) if needed. If not a local URL, cross-origin resource sharing should be enabled : refer to http://enable-cors.org/server_apache.html
+
+The `setup_battery_for_webserver.py <https://github.com/expfactory/expfactory-python/tree/master/server/mysql/setup_battery_for_webserver.py>`_ script should be used to generate the battery in the target web directory.
+
+::
+
+      python setup_battery_for_webserver.py --output /var/www/vhosts/expfactory-server/digit_span-en --experiments digit_span
+
+Though the `run_battery.py <https://github.com/expfactory/expfactory-python/tree/master/script/run_battery.py>`_ script has no use in production, you may test your batteries easily with:
+
+::
+
+      python run_battery.py --port 8080 --folder /var/www/vhosts/expfactory-server/digit_span-en
+
+

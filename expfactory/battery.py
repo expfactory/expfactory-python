@@ -41,6 +41,7 @@ def generate_base(battery_dest,tasks=None,experiment_repo=None,survey_repo=None,
     copy_directory(battery_repo,battery_dest)
     valid_experiments = []
     valid_surveys = []
+    valid_games = []
     if add_experiments == True:
         valid_experiments = get_experiments(experiment_repo,warning=warning)
     if add_surveys == True:
@@ -196,6 +197,8 @@ def template_experiments(battery_dest,battery_repo,valid_experiments,template_lo
             load_template = add_custom_variables(custom_variables["load"],load_template)
 
     # load experiment scripts
+    if not os.path.exists("%s/static/js" %(battery_dest)):
+        os.mkdir("%s/static/js" %(battery_dest))
     template_output = "%s/static/js/load_experiments.js" %(battery_dest)
     filey = open(template_output,'w')
     filey.writelines(load_template)
