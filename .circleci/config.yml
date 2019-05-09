@@ -38,6 +38,7 @@ install_python_3: &install_python_3
           wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh
           /bin/bash Miniconda3-latest-Linux-x86_64.sh -b -p $HOME/conda
           export PATH=$HOME/conda/bin:$PATH
+          $HOME/conda/bin/pip install -r requirements.txt
           $HOME/conda/bin/python setup.py install
        else
            echo "Miniconda 3 is already installed, continuing to build."
