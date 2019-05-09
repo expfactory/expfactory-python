@@ -29,7 +29,7 @@ setup(
     description="Python module for managing experiment factory experiments, for deployment to a psiturk battery or docker container.",
     keywords='psiturk behavior neuroscience experiment factory docker',
 
-    install_requires = ['requests','numpy','Flask','gitpython','flask-restful','selenium==2.53.6','cognitiveatlas','scipy','numexpr','seaborn'],
+    install_requires = ['requests','numpy','Flask','gitpython','flask-restful','selenium>=2.53.6','cognitiveatlas>=0.0.9',,'numexpr','seaborn'],
 
     entry_points = {
         'console_scripts': [

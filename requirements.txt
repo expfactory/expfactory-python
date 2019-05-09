@@ -2,7 +2,6 @@ numpy
 flask
 flask-restful
 gitpython
-scipy
 seaborn
 selenium==2.53.6
 cognitiveatlas>=0.1.9
