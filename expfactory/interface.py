@@ -84,7 +84,7 @@ def validate():
     logo = None
     if request.method == 'POST':
         fields = dict()
-        for field,value in request.form.iteritems():
+        for field,value in request.form.items():
             if field == "dbsetupchoice":
                 dbsetupchoice = value
             else:
@@ -137,7 +137,7 @@ def validate():
 def select():
     if request.method == 'POST':
         fields = dict()
-        for field,value in request.form.iteritems():
+        for field,value in request.form.items():
             if field == "deploychoice":
                 deploychoice = value
             else:

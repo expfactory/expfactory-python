@@ -12,8 +12,6 @@ from expfactory.experiment import load_experiment, get_experiments
 from cognitiveatlas.api import get_concept, get_task
 from expfactory.survey import generate_survey
 from numpy.random import choice
-import SimpleHTTPServer
-import SocketServer
 import webbrowser
 import tempfile
 import json
@@ -22,6 +20,13 @@ import shutil
 import pandas
 import os
 import re
+
+try:
+    import SimpleHTTPServer
+    import SocketServer
+except:
+    import http.server as SimpleHTTPServer
+    import socketserver
 
 def embed_experiment(folder,url_prefix=""):
     '''embed_experiment

@@ -11,7 +11,11 @@ import sys
 import json
 import numpy
 import pandas
-import UserDict
+
+try:
+    import UserDict
+except:
+    from collections import UserDict
 
 class Node(object):
     def __init__(self, nid, parent, name, meta=None):
@@ -46,7 +50,7 @@ def get_json(nodes):
         node = tree[current.nid]
         # Remove child from the tree
         new_tree = dict() # This has to be done for python 2.6 support
-        for k,v in tree.iteritems():
+        for k,v in tree.items():
            if k != current.nid:
                new_tree[k] = v
         tree = new_tree
@@ -287,13 +291,13 @@ def make_tree_from_triples(triples,output_html=False,meta_data=None,delim="\t",p
         concept_lookup = dict()
         html_experiments = ''
         orphan_experiment_nodes.update(experiment_nodes)
-        for experiment_node,node in orphan_experiment_nodes.iteritems():
+        for experiment_node,node in orphan_experiment_nodes.items():
             # If we have meta data, present each as a little paragraph.
             meta_snippet=''
             if meta_data != None:
                 if node["nid"] in meta_data:
                     meta_single = meta_data[node["nid"]]
-                    for meta_tag,meta_value in meta_single.iteritems():
+                    for meta_tag,meta_value in meta_single.items():
                         if meta_tag != "experiment_variables":
                             if isinstance(meta_value,list):
                                 meta_value = ",".join(meta_value)

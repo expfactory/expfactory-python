@@ -204,7 +204,7 @@ def check_acceptable_variables(experiment_name,field_dict,template,field_dict_ke
     :param template: the key name, for looking up acceptable values using get_acceptable_values
     '''
     acceptable_values = get_acceptable_values(template)
-    for acceptable_var,acceptable_val in field_dict[field_dict_key].iteritems():
+    for acceptable_var,acceptable_val in field_dict[field_dict_key].items():
         if acceptable_var not in acceptable_values:
             return notvalid("%s: %s is not an acceptable value for %s." %(experiment_name,acceptable_var,field_dict_key))
 
@@ -234,7 +234,7 @@ def check_boolean(experiment_name,value,variable_name):
         return notvalid("%s: %s is not an acceptable value for %s. Must be true/false." %(experiment_name,value,varialbe_name))
 
 
-def get_experiments(experiment_repo,load=False,warning=True,repo_type="experiments"):
+def get_experiments(experiment_repo, load=False, warning=True, repo_type="experiments"):
     '''get_experiments
     return loaded json for all valid experiments from an experiment folder
     :param experiment_repo: full path to the experiments repo
@@ -273,7 +273,8 @@ def load_experiment(experiment_folder):
     if not os.path.exists(configjson):
         return notvalid("config.json could not be found in %s" %(experiment_folder))
     try: 
-        meta = json.load(open(configjson,"r"))
+        with open(configjson,"r") as filey:
+            meta = json.load(filey)
         meta = remove_unicode_dict(meta[0])
         return [meta]
     except ValueError as e:

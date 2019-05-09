@@ -5,5 +5,5 @@ gitpython
 scipy
 seaborn
 selenium==2.53.6
-cognitiveatlas
+cognitiveatlas>=0.0.19
 numexpr

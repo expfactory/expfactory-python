@@ -25,16 +25,6 @@ class TestBattery(unittest.TestCase):
 
     def tearDown(self):
         shutil.rmtree(self.tmpdir)
-
-    def test_generate(self):
-
-        # Test loading experiment folder path
-        generate(self.battery)
-        self.assertTrue(os.path.exists(self.battery))
-
-        # Test loading experiments
-        experiments = get_experiments("%s/static/experiments" %self.battery,load=True)
-        self.assertTrue(len(experiments)>0)
         
     def test_experiment_run(self):
         experiment_run = get_experiment_run([self.experiment])

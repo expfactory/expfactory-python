@@ -79,7 +79,7 @@ def validate_circle_yml(experiment_repo,repo_type="experiments"):
         tags = [x[0]["exp_id"] for x in experiments] 
 
         for tag in tags:
-            print "TESTING if %s defined for circle ci testing in circle.yml..." %tag
+            print("TESTING if %s defined for circle ci testing in circle.yml..." % tag)
             if repo_type == "experiments":
                 assert_equal(re.search("circle_ci_test%s" %tag,circle_yml)!=None,True)
             elif repo_type == "surveys":

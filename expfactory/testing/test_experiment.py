@@ -18,10 +18,11 @@ class TestExperiment(unittest.TestCase):
 
     def setUp(self):
         self.pwd = get_installdir()
-        self.battery_folder = "%s/testing/data" %self.pwd
+        self.battery_folder = "%s/testing/data" % self.pwd
         self.experiment = os.path.abspath("%s/testing/data/test_task/" %self.pwd)
-        self.config = json.load(open("%s/testing/data/test_task/config.json" %self.pwd,"rb"))
         self.tmpdir = tempfile.mkdtemp()
+        with open("%s/testing/data/test_task/config.json" %self.pwd,"r") as filey:
+            self.config = json.load(filey)
 
     def tearDown(self):
         shutil.rmtree(self.tmpdir)
@@ -30,6 +31,7 @@ class TestExperiment(unittest.TestCase):
 
         # Test loading experiment folder path
         experiments = get_experiments(self.battery_folder)
+        print(experiments)
         assert_equal(len(experiments),1)
         self.assertTrue(isinstance(experiments[0],str))
 
@@ -71,7 +73,8 @@ class TestExperiment(unittest.TestCase):
         self.assertFalse(validate(broken_experiment))
 
     def save_config(self,config_file,directory):
-        json.dumps(config_file,open("%s/config.json"%directory,"w"))
+        with open("%s/config.json"% directory,"w") as filey:
+            filey.writelines(json.dumps(config_file))
 
 if __name__ == '__main__':
     unittest.main()
