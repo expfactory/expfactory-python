@@ -14,13 +14,16 @@ The Experiment Factory code is licensed under the MIT open source license, which
 
 ### Installation (current)
 
-      pip install expfactory
+```bash
+# python 3
+pip install expfactory==2.5.47
 
+# python 2
+pip install expfactory==2.5.46
 
-### Installation (dev)
-
-      pip install git+git://github.com/expfactory/expfactory-python.git
-
+# version 2 (non legacy)
+pip install expfactory
+```
 
 ### Quick start
 
