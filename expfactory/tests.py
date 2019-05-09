@@ -7,11 +7,10 @@ from selenium.common.exceptions import WebDriverException, UnexpectedAlertPresen
 from expfactory.experiment import validate, get_experiments, load_experiment, find_changed
 from expfactory.views import generate_experiment_web, tmp_experiment
 from expfactory.survey import read_survey_file, parse_questions, parse_validation
-from numpy.testing import assert_equal, assert_string_equal
 from expfactory.utils import find_directories, get_url
 from selenium.webdriver.common.keys import Keys
 from expfactory.vm import download_repo
-from numpy.random import choice
+from random import choice
 from selenium import webdriver
 from threading import Thread
 import SimpleHTTPServer
@@ -22,7 +21,6 @@ import requests
 import fnmatch
 import pandas
 import shutil
-import numpy
 import json
 import re
 import sys
@@ -47,14 +45,14 @@ class ExpfactoryServer(SimpleHTTPServer.SimpleHTTPRequestHandler):
 def validate_experiment_directories(experiment_folder):
     experiments = find_directories(experiment_folder)
     for contender in experiments:
-        assert_equal(validate(contender),True)
+        assert(validate(contender))
 
 def get_web_server(port=None):
     '''get_web_server returns a httpd object (socket server) to run the experiment robot
     :param port: the port for the server, default is None will select one randomly between 8000 and 9999
     '''
     if port == None:
-        port = choice(range(8000,9999),1)[0]
+        port =choice(range(8000,9999))
     Handler = ExpfactoryServer
     httpd = SocketServer.TCPServer(("", port), Handler)
     server = Thread(target=httpd.serve_forever)
@@ -71,7 +69,7 @@ def validate_circle_yml(experiment_repo,repo_type="experiments"):
     '''
     if "CIRCLE_BRANCH" in os.environ.keys():
         circle_yml_file = "%s/circle.yml" %experiment_repo
-        assert_equal(os.path.exists(circle_yml_file),True)
+        assert(os.path.exists(circle_yml_file))
         circle_yml_file = open(circle_yml_file,"r")
         circle_yml = "".join([x.strip("\n").replace(" ","").replace("'","").replace('"',"") for x in circle_yml_file.readlines()])
         circle_yml = circle_yml.replace("(","").replace(")","")
@@ -81,9 +79,9 @@ def validate_circle_yml(experiment_repo,repo_type="experiments"):
         for tag in tags:
             print("TESTING if %s defined for circle ci testing in circle.yml..." % tag)
             if repo_type == "experiments":
-                assert_equal(re.search("circle_ci_test%s" %tag,circle_yml)!=None,True)
+                assert(re.search("circle_ci_test%s" %tag,circle_yml)!=None)
             elif repo_type == "surveys":
-                assert_equal(re.search("circle_ci_survey%s" %tag,circle_yml)!=None,True)
+                assert(re.search("circle_ci_survey%s" %tag,circle_yml)!=None)
     else:
        print("Not in a continuous integration (CircleCI) environment, skipping test.")
     print("All experiments found in circle.yml for testing!")
@@ -142,7 +140,7 @@ def validate_surveys(survey_tags,survey_repo,survey_file="survey.tsv",delim="\t"
             survey_questions = "%s/%s" %(survey_folder,survey_file)       
             print("Testing valid columns in %s" %(survey[0]["exp_id"]))
             df = read_survey_file(survey_questions,delim=delim)
-            assert_equal(isinstance(df,pandas.DataFrame),True)
+            assert(isinstance(df,pandas.DataFrame))
             print("Testing survey generation of %s" %(survey[0]["exp_id"]))
             questions,required_count = parse_questions(survey_questions,
                                                        exp_id=survey[0]["exp_id"],
@@ -254,7 +252,7 @@ def validate_experiment_tag(experiment_folder):
 
             # Experiment MUST contain experiment.js to run main experiment
             print("TESTING %s for exp_id in experiment.js..." %tag)
-            assert_equal("experiment.js" in experiment[0]["run"],True)
+            assert("experiment.js" in experiment[0]["run"],True)
 
             if "experiment.js" in experiment[0]["run"]:
                 experiment_js_file = open("%s/%s/experiment.js" %(experiment_folder,tag),"r") 
@@ -263,7 +261,7 @@ def validate_experiment_tag(experiment_folder):
                 experiment_js = "".join(experiment_js_list)
                 [x]
                 has_exp_id = re.search("exp_id:%s" %tag,experiment_js) != None or re.search("exp_id=%s" %tag,experiment_js) != None 
-                assert_equal(has_exp_id,True)
+                assert(has_exp_id,True)
                 # Ensure all are formatted correctly
                 exp_id_instances = [re.findall("exp_id[=|:].+",x) for x in experiment_js_list if len(re.findall("exp_id[=|:].+,",x)) != 0]
                 line_numbers = [x+1 for x in range(len(experiment_js_list)) if len(re.findall("exp_id[=|:].+,",experiment_js_list[x])) != 0]
@@ -271,7 +269,7 @@ def validate_experiment_tag(experiment_folder):
                     exp_id_instance = exp_id_instances[e]
                     line_number = line_numbers[e]
                     print("Checking %s on line %s..." %(exp_id_instance[0],line_number))
-                    assert_equal(re.search(tag,exp_id_instance[0])!=None,True) 
+                    assert(re.search(tag,exp_id_instance[0])!=None,True) 
 
 def circle_ci_test(experiment_tags,web_folder,experiment_repo=None,delete=True,pause_time=500,repo_type="experiments"):
     '''circle_ci_test
@@ -587,7 +585,7 @@ def check_errors(browser):
     # Look at log from last call
     log = browser.get_log("browser")
     for log_entry in log:
-        assert_equal(log_entry["level"] in ["WARNING","INFO"],True)
+        assert(log_entry["level"] in ["WARNING","INFO"])
 
 
 def get_continue_key(block,block_tag="cont_key"):

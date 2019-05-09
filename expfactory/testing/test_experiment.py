@@ -6,7 +6,6 @@ Test experiments
 
 import unittest
 import shutil
-from numpy.testing import assert_array_equal, assert_almost_equal, assert_equal
 from expfactory.experiment import validate, load_experiment, load_experiments, \
 get_experiments, make_lookup
 from expfactory.utils import copy_directory, get_installdir
@@ -32,7 +31,7 @@ class TestExperiment(unittest.TestCase):
         # Test loading experiment folder path
         experiments = get_experiments(self.battery_folder)
         print(experiments)
-        assert_equal(len(experiments),1)
+        self.assertEqual(len(experiments),1)
         self.assertTrue(isinstance(experiments[0],str))
 
         # Test loading experiment dictionary

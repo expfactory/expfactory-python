@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 '''
-graph.py: part of pybraincompare package
+graph.py: part of expfactory
 Functions to work with ontology graphs
 
 '''
@@ -9,7 +9,6 @@ from expfactory.utils import get_installdir, get_template, sub_template
 import re
 import sys
 import json
-import numpy
 import pandas
 
 try:
@@ -337,7 +336,7 @@ def add_experiment_nodes(experiment_node_dict,new_nodes,parent_ids):
     for new_node in new_nodes:
         if new_node["name"] in experiment_node_dict:
             holder = experiment_node_dict[new_node["name"]]
-            holder["parents"] = numpy.unique(holder["parents"] + parent_ids).tolist()
+            holder["parents"] = list(set(holder["parents"] + parent_ids))
             experiment_node_dict[new_node["name"]] = holder
         else:
             experiment_node_dict[new_node["name"]] = new_node

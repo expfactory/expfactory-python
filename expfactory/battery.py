@@ -9,7 +9,6 @@ from expfactory.utils import copy_directory, get_template, \
      sub_template, get_installdir, save_template
 import tempfile
 import shutil
-import numpy
 import uuid
 import os
 import re
@@ -288,7 +287,7 @@ def get_load_static(valid_experiments,url_prefix="",unique=True):
         loadstring = "%s%s%s" %(loadstring,js,css)        
     if unique == True:
         scripts = loadstring.split("\n")
-        scripts_index = numpy.unique(scripts,return_index=True)[1]
+        scripts_index = list(set(scripts, return_index=True))[1]
         # This ensures that scripts are loaded in same order as specified in config.json
         unique_scripts = [scripts[idx] for idx in sorted(scripts_index)]
         loadstring = "\n".join(unique_scripts)

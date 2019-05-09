@@ -11,11 +11,10 @@ from expfactory.vm import custom_battery_download, get_stylejs, get_jspsych_init
 from expfactory.experiment import load_experiment, get_experiments
 from cognitiveatlas.api import get_concept, get_task
 from expfactory.survey import generate_survey
-from numpy.random import choice
+from random import choice
 import webbrowser
 import tempfile
 import json
-import numpy
 import shutil
 import pandas
 import os
@@ -84,7 +83,7 @@ def run_single(exp_id,repo_type,destination=None,source_repo=None,battery_repo=N
                              warning=False)
 
         if port == None:
-            port = choice(range(8000,9999),1)[0]
+            port = choice(range(8000,9999))
 
         # Currently only support one survey
         output_folder = "%s/%s" %(base["%s_repo" %(repo_type[:-1])],exp_id)
@@ -125,7 +124,7 @@ def run_battery(destination=None,experiments=None,experiment_folder=None,subject
     
     try:
         if port == None:
-            port = choice(range(8000,9999),1)[0]
+            port = choice(range(8000,9999))
         Handler = SimpleHTTPServer.SimpleHTTPRequestHandler
         httpd = SocketServer.TCPServer(("", port), Handler)
         print("Preview experiment at localhost:%s" %port)
@@ -151,7 +150,7 @@ def preview_experiment(folder=None,battery_folder=None,port=None):
     
     try:
         if port == None:
-            port = choice(range(8000,9999),1)[0]
+            port = choice(range(8000,9999))
         Handler = SimpleHTTPServer.SimpleHTTPRequestHandler
         httpd = SocketServer.TCPServer(("", port), Handler)
         print("Preview experiment at localhost:%s" %port)
@@ -427,12 +426,12 @@ def get_cognitiveatlas_hierarchy(experiment_tags=None,get_html=False):
         experiments = [e for e in experiments if e[0]["exp_id"] in experiment_tags]
     
     # We need a dictionary to look up experiments by task ids
-    unique_tasks = numpy.unique([e[0]["cognitive_atlas_task_id"] for e in experiments]).tolist()
+    unique_tasks = list(set([e[0]["cognitive_atlas_task_id"] for e in experiments]))
 
     experiment_lookup = dict()
     for u in unique_tasks:
-        matching_tasks = numpy.unique([e[0]["exp_id"] for e in experiments if e[0]["cognitive_atlas_task_id"]==u])
-        experiment_lookup[u] = matching_tasks.tolist()
+        matching_tasks = set([e[0]["exp_id"] for e in experiments if e[0]["cognitive_atlas_task_id"]==u])
+        experiment_lookup[u] = list(matching_tasks)
 
     triples = concept_node_triples(image_dict=experiment_lookup,save_to_file=False,lookup_key_type="task")
 

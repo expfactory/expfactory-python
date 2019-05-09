@@ -7,7 +7,6 @@ Functions to work with javascript experiments
 from expfactory.utils import find_directories, remove_unicode_dict
 from glob import glob
 import filecmp
-import numpy
 import json
 import re
 import os
@@ -311,8 +310,8 @@ def find_changed(new_repo,comparison_repo,return_experiments=True,repo_type="exp
     print("Found files changed: %s" %(",".join(changed_files)))
 
     if return_experiments == True:
-        return numpy.unique([os.path.dirname(x.strip("\n")) for x in changed_files if os.path.dirname(x.strip("\n")) != ""]).tolist()
-        
+        return list(set([os.path.dirname(x.strip("\n")) for x in changed_files if os.path.dirname(x.strip("\n")) != ""]))
+  
     return changed_files
 
 
