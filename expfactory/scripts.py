@@ -68,25 +68,25 @@ def main():
                                         warning=False,
                                         time=args.time)
 
-            print "Battery generation complete: static files are in %s" %(outdir)
+            print("Battery generation complete: static files are in %s" %(outdir))
 
         else:
-            print "Please specify list of comma separated experiments with --experiments"
+            print("Please specify list of comma separated experiments with --experiments")
 
     # Run a local battery
     elif args.run == True:
 
         # Warn the user about using repos for experiments and battery
         if args.battery_folder == None:
-            print "No battery folder specified. Will pull latest battery from expfactory-battery repo"
+            print("No battery folder specified. Will pull latest battery from expfactory-battery repo")
 
         if args.folder == None:
-            print "No experiments, games, or surveys folder specified. Will pull latest from expfactory-experiments repo"
+            print("No experiments, games, or surveys folder specified. Will pull latest from expfactory-experiments repo")
 
         if args.survey != None:
             survey = args.survey.split(",")
             if len(survey) > 0:
-                print "Currently only support running one survey, will run first in list."
+                print("Currently only support running one survey, will run first in list.")
                 survey = survey[0]
             run_single(exp_id=survey,
                        repo_type="surveys",
@@ -98,7 +98,7 @@ def main():
         if args.game != None:
             game = args.game.split(",")
             if len(game) > 0:
-                print "Currently only support running one game, will run first in list."
+                print("Currently only support running one game, will run first in list.")
                 game = game[0]
             run_single(exp_id=game,
                        repo_type="games",
@@ -116,7 +116,7 @@ def main():
                         port=args.port,
                         time=args.time)
         else:
-            print "Please specify list of comma separated experiments with --experiments"
+            print("Please specify list of comma separated experiments with --experiments")
 
     # Validate a config.json
     elif args.validate == True:
@@ -126,7 +126,7 @@ def main():
         # If a survey, and if validates, also validate survey.tsv
         experiment = load_experiment(folder)[0]
         if experiment["template"] == "survey":
-            print "Validating survey.tsv..."
+            print("Validating survey.tsv...")
             survey_repo = os.path.dirname(folder)
             validate_surveys(experiment["exp_id"],survey_repo)
 

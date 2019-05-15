@@ -84,7 +84,7 @@ def validate():
     logo = None
     if request.method == 'POST':
         fields = dict()
-        for field,value in request.form.iteritems():
+        for field,value in request.form.items():
             if field == "dbsetupchoice":
                 dbsetupchoice = value
             else:
@@ -137,7 +137,7 @@ def validate():
 def select():
     if request.method == 'POST':
         fields = dict()
-        for field,value in request.form.iteritems():
+        for field,value in request.form.items():
             if field == "deploychoice":
                 deploychoice = value
             else:
@@ -182,7 +182,7 @@ def clean_up(dirpath):
 def start(port=8088):
     if port==None:
         port=8088
-    print "Nobody ever comes in... nobody ever comes out..."
+    print("Nobody ever comes in... nobody ever comes out...")
     webbrowser.open("http://localhost:%s" %(port))
     app.run(host="0.0.0.0",debug=True,port=port)
     

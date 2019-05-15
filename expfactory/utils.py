@@ -2,18 +2,22 @@
 utils.py: part of expfactory package
 
 '''
-from urllib2 import Request, urlopen, HTTPError
 import errno
 import collections
 import shutil
 import json
 import os
 import re
-import __init__
 
+
+try:
+    from urllib2 import Request, urlopen, HTTPError
+except:
+    from urllib.request import urlopen, Request, HTTPError
+    basestring = str
 
 def get_installdir():
-    return os.path.dirname(os.path.abspath(__init__.__file__))
+    return os.path.dirname(os.path.abspath(__file__))
 
 
 def find_subdirectories(basepath):
@@ -54,7 +58,7 @@ def remove_unicode_dict(input_dict):
     if isinstance(input_dict, basestring):
         return str(input_dict)
     elif isinstance(input_dict, collections.Mapping):
-        return dict(map(remove_unicode_dict, input_dict.iteritems()))
+        return dict(map(remove_unicode_dict, input_dict.items()))
     elif isinstance(input_dict, collections.Iterable):
         return type(input_dict)(map(remove_unicode_dict, input_dict))
     else:
@@ -121,7 +125,7 @@ def clean_fields(mydict):
     """
 
     newdict = dict()
-    for field,value in mydict.iteritems():
+    for field,value in mydict.items():
         cleanfield = field.encode("utf-8")
         if isinstance(value,float):
             newdict[cleanfield] = value

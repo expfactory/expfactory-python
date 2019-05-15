@@ -18,7 +18,7 @@ def download_repo(repo_type,destination):
     '''
     acceptable_types = ["experiments","battery","vm","surveys","games"]
     if repo_type not in acceptable_types:
-        print "repo_type must be in %s" %(",".join(acceptable_types))
+        print("repo_type must be in %s" %(",".join(acceptable_types)))
     else:
         return Repo.clone_from("https://github.com/expfactory/expfactory-%s" %(repo_type), destination)
 
@@ -60,7 +60,7 @@ def generate_database_url(dbtype=None,username=None,password=None,host=None,tabl
     '''
     if not template:
         if not dbtype or not username or not password or not host or not table:
-            print "Please provide all inputs: dbtype,username,password,host,table."
+            print("Please provide all inputs: dbtype,username,password,host,table.")
         else:
             return "%s://%s:%s@%s/%s"  %(dbtype,
                                          username,
@@ -198,7 +198,7 @@ def get_jspsych_init(experiment,deployment="local",finished_message=None):
             custom_variables = experiment["deployment_variables"]["jspsych_init"]
 
             # Fill user custom variables into data structure
-            for jspsych_var,jspsych_val in custom_variables.iteritems():
+            for jspsych_var,jspsych_val in custom_variables.items():
                 if deployment == "local":            
                     if jspsych_var in default_inits[deployment]:
                          holder = default_inits[deployment][jspsych_var]
@@ -212,8 +212,8 @@ def get_jspsych_init(experiment,deployment="local",finished_message=None):
 
     # Write rest of config
     for v in range(len(default_inits[deployment])):
-        jspsych_var = default_inits[deployment].keys()[v]
-        jspsych_val = "\n".join([str(x) for x in default_inits[deployment].values()[v]]) 
+        jspsych_var = list(default_inits[deployment].keys())[v]
+        jspsych_val = "\n".join([str(x) for x in list(default_inits[deployment].values())[v]]) 
         if jspsych_var in ["on_finish","on_data_update","on_trial_start","on_trial_finish"]:
             jspsych_init = "%s%s: function(data){\n%s\n}" %(jspsych_init,
                                                             jspsych_var,

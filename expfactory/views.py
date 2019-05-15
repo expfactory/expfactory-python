@@ -11,17 +11,21 @@ from expfactory.vm import custom_battery_download, get_stylejs, get_jspsych_init
 from expfactory.experiment import load_experiment, get_experiments
 from cognitiveatlas.api import get_concept, get_task
 from expfactory.survey import generate_survey
-from numpy.random import choice
-import SimpleHTTPServer
-import SocketServer
+from random import choice
 import webbrowser
 import tempfile
 import json
-import numpy
 import shutil
 import pandas
 import os
 import re
+
+try:
+    import SimpleHTTPServer
+    import SocketServer
+except:
+    import http.server as SimpleHTTPServer
+    import socketserver
 
 def embed_experiment(folder,url_prefix=""):
     '''embed_experiment
@@ -45,9 +49,9 @@ def run_single(exp_id,repo_type,destination=None,source_repo=None,battery_repo=N
     '''
     valid_repos = ["experiments","games","surveys"]
     if repo_type not in valid_repos:
-        print "Repo type must be in %s" %(",".join(valid_repos))   
+        print("Repo type must be in %s" %(",".join(valid_repos)))  
 
-    print "Deploying %s %s" %(repo_type[:-1],exp_id)
+    print("Deploying %s %s" %(repo_type[:-1],exp_id))
 
     # Default uses downloaded repos
     experiment_repo = None
@@ -79,17 +83,17 @@ def run_single(exp_id,repo_type,destination=None,source_repo=None,battery_repo=N
                              warning=False)
 
         if port == None:
-            port = choice(range(8000,9999),1)[0]
+            port = choice(range(8000,9999))
 
         # Currently only support one survey
         output_folder = "%s/%s" %(base["%s_repo" %(repo_type[:-1])],exp_id)
         if output_folder in base[repo_type]:
             preview_experiment(folder=output_folder,battery_folder=base["battery_repo"],port=port)
         else:
-            print "Invalid %s %s not found in surveys repo!" %(repo_type[:-1],exp_id)
+            print("Invalid %s %s not found in surveys repo!" %(repo_type[:-1],exp_id))
 
     else:
-        print "Folder exists at %s, cannot generate." %(destination)
+        print("Folder exists at %s, cannot generate." %(destination))
 
 
 def run_battery(destination=None,experiments=None,experiment_folder=None,subject_id=None,battery_folder=None,port=None,time=30):
@@ -102,7 +106,7 @@ def run_battery(destination=None,experiments=None,experiment_folder=None,subject
     :param port: the port number, default will be randomly generated between 8000 and 9999
     :param time: total number of minutes for experiments to add to battery
     '''
-    print "Generating custom battery selecting from experiments for maximum of %s minutes, please wait..." %(time)
+    print("Generating custom battery selecting from experiments for maximum of %s minutes, please wait..." %(time))
 
     if destination == None:
         destination = tempfile.mkdtemp()
@@ -120,14 +124,14 @@ def run_battery(destination=None,experiments=None,experiment_folder=None,subject
     
     try:
         if port == None:
-            port = choice(range(8000,9999),1)[0]
+            port = choice(range(8000,9999))
         Handler = SimpleHTTPServer.SimpleHTTPRequestHandler
         httpd = SocketServer.TCPServer(("", port), Handler)
-        print "Preview experiment at localhost:%s" %port
+        print("Preview experiment at localhost:%s" %port)
         webbrowser.open("http://localhost:%s" %(port))
         httpd.serve_forever()
     except:
-        print "Stopping web server..."
+        print("Stopping web server...")
         httpd.server_close()
         shutil.rmtree(tmpdir)
 
@@ -146,14 +150,14 @@ def preview_experiment(folder=None,battery_folder=None,port=None):
     
     try:
         if port == None:
-            port = choice(range(8000,9999),1)[0]
+            port = choice(range(8000,9999))
         Handler = SimpleHTTPServer.SimpleHTTPRequestHandler
         httpd = SocketServer.TCPServer(("", port), Handler)
-        print "Preview experiment at localhost:%s" %port
+        print("Preview experiment at localhost:%s" %port)
         webbrowser.open("http://localhost:%s" %(port))
         httpd.serve_forever()
     except:
-        print "Stopping web server..."
+        print("Stopping web server...")
         httpd.server_close()
         shutil.rmtree(tmpdir)
 
@@ -422,12 +426,12 @@ def get_cognitiveatlas_hierarchy(experiment_tags=None,get_html=False):
         experiments = [e for e in experiments if e[0]["exp_id"] in experiment_tags]
     
     # We need a dictionary to look up experiments by task ids
-    unique_tasks = numpy.unique([e[0]["cognitive_atlas_task_id"] for e in experiments]).tolist()
+    unique_tasks = list(set([e[0]["cognitive_atlas_task_id"] for e in experiments]))
 
     experiment_lookup = dict()
     for u in unique_tasks:
-        matching_tasks = numpy.unique([e[0]["exp_id"] for e in experiments if e[0]["cognitive_atlas_task_id"]==u])
-        experiment_lookup[u] = matching_tasks.tolist()
+        matching_tasks = set([e[0]["exp_id"] for e in experiments if e[0]["cognitive_atlas_task_id"]==u])
+        experiment_lookup[u] = list(matching_tasks)
 
     triples = concept_node_triples(image_dict=experiment_lookup,save_to_file=False,lookup_key_type="task")
 

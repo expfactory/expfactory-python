@@ -7,7 +7,6 @@ Functions to work with javascript experiments
 from expfactory.utils import find_directories, remove_unicode_dict
 from glob import glob
 import filecmp
-import numpy
 import json
 import re
 import os
@@ -43,11 +42,11 @@ def get_validation_fields():
             ("template",1,str)]
 
 def notvalid(reason):
-    print reason
+    print(reason)
     return False
 
 def dowarning(reason):
-    print reason
+    print(reason)
 
 def get_valid_templates():
     return ['jspsych','survey','phaser','custom']
@@ -204,7 +203,7 @@ def check_acceptable_variables(experiment_name,field_dict,template,field_dict_ke
     :param template: the key name, for looking up acceptable values using get_acceptable_values
     '''
     acceptable_values = get_acceptable_values(template)
-    for acceptable_var,acceptable_val in field_dict[field_dict_key].iteritems():
+    for acceptable_var,acceptable_val in field_dict[field_dict_key].items():
         if acceptable_var not in acceptable_values:
             return notvalid("%s: %s is not an acceptable value for %s." %(experiment_name,acceptable_var,field_dict_key))
 
@@ -234,7 +233,7 @@ def check_boolean(experiment_name,value,variable_name):
         return notvalid("%s: %s is not an acceptable value for %s. Must be true/false." %(experiment_name,value,varialbe_name))
 
 
-def get_experiments(experiment_repo,load=False,warning=True,repo_type="experiments"):
+def get_experiments(experiment_repo, load=False, warning=True, repo_type="experiments"):
     '''get_experiments
     return loaded json for all valid experiments from an experiment folder
     :param experiment_repo: full path to the experiments repo
@@ -243,7 +242,7 @@ def get_experiments(experiment_repo,load=False,warning=True,repo_type="experimen
     '''
     experiments = find_directories(experiment_repo)
     valid_experiments = [e for e in experiments if validate(e,warning)]
-    print "Found %s valid %s" %(len(valid_experiments),repo_type)
+    print("Found %s valid %s" %(len(valid_experiments),repo_type))
     if load == True:
         valid_experiments = load_experiments(valid_experiments)
     return valid_experiments
@@ -273,11 +272,12 @@ def load_experiment(experiment_folder):
     if not os.path.exists(configjson):
         return notvalid("config.json could not be found in %s" %(experiment_folder))
     try: 
-        meta = json.load(open(configjson,"r"))
+        with open(configjson,"r") as filey:
+            meta = json.load(filey)
         meta = remove_unicode_dict(meta[0])
         return [meta]
     except ValueError as e:
-        print "Problem reading config.json, %s" %(e)
+        print("Problem reading config.json, %s" %(e))
         raise
 
 def find_changed(new_repo,comparison_repo,return_experiments=True,repo_type="experiments"):
@@ -307,11 +307,11 @@ def find_changed(new_repo,comparison_repo,return_experiments=True,repo_type="exp
             changed_files.append(contender_file)
 
     # Find differences with compare
-    print "Found files changed: %s" %(",".join(changed_files))
+    print("Found files changed: %s" %(",".join(changed_files)))
 
     if return_experiments == True:
-        return numpy.unique([os.path.dirname(x.strip("\n")) for x in changed_files if os.path.dirname(x.strip("\n")) != ""]).tolist()
-        
+        return list(set([os.path.dirname(x.strip("\n")) for x in changed_files if os.path.dirname(x.strip("\n")) != ""]))
+  
     return changed_files
 
 

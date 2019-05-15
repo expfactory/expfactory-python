@@ -1,9 +1,5 @@
-numpy
-flask
-flask-restful
+Flask>=1.0.2
+Flask-RESTful==0.3.6
 gitpython
-scipy
-seaborn
 selenium==2.53.6
-cognitiveatlas
-numexpr
+cognitiveatlas>=0.1.9
